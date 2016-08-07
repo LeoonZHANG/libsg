@@ -1,0 +1,1 @@
+g++ -O0 -g json.cc ../../src/shell.c ../../src/vlstr.c ../../src/thread.c ../../src/log.c ../../src/sleep.c ../../src/flag.c ../../src/mutex.c ../../src/time.c ../../src/proc.c ../../src/string.c ../../src/json.cc ../../src/file.c -lpthread

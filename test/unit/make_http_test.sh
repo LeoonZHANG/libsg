@@ -1,0 +1,1 @@
+gcc -O0 -g http_client.c ../../src/shell.c ../../src/vlstr.c ../../src/thread.c ../../src/log.c ../../src/sleep.c ../../src/flag.c ../../src/mutex.c ../../src/time.c ../../src/proc.c ../../src/string.c ../../src/file.c ../../src/http_client.c ../../src/flex_buf.c  -lcurl -lpthread
