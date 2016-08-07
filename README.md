@@ -7,7 +7,7 @@ libsg (library sigma) is a cross-platform c library focused on usability.
 ## Modules
 
 ####sys
-atom, mutex, rwlock, spin_lock, memcpy, module, os, proc, time, file, flag, shell, sleep, thread, ntp
+atom, mutex, rwlock, spin_lock, memory, module, os, proc, time, file, flag, shell, sleep, thread, ntp
 
 ####char
 charset, regex, json, sprintf, vlstr(variable length string), xml, msgpack, bson
