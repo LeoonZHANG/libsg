@@ -69,3 +69,7 @@ OS X using the GCC or XCode toolchain.
 ## Dependencies
 
 libuv,...
+
+## Contributors
+metalwood (377307289@QQ.com)
+...
