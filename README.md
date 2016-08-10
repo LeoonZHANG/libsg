@@ -72,4 +72,9 @@ libuv,...
 
 ## Contributors
 metalwood (377307289@QQ.com)
+
+金木
+
+cole_yang (2973778938@QQ.com)
+
 ...
