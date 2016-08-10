@@ -5,7 +5,7 @@
  */
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdint-gcc.h>
 #include "../../libavutil/frame.h"

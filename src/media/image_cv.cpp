@@ -5,7 +5,7 @@
  */
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <iostream>
 #include <stdint.h>
 #include <stdint-gcc.h>

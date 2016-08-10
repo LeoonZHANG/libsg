@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include <stdint.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include "../../include/str/vlstr.h"
 #include "../../include/util/log.h"

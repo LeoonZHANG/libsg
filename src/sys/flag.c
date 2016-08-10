@@ -4,7 +4,7 @@
  * Run flag for thread.
  */
 
-#include <malloc.h>
+#include <stdlib.h>
 #include "../../include/sys/flag.h"
 #include "../../include/sys/mutex.h"
 #include "../../include/util/assert.h"
