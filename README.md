@@ -57,6 +57,18 @@ OS X using the GCC or XCode toolchain.
 
 #### OS X
 
+1. brew is recommended for installing the dependencies, please visit http://brew.sh for setup brew.
+
+2. Use brew to install dependencies, take libuv as an instance:
+
+        $ brew install libuv
+
+3. Run follow command in project directory to generate XCode project:
+
+        $ cmake -G'Xcode'
+
+4. open the generated project file `libsg.xcodeproj` by XCode, build an enjoy it.
+
 ## Documents
 
 ## Dependencies
