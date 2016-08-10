@@ -5,7 +5,7 @@
 libsg (library sigma) is a cross-platform c library focused on usability.
 
 ## Idea
-C language is gradually being forgotten, how to make C programing more simple?
+C language is gradually being forgotten, how to make C programing easier?
 
 1, Do not reinvent wheels, encapsulate good wheels.
 
