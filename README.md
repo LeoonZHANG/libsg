@@ -2,7 +2,7 @@
 
 ## Overview
 
-libsg (library sigma) is a cross-platform c library focused on usability.
+libsg (library sigma) is a cross-platform c library focusing on usability.
 
 ## Idea
 C language is gradually being forgotten, how to make C programing easier?
