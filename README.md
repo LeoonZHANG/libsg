@@ -4,6 +4,8 @@
 
 libsg (library sigma) is a cross-platform c library focused on usability.
 
+## Download Releases
+
 ## Modules
 
 ####sys
@@ -46,8 +48,6 @@ Linux using the GCC toolchain.
 Windows using the GCC or msvc toolchain.
 
 OS X using the GCC or XCode toolchain.
-
-## Releases
 
 ## Build Instructions
 
