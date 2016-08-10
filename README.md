@@ -9,7 +9,7 @@ C language is gradually being forgotten, how to make C programing more simple?
 
 1, Do not reinvent wheels, encapsulate good wheels.
 
-2, Using C to build important infrastructure, but not everythng.
+2, Using C to build important infrastructure, not everything.
 
 ## Download releases
 
