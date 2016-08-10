@@ -4,6 +4,9 @@
 
 libsg (library sigma) is a cross-platform c library focused on usability.
 
+## Idea
+C language is gradually being forgotten, how to make C programing more simple? We do not invent wheels, we encapsulate good wheels.
+
 ## Download Releases
 
 ## Modules
