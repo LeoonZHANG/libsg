@@ -17,7 +17,7 @@
 #include "vtd-xml/XMLModifier.h"
 #include "vtd-xml/xpath.h"
 
-#include "xml.h"
+#include "../../include/str/xml.h"
 
 
 //=================================
