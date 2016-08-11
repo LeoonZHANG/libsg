@@ -11,6 +11,15 @@ C language is gradually being forgotten, how to make C programing easier?
 
 2, Using C to build important infrastructure, not everything.
 
+## Todo list
+Add CMake script.
+
+Add http server / kcp / tcp modules.
+
+Release version 0.1.
+
+...
+
 ## Download releases
 
 ## Modules
