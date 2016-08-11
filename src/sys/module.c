@@ -13,6 +13,7 @@
 #include <sys/syslimits.h>
 #endif
 #include "../../include/util/assert.h"
+#include "../../include/util/log.h"
 
 #ifdef OS_LNX
 #include <unistd.h> /* getcwd readlink ssize_t */
@@ -87,9 +88,11 @@ int sg_module_path(char *buf, size_t buf_len)
     assert(buf);
 
     ret = _NSGetExecutablePath(buf, &size); /* ret equals zero means succeed. */
-    cond(ret == 0, return -1,
-         "Buffer size %u is smaller than source lenght %u.",
-         buf_len, size);
+    if (ret != 0) {
+        sg_log_err("Buffer size %u is smaller than source lenght %u.",
+                   buf_len, size);
+        return -1;
+    }
 
     return 0;
 }
