@@ -5,10 +5,12 @@
  */
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <iostream>
 #include <stdint.h>
-#include <stdint-gcc.h>
+#if defined(__linux__)
+# include <stdint-gcc.h>
+#endif
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "../util/number.h"

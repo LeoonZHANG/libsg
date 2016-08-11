@@ -5,7 +5,9 @@
  */
 
 #include <stdint.h>
-#include <stdint-gcc.h>
+#if defined(__linux__)
+# include <stdint-gcc.h>
+#endif
 #include "../util/os.h"
 
 #ifdef OS_WIN

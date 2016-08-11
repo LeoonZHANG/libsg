@@ -6,7 +6,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include "../../include/util/log.h"
 #include "../../include/container/list.h"

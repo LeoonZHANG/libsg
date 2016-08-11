@@ -33,7 +33,7 @@ enum os_win_ver {
     OSWINVER_10 = 2,
 };*/
 
-#if defined(__MACOSX__)
+#if defined(__MACH__)
 # define OS_OSX
 #elif defined(linux) || defined(__linux) || defined(__linux__)
 # define OS_LNX

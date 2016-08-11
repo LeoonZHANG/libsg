@@ -5,7 +5,9 @@
  */
 
 #include <stdint.h>
-#include <stdint-gcc.h>
+#if defined(__linux__)
+# include <stdint-gcc.h>
+#endif
 #include "../../include/sys/cron.h"
 #include "../../include/util/assert.h"
 #include "../../include/util/log.h"

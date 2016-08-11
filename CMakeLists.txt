@@ -1,243 +1,98 @@
 cmake_minimum_required(VERSION 3.3)
+
+
+# project
+#########
 project(libsg)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+## Version number is quiet important for *nix dynamic lib, specify here.
+set(major_version 1)
+set(minor_version 0)
+set(patch_version 0)
+set(build_version 0)
+set(version ${major_version}.${minor_version}.${patch_version})
 
-set(SOURCE_FILES
-    3rdparty/b64.c/b64.h
-    3rdparty/b64.c/decode.c
-    3rdparty/b64.c/encode.c
-    3rdparty/c99-snprintf-1.1/config.h
-    3rdparty/c99-snprintf-1.1/example.c
-    3rdparty/c99-snprintf-1.1/snprintf.c
-    3rdparty/c99-snprintf-1.1/system.h
-    3rdparty/CryptLib/lib/LibMd5.c
-    3rdparty/CryptLib/lib/LibMd5.h
-    3rdparty/CryptLib/lib/LibRc4.c
-    3rdparty/CryptLib/lib/LibRc4.h
-    3rdparty/CryptLib/lib/LibSha1.c
-    3rdparty/CryptLib/lib/LibSha1.h
-    3rdparty/CryptLib/lib/LibSha256.c
-    3rdparty/CryptLib/lib/LibSha256.h
-    3rdparty/CryptLib/lib/LibSha512.c
-    3rdparty/CryptLib/lib/LibSha512.h
-    3rdparty/CryptLib/projects/CryptLibTest/CryptLibTest.c
-    3rdparty/CryptLib/projects/Md5String/Md5String.c
-    3rdparty/CryptLib/projects/Rc4Output/Rc4Output.c
-    3rdparty/CryptLib/projects/Sha1String/Sha1String.c
-    3rdparty/CryptLib/projects/Sha256String/Sha256String.c
-    3rdparty/CryptLib/projects/Sha512String/Sha512String.c
-    3rdparty/CryptLib/stdbool/stdbool.h
+set(lib_name sg)
+set(lib_name_static ${lib_name})
+## Take different names for static lib and dynamic lib on Windows, or they're .lib file will conflicted.
+if(WIN32)
+    set(lib_name_static lib${lib_name_static})
+endif()
+set(target_static lib${lib_name}-static)
+set(target_shared lib${lib_name}-shared)
+set(target_base64 base64)
+
+
+# files
+#######
+file(GLOB src_b64 3rdparty/b64.c/*.c)
+file(GLOB src_str src/str/*.c)
+file(GLOB src_compress src/compress/*.c)
+file(GLOB src_container src/container/*.c)
+file(GLOB src_db src/db/*.c)
+file(GLOB src_math src/math/*.c)
+file(GLOB src_net src/net/*.c)
+file(GLOB src_sys src/sys/*.c)
+file(GLOB src_util src/util/*.c)
+
+set(src_lib
+    ${src_b64}
+    3rdparty/mongoose_5.6/mongoose.c
     3rdparty/json_checker/JSON_checker.c
-    3rdparty/json_checker/JSON_checker.h
-    3rdparty/json_checker/main.c
-    3rdparty/linkhash/linkhash.c
-    3rdparty/linkhash/linkhash.h
-    3rdparty/mad-hmac/demo/main.c
-    3rdparty/mad-hmac/src/hmac_sha1.c
-    3rdparty/mad-hmac/src/hmac_sha1.h
-    3rdparty/mad-hmac/src/hmac_sha2.c
-    3rdparty/mad-hmac/src/hmac_sha2.h
-    3rdparty/mad-hmac/src/sha1.c
-    3rdparty/mad-hmac/src/sha1.h
-    3rdparty/mad-hmac/src/sha2.c
-    3rdparty/mad-hmac/src/sha2.h
-    3rdparty/mongoose/mongoose.c
-    3rdparty/mongoose/mongoose.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/benchmark_vtdxml.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/erase.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/FragmentTest.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/indexReader.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/indexWriter.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/ModifyXML.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/RSSReader.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/separateIndex.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/soap.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/stats.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/testBookMark.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/testNodeRecorder.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/testOverwrite.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/update.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/updateElementName.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/example/vtd-xml.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/arrayList.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/arrayList.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/autoPilot.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/autoPilot.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/binaryExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/bookMark.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/bookMark.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/cachedExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/cexcept.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/contextBuffer.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/contextBuffer.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/customTypes.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/decoder.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/decoder.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/elementFragmentNs.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/elementFragmentNs.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/everything.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/fastIntBuffer.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/fastIntBuffer.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/fastLongBuffer.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/fastLongBuffer.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/filterExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/funcExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/helper.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/helper.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/indexHandler.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/indexHandler.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/intHash.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/l8.tab.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/l8.tab.h
-    "3rdparty/ximpleware_2.11_c/vtd-xml/lex.yy (2).c"
-    3rdparty/ximpleware_2.11_c/vtd-xml/lex.yy.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/lex.yy_old.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/literalExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/locationPathExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/nodeRecorder.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/nodeRecorder.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/numberExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/pathExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/textIter.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/textIter.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/transcoder.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/transcoder.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/unaryExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/unionExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/UTF8Char.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/variableExpr.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/vtdGen.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/vtdGen.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/vtdNav.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/vtdNav.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/XMLChar.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/XMLChar.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/XMLModifier.c
-    3rdparty/ximpleware_2.11_c/vtd-xml/XMLModifier.h
-    3rdparty/ximpleware_2.11_c/vtd-xml/xpath.h
-    include/char/base64.h
-    include/char/charset.h
-    include/char/json.h
-    include/char/json_check.h
-    include/char/lang.h
-    include/char/regex.h
-    include/char/string.h
-    include/char/vlstr.h
-    include/char/vlstr_list.h
-    include/char/xml.h
-    include/compress/md5.h
-        include/util/vlbuf.h
-    include/container/list.h
-    include/db/pgsql.h
-    include/math/number.h
-    include/math/uuid.h
-    include/media/color.h
-    include/media/font.h
-    include/media/image.h
-    include/media/image_cv.h
-    include/media/image_sdl.h
-    include/media/pixel.h
-    include/net/http.h
-    include/net/http_server.h
-    include/net/net.h
-    include/net/tcp.h
-    include/net/tcp_server.h
-    include/net/udp.h
-    include/net/udp2.h
-    include/net/websocket.h
-    include/net/websocket_server.h
-    include/platform/windows/dial.h
-    include/platform/windows/dirent_win.h
-    include/platform/windows/snprintf.h
-    include/sys/atom.h
-    include/sys/cron.h
-    include/sys/daemon.h
-    include/sys/dlib.h
-    include/sys/file.h
-    include/sys/flag.h
-    include/sys/module.h
-    include/sys/mutex.h
-    include/sys/os.h
-    include/sys/proc.h
-    include/sys/shell.h
-    include/sys/sleep.h
-    include/sys/thread.h
-    include/sys/time.h
-    include/util/assert.h
-    include/util/bound.h
-    include/util/cl.h
-    include/util/def.h
-    include/util/dump.h
-    include/util/err.h
-    include/util/limit.h
-    include/util/log.h
-    include/util/type.h
-    include/sg.h
-    src/char/base64.c
-    src/char/charset.c
-    src/char/json.cc
-    src/char/json_check.c
-    src/char/regex.c
-    src/char/string.c
-    src/char/vlstr.c
-    src/char/vlstr_list.c
-    src/char/xml.c
-    src/compress/md5.c
-        src/container/vlbuf.c
-    src/container/list.c
-    src/db/pgsql.c
-    src/math/number.c
-    src/math/uuid.c
-    src/media/color.c
-    src/media/font.c
-    src/media/image.c
-    src/media/image_cv.cpp
-    src/media/image_sdl.c
-    src/media/pixel.c
-    src/net/http.c
-    src/net/http_server.c
-    src/net/net.c
-    src/net/tcp.c
-    src/net/tcp_server.c
-    src/net/udp.c
-    src/net/udp2.c
-    src/net/uv_comm.h
-    src/net/websocket.c
-    src/net/websocket_server.c
-    src/platform/windows/dial.c
-    src/platform/windows/dirent_win.c
-    src/platform/windows/snprintf.c
-    src/sys/cron.c
-    src/sys/daemon.c
-    src/sys/dlib.c
-    src/sys/file.c
-    src/sys/flag.c
-    src/sys/module.c
-    src/sys/mutex.c
-    src/sys/os.c
-    src/sys/proc.c
-    src/sys/shell.c
-    src/sys/sleep.c
-    src/sys/thread.c
-    src/sys/time.c
-    src/util/dump.c
-    src/util/err.c
-    src/util/log.c
-    src/sg.c
-    test/unit/base64.c
-    test/unit/charset.c
-    test/unit/http_client.c
-    test/unit/http_server.c
-    test/unit/img_cv.cpp
-    test/unit/img_sdl.c
-    test/unit/json.cc
-    test/unit/json2.cpp
-    test/unit/mongodb.c
-    test/unit/mysql.c
-    test/unit/nats_client.c
-    test/unit/proc.c
-    test/unit/redis.c
-    test/unit/rwlock.c)
+    3rdparty/CryptLib/lib/LibMd5.c
+    ${src_str}
+    ${src_compress}
+    ${src_container}
+    ${src_db}
+    ${src_math}
+    ${src_sys}
+    ${src_util}
+    )
 
-add_executable(libsg ${SOURCE_FILES})
+set(src_base64
+    test/unit/base64.c
+    )
+
+
+# build options
+###############
+## home brew will install dependencies to /usr/local in default
+if(APPLE)
+    include_directories(/usr/local/include)
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+
+## build x86 universal(both i386 and x64) binary target for macOS
+if(APPLE)
+    set(c_flags "-arch i386 -arch x86_64")
+    set(link_flags "-arch i386 -arch x86_64")
+endif()
+add_definitions(${c_flags})
+
+
+# targets
+#########
+add_library(${target_static} STATIC ${src_lib})
+add_library(${target_shared} SHARED ${src_lib})
+add_executable(${target_base64} ${src_base64})
+
+set_target_properties(${target_static} PROPERTIES
+    OUTPUT_NAME ${lib_name_static})
+set_target_properties(${target_shared} PROPERTIES
+    OUTPUT_NAME ${lib_name}
+    SOVERSION ${major_version}
+    VERSION ${version}
+    LINK_FLAGS ${link_flags}
+    )
+
+if(WIN32)
+    set(link_libs )
+elseif(APPLE)
+    set(link_libs iconv dl xml2 curl pthread pcre)
+elseif(UNIX)
+    set(link_libs iconv dl xml2 curl pthread pcre uuid uv)
+endif()
+
+target_link_libraries(${target_shared} ${link_libs})
+target_link_libraries(${target_base64} ${target_shared})

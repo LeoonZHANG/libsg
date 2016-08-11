@@ -10,6 +10,7 @@
 # include "../3rdparty/libb64-1.2.1/include/b64/cencode.h"
 #endif
 #include "../../3rdparty/b64.c/b64.h"
+#include "../../include/str/vlstr.h"
 #include "../../include/str/base64.h"
 #include "../../include/util/assert.h"
 #include "../../include/util/log.h"
@@ -130,14 +131,14 @@ struct sg_vlbuf *sg_base64_easy_dec_buf(const char *base64_str)
     dec_buf = (unsigned char *)malloc(sg_base64_estimate_dec_len(strlen(base64_str)));
     if (!dec_buf)
         return NULL;
-    buf = sg_vlbuf_create();
+    buf = sg_vlstralloc();
     if (!buf) {
         free(dec_buf);
         return NULL;
     }
 
     dec_buf = b64_decode_ex(base64_str, strlen(base64_str), &dec_size);
-    sg_vlbuf_insert(buf, dec_buf, dec_size);
+    sg_vlstrncat(buf, (const char*)(dec_buf), dec_size);
     free(dec_buf);
     return buf;
 }

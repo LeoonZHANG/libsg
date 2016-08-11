@@ -17,6 +17,10 @@
 #include "../../include/sys/time.h"
 #include "../../include/util/assert.h"
 
+#ifdef __MACH__
+# include <mach/clock.h>
+# include <mach/mach.h>
+#endif
 
 /****************************************
  * Get time functions.
@@ -35,8 +39,20 @@ struct timespec sg_unix_time_ns(void)
 {
     struct timespec t;
 
+#ifdef __MACH__
+    /* clock_gettime wasn't implemented before macOS 10.12 */
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    t.tv_sec = mts.tv_sec;
+    t.tv_nsec = mts.tv_nsec;
+    mach_port_deallocate(mach_task_self(), cclock);
+#else
     /* Be influenced by adjtime and NTP. */
     clock_gettime(CLOCK_REALTIME, &t);
+#endif
 
     return t;
 }
@@ -53,13 +69,24 @@ time_t sg_unix_time_s(void)
 
 unsigned long sg_boot_time_ms(void)
 {
-    struct timespec t;
     unsigned long ms; /* milliseconds */
 
+#ifdef __MACH__
+    /* clock_gettime wasn't implemented before macOS 10.12 */
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+
+    host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ms = (unsigned long)(mts.tv_sec * 1000) + (unsigned long)(mts.tv_nsec / 1000000);
+#else
+    struct timespec t;
     /* Unsigned long (32-bit OS) could describe
        milliseconds from OS boot for 8 years. */
     clock_gettime(CLOCK_MONOTONIC_RAW, &t);
     ms = (unsigned long)(t.tv_sec * 1000) + (unsigned long)(t.tv_nsec / 1000000);
+#endif
 
     return ms;
 }
@@ -69,7 +96,25 @@ unsigned long sg_thread_cpu_time_ms(void)
     struct timespec t;
     unsigned long ms; /* milliseconds */
 
+#ifdef __MACH__
+    /* clock_gettime wasn't implemented before macOS 10.12 */
+    thread_port_t thread = mach_thread_self();
+
+    mach_msg_type_number_t count = THREAD_BASIC_INFO_COUNT;
+    thread_basic_info_data_t info;
+
+    int kr = thread_info(thread, THREAD_BASIC_INFO, (thread_info_t) &info, &count);
+    if (kr != KERN_SUCCESS) {
+        return 0;
+    }
+
+    t.tv_sec = info.user_time.seconds + info.system_time.seconds;
+    t.tv_nsec = info.user_time.microseconds * 1000 + info.system_time.microseconds * 1000;
+
+    mach_port_deallocate(mach_task_self(), thread);
+#else
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &t);
+#endif
     ms = (unsigned long)(t.tv_sec * 1000)
          + (unsigned long)(t.tv_nsec / 1000000);
 

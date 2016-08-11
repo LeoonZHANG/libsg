@@ -9,15 +9,18 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include <bits/errno.h>
 #include "../../include/sys/os.h"
 #if defined(OS_WIN)
 # include "../../include/platform/windows/dirent.h"
 #endif
 #if defined(OS_LNX)
+# include <bits/errno.h>
 # include <dirent.h>
 # include <stdint.h>
 # include <stdint-gcc.h>
+#endif
+#if defined(OS_OSX)
+# include <dirent.h>
 #endif
 #include "../../include/sys/file.h"
 #include "../../include/util/def.h"

@@ -17,7 +17,7 @@
 #include "../../include/sys/shell.h"
 #include "../../include/sys/sleep.h"
 #include "../../include/util/def.h"
-#include "../../include/assert.h"
+#include "../../include/util/assert.h"
 #include "../../include/sys/thread.h"
 
 /* max line length in char */
