@@ -6,8 +6,12 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <linux/limits.h>
 #include "../../include/sys/os.h"
+#if defined(OS_LNX)
+#include <linux/limits.h>
+#elif defined(OS_OSX)
+#include <sys/syslimits.h>
+#endif
 #include "../../include/util/assert.h"
 
 #ifdef OS_LNX
