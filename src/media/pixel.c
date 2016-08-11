@@ -7,7 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdint-gcc.h>
+#if defined(__linux__)
+# include <stdint-gcc.h>
+#endif
 #include "../../libavutil/frame.h"
 #include "../../libavutil/pixdesc.h"
 #include "../../libavutil/imgutils.h"
