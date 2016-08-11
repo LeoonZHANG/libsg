@@ -7,6 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <uuid/uuid.h>
+/* FIXME: There's no uuid_generate_time_safe on macOS, simply use regular one
+   instead of *_safe. */
+#if defined(__MACH__)
+# define uuid_generate_time_safe uuid_generate_time
+#endif
 #include "../../include/util/log.h"
 #include "../../include/math/uuid.h"
 #include "../../include/util/assert.h"
