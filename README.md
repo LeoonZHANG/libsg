@@ -59,11 +59,7 @@ assert, dump, log...
 
 ## Supported Platforms
 
-Linux using the GCC toolchain.
-
-Windows using the GCC or msvc toolchain.
-
-OS X using the GCC or XCode toolchain.
+Linux ／ Windows ／ OS X
 
 ## Build Instructions
 
