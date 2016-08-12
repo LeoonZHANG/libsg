@@ -3,11 +3,11 @@
  *
  */
 
-#ifndef ZIP_H_
-#define ZIP_H_
+#ifndef LIBSG_ZIP_H
+#define LIBSG_ZIP_H
 
-int do_zip(char *in, int in_size, char **dest, int *dest_size);
+int sg_zip_compress(char *in, int in_size, char **dest, int *dest_size);
 
-int do_unzip(char *in, int in_size, char **dest, int *dest_size);
+int sg_zip_uncompress(char *in, int in_size, char **dest, int *dest_size);
 
-#endif /* ZIP_H_ */
+#endif /* LIBSG_ZIP_H */
