@@ -89,12 +89,12 @@ libuv,...
 
 ## Contact
 
-email: 377307289@qq.com
+email: metalwood@foxmail.com
 
 QQ group: 556925561
 
 ## Contributors
-metalwood (377307289@qq.com)
+metalwood (metalwood@foxmail.com)
 
 cole_yang (2973778938@qq.com)
 
