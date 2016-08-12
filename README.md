@@ -27,7 +27,7 @@ Release version 0.1.
 ####sys
 atom, mutex, rwlock, spin_lock, memory, module, os, proc, time, file, flag, shell, sleep, thread, ntp
 
-####char
+####str
 charset, regex, json, sprintf, vlstr(variable length string), xml, msgpack, bson
 
 ####net
