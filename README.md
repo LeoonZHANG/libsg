@@ -87,6 +87,10 @@ Linux ／ Windows ／ OS X
 
 libuv,...
 
+## Code specification
+
+Linux kernel style.
+
 ## Contact
 
 email: metalwood@foxmail.com
