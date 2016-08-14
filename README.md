@@ -87,7 +87,9 @@ Linux ／ Windows ／ OS X
 
 ## Code specification
 
-Linux kernel style.
+English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle)
+
+简体中文: [Linux内核编码风格](http://www.cnblogs.com/baochuan/archive/2013/04/08/3006615.html)
 
 ## Contact
 
