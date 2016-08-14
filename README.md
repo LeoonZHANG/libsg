@@ -85,10 +85,6 @@ Linux ／ Windows ／ OS X
 
 ## Demo
 
-## Dependencies
-
-libuv,...
-
 ## Code specification
 
 Linux kernel style.
