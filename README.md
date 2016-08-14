@@ -14,7 +14,7 @@ C language is gradually being forgotten, how to make C programing easier?
 ## Todo list
 Add CMake script.
 
-Add http server / kcp / tcp modules.
+Add http / tcp / ring_buffer / blocking_queue modules.
 
 Release version 0.1.
 
