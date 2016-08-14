@@ -81,7 +81,9 @@ Linux ／ Windows ／ OS X
 
 4. open the generated project file `libsg.xcodeproj` by XCode, build and enjoy it.
 
-## Documents
+## API document
+
+## Demo
 
 ## Dependencies
 
