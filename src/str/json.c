@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "cjson/cJSON.h"
-#include "json.h"
+#include "../../3rdparty/cjson/cJSON.h"
+#include "../../include/str/json.h"
 
 static cJSON * cast_to_cJSON(void *doc)
 {
@@ -337,23 +337,23 @@ enum sg_json_val_type json_get_type(sg_json_doc_t *doc, const char *json_pointer
 	cJSON *json = cast_to_cJSON(doc);
 	cJSON * obj = get_value(json, json_pointer);
 	if (obj == NULL)
-		return JSONVALTYPE_ERROR;
+		return SGJSONVALTYPE_ERROR;
 
 	int type = obj->type;
 	if (type == cJSON_Object)
-		return JSONVALTYPE_OBJECT;
+		return SGJSONVALTYPE_OBJECT;
 	else if (type == cJSON_Array)
-		return JSONVALTYPE_ARRAY;
+		return SGJSONVALTYPE_ARRAY;
 	else if (type == cJSON_String)
-		return JSONVALTYPE_STRING;
+		return SGJSONVALTYPE_STRING;
 	else if (type == cJSON_Number)
-		return JSONVALTYPE_NUMBER;
+		return SGJSONVALTYPE_NUMBER;
 	else if (type == cJSON_True || type == cJSON_False)
-		return JSONVALTYPE_BOOL;
+		return SGJSONVALTYPE_BOOL;
 	else if (type == cJSON_NULL)
-		return JSONVALTYPE_NULL;
+		return SGJSONVALTYPE_NULL;
 	else
-		return JSONVALTYPE_ERROR;
+		return SGJSONVALTYPE_ERROR;
 }
 
 int sg_json_get_int(sg_json_doc_t *doc, const char *json_pointer, int *value)
@@ -421,7 +421,7 @@ int sg_json_get_object(sg_json_doc_t *doc, const char *json_pointer, sg_json_doc
 	return -1;
 }
 
-int sg_json_set_object(sg_json_doc_t *doc, const char *json_pointer, json_doc_t *value)
+int sg_json_set_object(sg_json_doc_t *doc, const char *json_pointer, sg_json_doc_t *value)
 {
 	cJSON *json = cast_to_cJSON(doc);
 	if (value == NULL)

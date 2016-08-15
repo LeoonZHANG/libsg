@@ -53,7 +53,9 @@ set(src_base64
     test/unit/base64.c
     )
 
-
+# include directory
+include_directories(3rdparty)
+include_directories(include)
 # build options
 ###############
 ## home brew will install dependencies to /usr/local in default
@@ -62,7 +64,7 @@ if(APPLE)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
 ## build x86 universal(both i386 and x64) binary target for macOS
 if(APPLE)
     set(c_flags "-arch i386 -arch x86_64")
@@ -80,11 +82,7 @@ add_executable(${target_base64} ${src_base64})
 set_target_properties(${target_static} PROPERTIES
     OUTPUT_NAME ${lib_name_static})
 set_target_properties(${target_shared} PROPERTIES
-    OUTPUT_NAME ${lib_name}
-    SOVERSION ${major_version}
-    VERSION ${version}
-    LINK_FLAGS ${link_flags}
-    )
+    OUTPUT_NAME ${lib_name})
 
 if(WIN32)
     set(link_libs )
