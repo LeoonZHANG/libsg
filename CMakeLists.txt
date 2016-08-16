@@ -64,7 +64,9 @@ if(APPLE)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
+endif()
 
 ## intend to set a blank link_flags in default to prevent error occurred
 ## in the latter call of set_target_properties
