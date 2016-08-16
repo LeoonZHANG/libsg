@@ -46,7 +46,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    extern inline Boolean XMLChar_isSupplemental(int c);
+    extern Boolean XMLChar_isSupplemental(int c);
 
     /**
      * Returns true the supplemental character corresponding to the given
@@ -55,34 +55,34 @@ void XMLChar_init();
      * @param h The high surrogate.
      * @param l The low surrogate.
      */
-    extern inline int XMLChar_isSupplementalChar(char h, char l) ;
+    extern int XMLChar_isSupplementalChar(char h, char l) ;
 
     /**
      * Returns the high surrogate of a supplemental character
      *
      * @param c The supplemental character to "split".
      */
-    extern inline  unsigned short XMLChar_highSurrogate(int c);
+    extern unsigned short XMLChar_highSurrogate(int c);
 
     /**
      * Returns the low surrogate of a supplemental character
      *
      * @param c The supplemental character to "split".
      */
-    extern inline  unsigned short XMLChar_lowSurrogate(int c);
+    extern unsigned short XMLChar_lowSurrogate(int c);
 
     /**
      * Returns whether the given character is a high surrogate
      *
      * @param c The character to check.
      */
-    extern inline  Boolean XMLChar_isHighSurrogate(int c);
+    extern Boolean XMLChar_isHighSurrogate(int c);
     /**
      * Returns whether the given character is a low surrogate
      *
      * @param c The character to check.
      */
-    extern inline  Boolean XMLChar_isLowSurrogate(int c);
+    extern Boolean XMLChar_isLowSurrogate(int c);
 
 
     /**
@@ -95,7 +95,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    extern inline Boolean XMLChar_isValidChar(int c){
+    static inline Boolean XMLChar_isValidChar(int c){
         return (c < 0x10000 && (CHARS[c] & MASK_VALID) != 0) ||
                (0x10000 <= c && c <= 0x10FFFF);
     } 
@@ -104,7 +104,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    extern inline  Boolean XMLChar_isInvalidChar(int c){
+    static inline  Boolean XMLChar_isInvalidChar(int c){
         return !XMLChar_isValidChar(c);
     } 
     /**
@@ -112,7 +112,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    extern inline  Boolean XMLChar_isContentChar(int c){
+    static inline  Boolean XMLChar_isContentChar(int c){
         return (c < 0x10000 && (CHARS[c] & MASK_CONTENT) != 0) ||
                (0x10000 <= c && c <= 0x10FFFF);
     }
@@ -122,8 +122,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    //extern inline  Boolean XMLChar_isMarkupChar(int c) ;
-	extern inline Boolean XMLChar_isMarkupChar(int c) {
+	static inline Boolean XMLChar_isMarkupChar(int c) {
         return c == '<' || c == '&' || c == '%';
     }
     /**
@@ -132,8 +131,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    //extern inline Boolean XMLChar_isSpaceChar(int c);
-	extern inline Boolean XMLChar_isSpaceChar(int c) {
+	static inline Boolean XMLChar_isSpaceChar(int c) {
         return c <= 0x20 && (CHARS[c] & MASK_SPACE) != 0;
     }
     /**
@@ -143,8 +141,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    //extern inline  Boolean XMLChar_isNameStartChar(int c) ;
-	extern inline Boolean XMLChar_isNameStartChar(int c) {
+	static inline Boolean XMLChar_isNameStartChar(int c) {
         return c < 0x10000 && (CHARS[c] & MASK_NAME_START) != 0;
     } 
     /**
@@ -154,8 +151,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    //extern inline Boolean XMLChar_isNameChar(int c) ;
-	extern inline Boolean XMLChar_isNameChar(int c) {
+	static inline Boolean XMLChar_isNameChar(int c) {
         return c < 0x10000 && (CHARS[c] & MASK_NAME) != 0;
     } 
     /**
@@ -165,8 +161,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    //extern inline Boolean XMLChar_isNCNameStart(int c);
-	extern inline Boolean XMLChar_isNCNameStart(int c) {
+	static inline Boolean XMLChar_isNCNameStart(int c) {
         return c < 0x10000 && (CHARS[c] & MASK_NCNAME_START) != 0;
     } 
     /**
@@ -176,8 +171,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    //extern inline Boolean XMLChar_isNCName(int c) ;
-	extern inline Boolean XMLChar_isNCName(int c) {
+	static inline Boolean XMLChar_isNCName(int c) {
         return c < 0x10000 && (CHARS[c] & MASK_NCNAME) != 0;
     } 
     /**
@@ -187,7 +181,7 @@ void XMLChar_init();
      *
      * @param c The character to check.
      */
-    extern inline Boolean XMLChar_isPubid(int c);
+    extern Boolean XMLChar_isPubid(int c);
 
 	int Character_digit(int ch, int radix);
 

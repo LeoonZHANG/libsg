@@ -59,7 +59,7 @@ int *getIntArray(FastIntBuffer *fib, int offset, int len);
 
 // Get the int at the index position of FastIntBuffer
 //extern int intAt(FastIntBuffer *fib, int index);
-extern inline int intAt(FastIntBuffer *fib, int index){    
+static inline int intAt(FastIntBuffer *fib, int index){
 	if (index < 0 || index > fib->size - 1) {
 		throwException2(invalid_argument,
 			"invalid index range");
@@ -68,7 +68,7 @@ extern inline int intAt(FastIntBuffer *fib, int index){
 }
 // Replace the value at the index position of FastIntBuffer 
 // with newVal
-extern inline void modifyEntryFIB(FastIntBuffer *fib, int index, int newVal){    
+static inline void modifyEntryFIB(FastIntBuffer *fib, int index, int newVal){
 	if (index < 0 || index > fib->size - 1) {
 		throwException2(invalid_argument,
 			"invalid index range");
@@ -84,7 +84,7 @@ int* toIntArray(FastIntBuffer *fib);
 
 // set the buffer size to zero, capacity untouched,
 //void clearFastIntBuffer (FastIntBuffer *fib);
-extern inline void clearFastIntBuffer (FastIntBuffer *fib){
+static inline void clearFastIntBuffer (FastIntBuffer *fib){
 	fib->size = 0;
 }
 // reset the size of fastIntBuffer
