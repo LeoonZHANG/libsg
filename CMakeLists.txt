@@ -65,6 +65,11 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
+
+## intend to set a blank link_flags in default to prevent error occurred
+## in the latter call of set_target_properties
+set(link_flags " ")
+
 ## build x86 universal(both i386 and x64) binary target for macOS
 if(APPLE)
     set(c_flags "-arch i386 -arch x86_64")
@@ -82,7 +87,11 @@ add_executable(${target_base64} ${src_base64})
 set_target_properties(${target_static} PROPERTIES
     OUTPUT_NAME ${lib_name_static})
 set_target_properties(${target_shared} PROPERTIES
-    OUTPUT_NAME ${lib_name})
+    OUTPUT_NAME ${lib_name}
+    SOVERSION ${major_version}
+    VERSION ${version}
+    LINK_FLAGS ${link_flags}
+    )
 
 if(WIN32)
     set(link_libs )
