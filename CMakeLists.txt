@@ -26,6 +26,8 @@ set(target_base64 base64)
 # files
 #######
 file(GLOB src_b64 3rdparty/b64.c/*.c)
+file(GLOB src_cjson 3rdparty/cjson/*.c)
+file(GLOB src_vtd-xml 3rdparty/vtd-xml/*.c)
 file(GLOB src_str src/str/*.c)
 file(GLOB src_compress src/compress/*.c)
 file(GLOB src_container src/container/*.c)
@@ -37,6 +39,8 @@ file(GLOB src_util src/util/*.c)
 
 set(src_lib
     ${src_b64}
+    ${src_cjson}
+    ${src_vtd-xml}
     3rdparty/mongoose_5.6/mongoose.c
     3rdparty/json_checker/JSON_checker.c
     3rdparty/CryptLib/lib/LibMd5.c
@@ -53,15 +57,18 @@ set(src_base64
     test/unit/base64.c
     )
 
-# include directory
-include_directories(3rdparty)
-include_directories(include)
+
 # build options
 ###############
 ## home brew will install dependencies to /usr/local in default
 if(APPLE)
-    include_directories(/usr/local/include)
+    include_directories(
+		/usr/local/include
+		/usr/local/include/libxml2
+		)
 endif()
+include_directories(3rdparty)
+include_directories(include)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
@@ -98,7 +105,7 @@ set_target_properties(${target_shared} PROPERTIES
 if(WIN32)
     set(link_libs )
 elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre)
+    set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
     set(link_libs iconv dl xml2 curl pthread pcre uuid uv)
 endif()
