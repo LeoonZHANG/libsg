@@ -5,7 +5,7 @@
  
 #include "uv.h"
 #include "ikcp.h"
-#include "etp.h"
+#include "../../include/sg/net/etp.h"
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #   ifndef PLATFORM_LINUX
@@ -71,7 +71,7 @@ typedef unsigned char bool;
  */
 
 /* 速度统计采样总数，必须是2的N次方 */
-＃define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
+#define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
 
 /* 多长统计一次瞬间发送速度 */
 #define SG_ETP_CALC_SPEED_INTERVAL_MS 2000
@@ -222,7 +222,7 @@ static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *use
         /* 限速 */
         if (client->max_speed_limit > 0 && client->current_speed > client->max_speed_limit)
             return ret;
-			
+
     	req = (send_req_t *)malloc(sizeof(send_req_t));
         SG_ASSERT_BRK(NULL != req, "create send_req_t failed");
 
