@@ -1,6 +1,6 @@
 #include "uv.h"
 #include "ikcp.h"
-#include "kcp.h"
+#include "etp.h"
 
 typedef unsigned char bool;
 #define true    1
@@ -13,8 +13,7 @@ typedef unsigned char bool;
 #define SG_ASSERT_RET(exp, prmpt, ret) if (exp) {} else { printf("%d:%s() " prmpt "\n", __LINE__, __FUNCTION__); return(ret); }
 #define SG_ASSERT_BRK(exp, prmpt)      if (exp) {} else { printf("%d:%s() " prmpt "\n", __LINE__, __FUNCTION__); break; }
 
-/* as conn_t in kcpuv */
-typedef struct sg_kcp_real
+typedef struct sg_etp_real
 {
     uint32_t            conv;
     uv_loop_t         * loop;
@@ -67,7 +66,7 @@ static void on_client_recv_udp(
     const struct sockaddr   * addr,
     unsigned int              flags)
 {
-	sg_kcp_t * client = NULL;
+	sg_etp_t * client = NULL;
 
 	/*printf("recv udp %d\n", nread);*/
 
@@ -76,7 +75,7 @@ static void on_client_recv_udp(
         /*SG_ASSERT_BRK(nread > 0, "no data recv");*/
         if (nread <= 0) break;
 
-    	client = (sg_kcp_t *)(handle->data);
+    	client = (sg_etp_t *)(handle->data);
         /*memcpy(&(client->addr), addr, sizeof(struct sockaddr));*/
         client->next_update = 0; /* clear next update */
     	ikcp_input(client->kcp, rcvbuf->base, (long)nread);
@@ -94,7 +93,7 @@ static void on_uv_close_done(uv_handle_t* handle)
 /* for libuv */
 static void on_uv_timer_cb(uv_timer_t* handle)
 {
-    sg_kcp_t * client = handle->data;
+    sg_etp_t * client = handle->data;
     IUINT32 now = 0;
 
     /*printf("update %d\n", client->conv);*/
@@ -109,7 +108,7 @@ static void on_uv_timer_cb(uv_timer_t* handle)
 
     if (client->to_close)
     {
-        sg_kcp_close(client);
+        sg_etp_close(client);
     }
 }
 
@@ -118,7 +117,7 @@ static void on_uv_idle_cb(uv_idle_t* handle)
     int ret = 0;
     int len = 0;
     char * data = NULL;
-    sg_kcp_t * client = NULL;
+    sg_etp_t * client = NULL;
 
     client = handle->data;
 
@@ -201,25 +200,25 @@ static void on_udp_send_done(uv_udp_send_t* req, int status)
 }
 
 
-int sg_kcp_init()
+int sg_etp_init()
 {
     return 0;
 }
 
-sg_kcp_t *sg_kcp_open(
+sg_etp_t *sg_etp_open(
     const char *server_addr, int server_port,
-    sg_kcp_on_open     on_open,
-    sg_kcp_on_message  on_message,
-    sg_kcp_on_close    on_close)
+    sg_etp_on_open     on_open,
+    sg_etp_on_message  on_message,
+    sg_etp_on_close    on_close)
 {
-    sg_kcp_t * client = NULL;
+    sg_etp_t * client = NULL;
     struct sockaddr_in addr;
 	int ret = -1;
 
     do
     {
         /* create the client object */
-        client = malloc(sizeof(sg_kcp_t));
+        client = malloc(sizeof(sg_etp_t));
         SG_ASSERT_BRK(NULL != client, "create client failed");
 
         client->on_open     = on_open;
@@ -254,7 +253,7 @@ sg_kcp_t *sg_kcp_open(
     return client;
 }
 
-int sg_kcp_loop(sg_kcp_t *client, int interval_ms)
+int sg_etp_loop(sg_etp_t *client, int interval_ms)
 {
     int ret = -1;
     
@@ -288,18 +287,18 @@ int sg_kcp_loop(sg_kcp_t *client, int interval_ms)
     return OK;
 }
 
-int sg_kcp_send(sg_kcp_t *client, const void * data, uint64_t size)
+int sg_etp_send(sg_etp_t *client, const void * data, uint64_t size)
 {
     client->next_update = 0; /* clear next update */
     return ikcp_send(client->kcp, data, size);
 }
 
-uint32_t sg_kcp_now(sg_kcp_t * client)
+uint32_t sg_etp_now(sg_etp_t * client)
 {
     return (uint32_t)uv_now(client->loop);
 }
 
-void sg_kcp_close(sg_kcp_t *client)
+void sg_etp_close(sg_etp_t *client)
 {
     if (ikcp_waitsnd(client->kcp) > 0 || ikcp_peeksize(client->kcp) > 0)
     {
@@ -319,7 +318,7 @@ void sg_kcp_close(sg_kcp_t *client)
     free(client);
 }
 
-void sg_kcp_free(void)
+void sg_etp_free(void)
 {
 
 }

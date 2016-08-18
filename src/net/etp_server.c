@@ -2,7 +2,7 @@
 #include <string.h>
 #include "uv.h"
 #include "ikcp.h"
-#include "kcp_server.h"
+#include "etp_server.h"
 
 typedef unsigned char bool;
 #define true    1
@@ -42,7 +42,7 @@ void * DBLL_Find(DBLL_List_T * pLL, uint32_t conv);
 
 
 
-typedef struct sg_kcp_client_real
+typedef struct sg_etp_client_real
 {
     DBLL_Entry_T        le;
     IUINT32             conv;
@@ -54,14 +54,14 @@ typedef struct sg_kcp_client_real
     ikcpcb            * kcp;
     IUINT32             next_update;
     int                 to_close;
-    sg_kcp_server_t   * server;
-    sg_kcp_server_on_open_func_t    on_open;
-    sg_kcp_server_on_message_func_t on_message;
-    sg_kcp_server_on_close_func_t   on_close;
+    sg_etp_server_t   * server;
+    sg_etp_server_on_open_func_t    on_open;
+    sg_etp_server_on_message_func_t on_message;
+    sg_etp_server_on_close_func_t   on_close;
     void * data;
-}sg_kcp_client_t;
+}sg_etp_client_t;
 
-typedef struct sg_kcp_server_real
+typedef struct sg_etp_server_real
 {
     uv_loop_t         * loop;
     uv_udp_t            udp;
@@ -71,12 +71,12 @@ typedef struct sg_kcp_server_real
     int                 backlog;
     int                 max_conn;
     int                 interval;
-    sg_kcp_server_on_open_func_t    on_open;
-    sg_kcp_server_on_message_func_t on_message;
-    sg_kcp_server_on_close_func_t   on_close;
+    sg_etp_server_on_open_func_t    on_open;
+    sg_etp_server_on_message_func_t on_message;
+    sg_etp_server_on_close_func_t   on_close;
     DBLL_List_T         clients;
     void * data;
-}sg_kcp_server_t;
+}sg_etp_server_t;
 
 typedef struct send_req_s
 {
@@ -168,8 +168,8 @@ static void on_server_recv_udp(uv_udp_t* handle,
 {
     IUINT32 conv = 0;
 	int ret = 0;
-    sg_kcp_server_t * server = handle->data;
-    sg_kcp_client_t * client = NULL;
+    sg_etp_server_t * server = handle->data;
+    sg_etp_client_t * client = NULL;
 
     /*printf("recv udp %d\n", nread);*/
 
@@ -191,7 +191,7 @@ static void on_server_recv_udp(uv_udp_t* handle,
                 break;
             }
         
-            client = (sg_kcp_client_t *)malloc(sizeof(sg_kcp_client_t));
+            client = (sg_etp_client_t *)malloc(sizeof(sg_etp_client_t));
             SG_ASSERT_BRK(NULL != client, "create client failed");
             /* link client */
             DBLL_Add_Entry(&(server->clients), (DBLL_Entry_T *)client);
@@ -226,9 +226,9 @@ static void on_server_recv_udp(uv_udp_t* handle,
 
 static void on_uv_timer_cb(uv_timer_t* handle)
 {
-    sg_kcp_server_t * server = handle->data;
-    sg_kcp_client_t * client = NULL;
-    sg_kcp_client_t * prev = NULL;
+    sg_etp_server_t * server = handle->data;
+    sg_etp_client_t * client = NULL;
+    sg_etp_client_t * prev = NULL;
     IUINT32 now = (IUINT32)uv_now(server->loop);
 
     /*printf("update %d\n", DBLL_Get_Count(&(server->clients)));*/
@@ -249,7 +249,7 @@ static void on_uv_timer_cb(uv_timer_t* handle)
 
         if (prev->to_close)
         {
-            sg_kcp_server_close_client(prev);
+            sg_etp_server_close_client(prev);
         }
     }
 }
@@ -260,8 +260,8 @@ static void on_uv_idle_cb(uv_idle_t* handle)
     int ret = 0;
     int len = 0;
     char * data = NULL;
-    sg_kcp_server_t * server = handle->data;
-    sg_kcp_client_t * client = NULL;
+    sg_etp_server_t * server = handle->data;
+    sg_etp_client_t * client = NULL;
 
     /* traverse client list */
     client = DBLL_Get_First(&(server->clients));
@@ -296,29 +296,29 @@ static void on_uv_close_done(uv_handle_t* handle)
 }
 
 
-int sg_kcp_server_init(void)
+int sg_etp_server_init(void)
 {
     return 0;
 }
 
-sg_kcp_server_t *sg_kcp_server_open(
+sg_etp_server_t *sg_etp_server_open(
     const char *server_addr, int server_port,
     int                             backlog,
     int                             max_conn_count,
-    sg_kcp_server_on_open_func_t    on_open,
-    sg_kcp_server_on_message_func_t on_message,
-    sg_kcp_server_on_close_func_t   on_close
+    sg_etp_server_on_open_func_t    on_open,
+    sg_etp_server_on_message_func_t on_message,
+    sg_etp_server_on_close_func_t   on_close
 )
 {
-    sg_kcp_server_t * server = NULL;
+    sg_etp_server_t * server = NULL;
     struct sockaddr_in addr;
     int ret = 0;
 
     do
     {
         /* create the client object */
-        server = (sg_kcp_server_t *)malloc(sizeof(sg_kcp_server_t));
-        SG_ASSERT_BRK(NULL != server, "create sg_kcp_server_t");
+        server = (sg_etp_server_t *)malloc(sizeof(sg_etp_server_t));
+        SG_ASSERT_BRK(NULL != server, "create sg_etp_server_t");
 
         server->backlog     = backlog;
         server->max_conn    = max_conn_count;
@@ -348,15 +348,15 @@ sg_kcp_server_t *sg_kcp_server_open(
     return server;
 }
 
-int sg_kcp_server_send_data(sg_kcp_client_t * client, void *data, size_t size)
+int sg_etp_server_send_data(sg_etp_client_t * client, void *data, size_t size)
 {
     client->next_update = 0; /* clear next update */
     return ikcp_send(client->kcp, data, size);
 }
 
-void sg_kcp_server_close_client(sg_kcp_client_t * client)
+void sg_etp_server_close_client(sg_etp_client_t * client)
 {
-    sg_kcp_server_t * server = client->server;
+    sg_etp_server_t * server = client->server;
 
     if (ikcp_waitsnd(client->kcp) > 0 || ikcp_peeksize(client->kcp) > 0)
     {
@@ -371,7 +371,7 @@ void sg_kcp_server_close_client(sg_kcp_client_t * client)
     free(client);
 }
 
-char *sg_kcp_server_get_client_addr(sg_kcp_client_t * client)
+char *sg_etp_server_get_client_addr(sg_etp_client_t * client)
 {
     char * addr = NULL;
 
@@ -382,7 +382,7 @@ char *sg_kcp_server_get_client_addr(sg_kcp_client_t * client)
     return addr;
 }
 
-void sg_kcp_server_run(sg_kcp_server_t * server, int interval_ms)
+void sg_etp_server_run(sg_etp_server_t * server, int interval_ms)
 {
     int ret = 0;
 
@@ -415,10 +415,10 @@ void sg_kcp_server_run(sg_kcp_server_t * server, int interval_ms)
     uv_run(server->loop, UV_RUN_DEFAULT);
 }
 
-void sg_kcp_server_close(sg_kcp_server_t * server)
+void sg_etp_server_close(sg_etp_server_t * server)
 {
-    sg_kcp_client_t * client = NULL;
-    sg_kcp_client_t * to_del = NULL;
+    sg_etp_client_t * client = NULL;
+    sg_etp_client_t * to_del = NULL;
 
     /* traverse client list */
     client = DBLL_Get_First(&(server->clients));
@@ -427,7 +427,7 @@ void sg_kcp_server_close(sg_kcp_server_t * server)
         to_del = client;
         client = DBLL_Get_Next((DBLL_Entry_T *)client);
 
-        sg_kcp_server_close_client(to_del);
+        sg_etp_server_close_client(to_del);
     }
 
     uv_close((uv_handle_t*)&(server->udp), on_uv_close_done);
@@ -437,7 +437,7 @@ void sg_kcp_server_close(sg_kcp_server_t * server)
     free(server);
 }
 
-void sg_kcp_server_free(void)
+void sg_etp_server_free(void)
 {}
 
 
@@ -590,7 +590,7 @@ void * DBLL_Find(DBLL_List_T * pLL, uint32_t conv)
     SG_ASSERT_RET(pLL != NULL, "DBLL_Find cannot be called with a NULL pLL pointer", NULL);
 
     /* TODO: find */
-    sg_kcp_client_t * client;
+    sg_etp_client_t * client;
 
     client = DBLL_Get_First(pLL);
     while (NULL != client)

@@ -1,5 +1,5 @@
-#ifndef LIBSG_KCP_H
-#define LIBSG_KCP_H
+#ifndef LIBSG_ETP_H
+#define LIBSG_ETP_H
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #   ifndef PLATFORM_LINUX
@@ -50,33 +50,33 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct sg_kcp_real sg_kcp_t; /*struct sg_kcp_real的真实定义请放在kcp.c中*/
+typedef struct sg_etp_real sg_etp_t; /*struct sg_etp_real的真实定义请放在etp.c中*/
 
-typedef void (*sg_kcp_on_open)(sg_kcp_t *client);
-typedef void (*sg_kcp_on_message)(sg_kcp_t *client, char *data, size_t size);
-typedef void (*sg_kcp_on_close)(sg_kcp_t *client, int code, const char *reason);
+typedef void (*sg_etp_on_open)(sg_etp_t *client);
+typedef void (*sg_etp_on_message)(sg_etp_t *client, char *data, size_t size);
+typedef void (*sg_etp_on_close)(sg_etp_t *client, int code, const char *reason);
 
 /* 初始化，返回0表示成功, 如果不必要，可以撤销此接口 */
-int sg_kcp_init();
+int sg_etp_init();
 
-sg_kcp_t *sg_kcp_open(const char *server_addr, int server_port,
-                     sg_kcp_on_open     on_open,
-                     sg_kcp_on_message  on_message,
-                     sg_kcp_on_close    on_close);
+sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
+                     sg_etp_on_open     on_open,
+                     sg_etp_on_message  on_message,
+                     sg_etp_on_close    on_close);
 
-int sg_kcp_loop(sg_kcp_t *client, int interval_ms);
+int sg_etp_loop(sg_etp_t *client, int interval_ms);
 
-int sg_kcp_send(sg_kcp_t *client, const void *data, uint64_t size);
+int sg_etp_send(sg_etp_t *client, const void *data, uint64_t size);
 
-uint32_t sg_kcp_now(sg_kcp_t * client);
+uint32_t sg_etp_now(sg_etp_t * client);
 
-void sg_kcp_close(sg_kcp_t *client);
+void sg_etp_close(sg_etp_t *client);
 
 /* 如果不必要，可以撤销此接口 */
-void sg_kcp_free(void);
+void sg_etp_free(void);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_KCP_H */
+#endif /* LIBSG_ETP_H */
