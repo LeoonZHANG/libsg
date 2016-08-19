@@ -46,7 +46,6 @@ file(GLOB src_util src/util/*.c)
 set(src_lib
     ${src_b64}
     ${src_cjson}
-    ${src_vtd-xml}
     3rdparty/mongoose_5.6/mongoose.c
     3rdparty/json_checker/JSON_checker.c
     3rdparty/CryptLib/lib/LibMd5.c
@@ -58,6 +57,13 @@ set(src_lib
     ${src_sys}
     ${src_util}
     )
+
+## Use installed lib on Linux, compile from source is required on other platforms
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(src_lib ${src_lib} 
+        ${src_vtd-xml}
+        )
+endif()
 
 set(src_base64
     test/unit/base64.c
