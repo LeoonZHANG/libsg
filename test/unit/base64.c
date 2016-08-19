@@ -7,10 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
-#include "../../include/util/log.h"
-#include "../../include/sys/file.h"
-#include "../../include/str/base64.h"
-#include "../../include/str/vlstr.h"
+#include <sg/util/log.h>
+#include <sg/sys/file.h>
+#include <sg/str/base64.h>
+#include <sg/str/vlstr.h>
 
 int main(void)
 {

@@ -7,11 +7,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include "../../include/util/log.h"
-#include "../../include/sys/time.h"
-#include "../../include/sys/shell.h"
-#include "../../include/str/vlstr.h"
-#include "../../include/sys/module.h"
+#include "../../include/sg/util/log.h"
+#include "../../include/sg/sys/time.h"
+#include "../../include/sg/sys/shell.h"
+#include "../../include/sg/str/vlstr.h"
+#include "../../include/sg/sys/module.h"
 
 static int log_colorful = 1;
 static FILE *fp_log;

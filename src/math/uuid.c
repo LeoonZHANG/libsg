@@ -12,9 +12,9 @@
 #if defined(__MACH__)
 # define uuid_generate_time_safe uuid_generate_time
 #endif
-#include "../../include/util/log.h"
-#include "../../include/math/uuid.h"
-#include "../../include/util/assert.h"
+#include "../../include/sg/util/log.h"
+#include "../../include/sg/math/uuid.h"
+#include "../../include/sg/util/assert.h"
 
 struct sg_uuid_str sg_uuid_gen(enum sg_uuid_method method, int uppercase)
 {

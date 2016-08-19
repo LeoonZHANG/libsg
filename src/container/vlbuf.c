@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/util/log.h"
-#include "../../include/util/assert.h"
-#include "../../include/util/vlbuf.h"
+#include "../../include/sg/util/log.h"
+#include "../../include/sg/util/assert.h"
+#include "../../include/sg/util/vlbuf.h"
 
 struct sg_flex_buf *sg_flex_buf_create(void)
 {

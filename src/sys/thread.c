@@ -5,7 +5,7 @@
  */
 
 #include <signal.h>
-#include <sg/syst/thread.h>
+#include <sg/sys/thread.h>
 #include <sg/util/assert.h>
 
 #if defined(OS_WIN)

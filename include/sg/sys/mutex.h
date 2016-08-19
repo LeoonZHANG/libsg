@@ -7,7 +7,7 @@
 #ifndef LIBSG_MUTEX_H
 #define LIBSG_MUTEX_H
 
-#include "../syst/os.h"
+#include "os.h"
 
 #ifdef OS_WIN
 # include "windef.h"

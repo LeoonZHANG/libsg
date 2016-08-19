@@ -6,8 +6,8 @@
 
 #include <errno.h>
 #include <string.h>
-#include "../../include/util/err.h"
-#include "../../include/str/vlstr.h"
+#include "../../include/sg/util/err.h"
+#include "../../include/sg/str/vlstr.h"
 
 int sg_err_errno_crt(void)
 {
