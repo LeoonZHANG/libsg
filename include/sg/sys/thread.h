@@ -7,7 +7,7 @@
 #ifndef LIBSG_THREAD_H
 #define LIBSG_THREAD_H
 
-#include "../sys/os.h"
+#include "../syst/os.h"
 
 #if defined(OS_WIN)
 # include <windef.h>

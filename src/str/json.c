@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../3rdparty/cjson/cJSON.h"
-#include "../../include/str/json.h"
+#include <sg/str/json.h>
 
 static cJSON * cast_to_cJSON(void *doc)
 {

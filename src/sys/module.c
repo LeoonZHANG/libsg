@@ -6,14 +6,14 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "../../include/sys/os.h"
+#include <sg/sys/os.h>
 #if defined(OS_LNX)
 #include <linux/limits.h>
 #elif defined(OS_OSX)
 #include <sys/syslimits.h>
 #endif
-#include "../../include/util/assert.h"
-#include "../../include/util/log.h"
+#include <sg/util/assert.h>
+#include <sg/util/log.h>
 
 #ifdef OS_LNX
 #include <unistd.h> /* getcwd readlink ssize_t */
@@ -28,7 +28,7 @@
 #include <mach-o/dyld.h> /* _NSGetExecutablePath */
 #endif
 
-#include "../../include/sys/module.h"
+#include <sg/sys/module.h>
 
 int sg_cur_dir(char *buf, size_t buf_len)
 {

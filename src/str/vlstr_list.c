@@ -5,11 +5,11 @@
  */
 
 #include <stdlib.h>
-#include "../../include/str/vlstr.h"
-#include "../../include/container/list.h"
-#include "../../include/util/assert.h"
-#include "../../include/str/vlstr_list.h"
-#include "../../include/util/log.h"
+#include <sg/str/vlstr.h>
+#include <sg/container/list.h>
+#include <sg/util/assert.h>
+#include <sg/str/vlstr_list.h>
+#include <sg/util/log.h>
 
 struct vlstr_list_real {
     struct sg_list *list;

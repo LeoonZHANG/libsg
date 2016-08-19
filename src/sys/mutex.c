@@ -4,8 +4,8 @@
  * Mutex for multiple platforms.
  */
 
-#include "../../include/sys/mutex.h"
-#include "../../include/util/assert.h"
+#include <sg/sys/mutex.h>
+#include <sg/util/assert.h>
 
 
 void sg_mutex_create(struct sg_mutex *self)

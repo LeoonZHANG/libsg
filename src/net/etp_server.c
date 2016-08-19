@@ -40,7 +40,10 @@ void *DBLL_Get_First(DBLL_List_T const *pLL);
 void *DBLL_Get_Next(DBLL_Entry_T const *pEntry);
 void * DBLL_Find(DBLL_List_T * pLL, uint32_t conv);
 
-
+/* 速度统计采样总数，必须是2的N次方 */
+#define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
+/* 多长统计一次发送速度 */
+#define SG_ETPSG_ETP_CALC_SPEED_INTERVAL_MS_MS 2000
 
 typedef struct sg_etp_client_real
 {
@@ -56,9 +59,17 @@ typedef struct sg_etp_client_real
     int                 to_close;
     sg_etp_server_t   * server;
     sg_etp_server_on_open_func_t    on_open;
-    sg_etp_server_on_message_func_t on_message;
+    sg_etp_server_on_data_func_t    on_data;
     sg_etp_server_on_close_func_t   on_close;
     void * data;
+	
+	/* 统计速率相关 */
+    uint64_t            last_time; /* 上一次统计时间 */
+    int                 last_send_byte;
+    int                 max_speed_limit;
+    int                 head, tail;
+    int                 last_speed[SG_ETP_SPEED_STAT_SAMPLE_COUNT];
+    double              current_speed;
 }sg_etp_client_t;
 
 typedef struct sg_etp_server_real
@@ -72,7 +83,7 @@ typedef struct sg_etp_server_real
     int                 max_conn;
     int                 interval;
     sg_etp_server_on_open_func_t    on_open;
-    sg_etp_server_on_message_func_t on_message;
+    sg_etp_server_on_data_func_t    on_data;
     sg_etp_server_on_close_func_t   on_close;
     DBLL_List_T         clients;
     void * data;
@@ -82,6 +93,7 @@ typedef struct send_req_s
 {
 	uv_udp_send_t req;
 	uv_buf_t buf;
+    sg_etp_client_t* client;
 }send_req_t;
 
 
@@ -96,7 +108,7 @@ static void on_server_recv_udp(uv_udp_t* handle,
 static void on_uv_timer_cb(uv_timer_t* handle);
 static void on_uv_idle_cb(uv_idle_t* handle);
 static void on_uv_close_done(uv_handle_t* handle);
-
+static void sg_kcp_client_update_speed(sg_kcp_client_t* client, uint64_t now);
 
 /* for libuv */
 static void on_uv_alloc_buffer(uv_handle_t* handle, size_t size, uv_buf_t* buf)
@@ -108,7 +120,7 @@ static void on_uv_alloc_buffer(uv_handle_t* handle, size_t size, uv_buf_t* buf)
 /* for kcp callback */
 static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *user)
 {
-	sg_kcp_client_t * client = (sg_kcp_client_t *)user;
+	sg_etp_client_t * client = (sg_etp_client_t *)user;
     int ret = -1;
     send_req_t * req = NULL;
 
@@ -116,11 +128,16 @@ static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *use
 
     do
     {
+        // 限速
+        if (client->max_speed_limit > 0 && client->current_speed > client->max_speed_limit)
+            return ret;
+			
     	req = (send_req_t *)malloc(sizeof(send_req_t));
         SG_ASSERT_BRK(NULL != req, "create send_req_t failed");
 
         memset(req, 0, sizeof(send_req_t));
 
+        req->client = client;
     	req->buf.base = malloc(sizeof(char) * len);
         SG_ASSERT_BRK(NULL != req->buf.base, "create buf failed");
     	req->buf.len = len;
@@ -156,6 +173,7 @@ static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *use
 static void on_udp_send_done(uv_udp_send_t* req, int status)
 {
 	send_req_t * send_req = (send_req_t *)req;
+    send_req->client->last_send_byte += send_req->buf.len; /* 统计网速 */
 	free(send_req->buf.base); /* TODO: ensure free*/
 	free(send_req);	/** TODO: ensure free */
 }
@@ -199,7 +217,7 @@ static void on_server_recv_udp(uv_udp_t* handle,
             client->loop        = server->loop;
             client->udp         = &(server->udp);
             client->on_open     = server->on_open;
-            client->on_message  = server->on_message;
+            client->on_data     = server->on_data;
             client->on_close    = server->on_close;
             client->server      = server;
             memcpy(&(client->addr), addr, sizeof(struct sockaddr));
@@ -211,7 +229,7 @@ static void on_server_recv_udp(uv_udp_t* handle,
 
         	ret = ikcp_nodelay(client->kcp, 1, server->interval, 2, 1);
 
-        	printf("conn from %u\n", client->conv);
+        	printf("conn from %u\n", (unsigned int)client->conv);
 
         	client->on_open(client);
         }
@@ -238,6 +256,9 @@ static void on_uv_timer_cb(uv_timer_t* handle)
     while (NULL != client)
     {
         /*printf("update %d\n", client->conv);*/
+		/* 更新网速 */
+        sg_kcp_client_update_speed(client, now);
+		
         if (now >= client->next_update)
         {
             ikcp_update(client->kcp, now);
@@ -281,7 +302,7 @@ static void on_uv_idle_cb(uv_idle_t* handle)
     		return;
     	}
 
-        client->on_message(client, data, len);
+        client->on_data(client, data, len);
 
         free(data);
         data = NULL;
@@ -306,7 +327,7 @@ sg_etp_server_t *sg_etp_server_open(
     int                             backlog,
     int                             max_conn_count,
     sg_etp_server_on_open_func_t    on_open,
-    sg_etp_server_on_message_func_t on_message,
+    sg_etp_server_on_data_func_t    on_data,
     sg_etp_server_on_close_func_t   on_close
 )
 {
@@ -320,11 +341,11 @@ sg_etp_server_t *sg_etp_server_open(
         server = (sg_etp_server_t *)malloc(sizeof(sg_etp_server_t));
         SG_ASSERT_BRK(NULL != server, "create sg_etp_server_t");
 
-        server->backlog     = backlog;
-        server->max_conn    = max_conn_count;
-        server->on_open     = on_open;
-        server->on_message  = on_message;
-        server->on_close    = on_close;
+        server->backlog  = backlog;
+        server->max_conn = max_conn_count;
+        server->on_open  = on_open;
+        server->on_data  = on_data;
+        server->on_close = on_close;
 
         DBLL_Init(&(server->clients));
 
@@ -437,8 +458,60 @@ void sg_etp_server_close(sg_etp_server_t * server)
     free(server);
 }
 
+static void sg_etp_client_update_speed(sg_etp_client_t* client, uint64_t now)
+{
+    if (client->max_speed_limit <=0 )
+        return;
+
+    if (!client->last_time) {
+        // start to record
+        client->last_time = now;
+        return;
+    }
+    else {
+        // update the last_speed, every tow second
+        uint64_t msecond = now - client->last_time;
+        if (msecond > SG_ETP_CALC_SPEED_INTERVAL_MS) {
+            // 平滑处理
+            int count = 0;
+            double speed = client->last_send_byte * 1.0 / msecond * 1000;
+
+            // 加入队列
+            client->last_speed[client->tail++] = speed;
+            client->tail &= (SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
+            if (client->tail == client->head)
+                client->head = (client->head + 1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
+
+            speed = 0;
+            for (int i = client->head; i != client->tail; i=(i+1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1)) {
+                speed += client->last_speed[i];
+                count += 1;
+            }
+            speed /= count;
+            client->current_speed = speed;
+            printf("send %lf kib/s %d\n", speed/1024, count);
+            client->last_time = now;
+            client->last_send_byte = 0;
+        }
+
+    }
+}
+
+void sg_etp_server_set_max_send_speed(sg_etp_client_t *client, size_t kbps)
+{
+    client->max_speed_limit = kbps*1024;
+    client->last_send_byte = 0;
+    client->last_time = 0;
+    if (!kbps){
+        client->tail = client->head = 0;
+        memset(client->last_speed, 0, sizeof(client->last_speed));
+        client->current_speed = 0;
+    }
+}
+
 void sg_etp_server_free(void)
-{}
+{
+}
 
 
 void DBLL_Init(DBLL_List_T * pLL)

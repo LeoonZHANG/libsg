@@ -7,7 +7,7 @@
 #ifndef LIBSG_ATOM_H
 #define LIBSG_ATOM_H
 
-#include "../sys/os.h"
+#include "../syst/os.h"
 #ifdef OS_WIN
 # include <windows.h>
 #endif

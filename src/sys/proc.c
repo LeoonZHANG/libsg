@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "../../include/sys/os.h"
+#include <sg/sys/os.h>
 #if defined(OS_WIN)
 # include <Windows.h> /* QueryFullProcessImageName / ZeroMemory / CloseHandle ... */
 # include <tlhelp32.h> /* Process32First / CreateToolhelp32Snapshot ... */
@@ -19,11 +19,11 @@
 # include <unistd.h> /* getpid */
 # include <signal.h> /* kill */
 #endif
-#include "../../include/util/log.h"
-#include "../../include/util/assert.h"
-#include "../../include/sys/proc.h"
-#include "../../include/sys/shell.h"
-#include "../../include/str/string.h"
+#include <sg/util/log.h>
+#include <sg/util/assert.h>
+#include <sg/sys/proc.h>
+#include <sg/sys/shell.h>
+#include <sg/str/string.h>
 
 struct sg_proc_shell_context {
     void *cb;

@@ -8,11 +8,11 @@
 #if defined(__linux__)
 # include <stdint-gcc.h>
 #endif
-#include "../../include/sys/cron.h"
-#include "../../include/util/assert.h"
-#include "../../include/util/log.h"
-#include "../../include/sys/time.h"
-#include "../../include/util/def.h"
+#include <sg/sys/cron.h>
+#include <sg/util/assert.h>
+#include <sg/util/log.h>
+#include <sg/sys/time.h>
+#include <sg/util/def.h>
 
 int sg_cron_cycle_pack(struct tm *begin, struct tm *end,
                        uint32_t duration_s, uint32_t interval_s, struct sg_cron_cycle *cc)

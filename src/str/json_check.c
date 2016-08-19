@@ -6,8 +6,8 @@
 
 #include <string.h>
 #include "../../3rdparty/json_checker/JSON_checker.h"
-#include "../../include/str/json_check.h"
-#include "../../include/util/assert.h"
+#include <sg/str/json_check.h>
+#include <sg/util/assert.h>
 
 int sg_json_check(const char *json, int check_depth)
 {

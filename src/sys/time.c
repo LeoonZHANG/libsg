@@ -14,8 +14,8 @@
 #include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
-#include "../../include/sys/time.h"
-#include "../../include/util/assert.h"
+#include <sg/sys/time.h>
+#include <sg/util/assert.h>
 
 #ifdef __MACH__
 # include <mach/clock.h>

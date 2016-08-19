@@ -8,17 +8,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include "../../include/sys/os.h"
+#include <sg/sys/os.h>
 #if defined(OS_WIN)
 # include <windows.h>
 #endif
-#include "../../include/util/log.h"
-#include "../../include/sys/flag.h"
-#include "../../include/sys/shell.h"
-#include "../../include/sys/sleep.h"
-#include "../../include/util/def.h"
-#include "../../include/util/assert.h"
-#include "../../include/sys/thread.h"
+#include <sg/util/log.h>
+#include <sg/sys/flag.h>
+#include <sg/sys/shell.h>
+#include <sg/sys/sleep.h>
+#include <sg/util/def.h>
+#include <sg/util/assert.h>
+#include <sg/sys/thread.h>
 
 /* max line length in char */
 #define line_size 1024

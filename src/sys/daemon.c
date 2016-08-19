@@ -6,19 +6,19 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "../../include/sys/os.h"
+#include <sg/sys/os.h>
 #if defined(OS_WIN)
 # include <windows.h> /* RegCreateKeyEx... */
 #endif
 #if defined(OS_LNX)
 # include <unistd.h> /* daemon */
 #endif
-#include "../../include/sys/daemon.h"
-#include "../../include/sys/module.h"
-#include "../../include/util/log.h"
-#include "../../include/util/limit.h"
-#include "../../include/str/vlstr.h"
-#include "../../include/sys/file.h"
+#include <sg/sys/daemon.h>
+#include <sg/sys/module.h>
+#include <sg/util/log.h>
+#include <sg/util/limit.h>
+#include <sg/str/vlstr.h>
+#include <sg/sys/file.h>
 
 int sg_daemon_start_with_os(void)
 {

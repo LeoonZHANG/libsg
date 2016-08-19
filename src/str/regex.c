@@ -7,10 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <pcre.h>
-#include "../../include/util/assert.h"
-#include "../../include/str/regex.h"
-#include "../../include/util/log.h"
-#include "../../include/util/def.h"
+#include <sg/util/assert.h>
+#include <sg/str/regex.h>
+#include <sg/util/log.h>
+#include <sg/util/def.h>
 
 int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list *vl);
 

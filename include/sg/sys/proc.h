@@ -8,7 +8,7 @@
 #define LIBSG_PROC_H
 
 #include <stdint.h>
-#include "../sys/os.h"
+#include "../syst/os.h"
 
 #if defined(OS_LNX)
 # include <sys/types.h> /* pid_t */

@@ -8,9 +8,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/util/log.h"
-#include "../../include/container/list.h"
-#include "../../include/util/assert.h"
+#include <sg/util/log.h>
+#include <sg/container/list.h>
+#include <sg/util/assert.h>
 
 /* Item head for serialize / deserialize. */
 struct sg_item_hdr {

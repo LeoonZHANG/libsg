@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../3rdparty/CryptLib/lib/LibMd5.h"
-#include "../../include/compress/md5.h"
-#include "../../include/util/def.h"
-#include "../../include/util/assert.h"
+#include "../../include/sg/compress/md5.h"
+#include "../../include/sg/util/def.h"
+#include "../../include/sg/util/assert.h"
 
 
 void md5_hash_fmt(MD5_HASH *raw, struct sg_md5_hash *out, enum sg_md5_fmt fmt);

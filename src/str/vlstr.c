@@ -9,11 +9,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "../../include/str/vlstr.h"
-#include "../../include/util/log.h"
-#include "../../include/util/def.h"
-#include "../../include/util/bound.h"
-#include "../../include/util/assert.h"
+#include <sg/str/vlstr.h>
+#include <sg/util/log.h>
+#include <sg/util/def.h>
+#include <sg/util/bound.h>
+#include <sg/util/assert.h>
 
 /* vlstr head */
 struct vlstr_hd {

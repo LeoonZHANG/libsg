@@ -4,7 +4,7 @@
  * Cross paltform snprintf.
  */
 
-#include "../../include/str/snprintf.h"
+#include <sg/str/snprintf.h>
 
 #if defined(_WIN32) && !defined(__GNUC__)
 

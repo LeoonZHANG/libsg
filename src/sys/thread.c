@@ -5,8 +5,8 @@
  */
 
 #include <signal.h>
-#include "../../include/sys/thread.h"
-#include "../../include/util/assert.h"
+#include <sg/syst/thread.h>
+#include <sg/util/assert.h>
 
 #if defined(OS_WIN)
 static unsigned int __stdcall thread_main_routine(void *arg)

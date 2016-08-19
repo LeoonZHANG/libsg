@@ -4,7 +4,7 @@
  * Dynamic library handle.
  */
 
-#include "../../include/sys/os.h"
+#include <sg/sys/os.h>
 #if defined(OS_LNX) || defined(OS_OSX)
 # include <dlfcn.h>
 #endif
@@ -12,9 +12,9 @@
 # include <dlfcn.h>
 #endif
 #include <string.h>
-#include "../../include/util/log.h"
-#include "../../include/sys/dlib.h"
-#include "../../include/util/assert.h"
+#include <sg/util/log.h>
+#include <sg/sys/dlib.h>
+#include <sg/util/assert.h>
 
 const char *sg_dlib_error(void);
 

@@ -5,9 +5,9 @@
  */
 
 #include <stdlib.h>
-#include "../../include/sys/flag.h"
-#include "../../include/sys/mutex.h"
-#include "../../include/util/assert.h"
+#include <sg/sys/flag.h>
+#include <sg/sys/mutex.h>
+#include <sg/util/assert.h>
 
 #define FLAG_INIT_VALUE 0x0
 

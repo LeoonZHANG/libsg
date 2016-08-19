@@ -8,8 +8,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "../../include/str/string.h"
-#include "../../include/util/assert.h"
+#include <sg/str/string.h>
+#include <sg/util/assert.h>
 
 int sg_str_to_lower(char *str)
 {

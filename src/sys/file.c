@@ -9,9 +9,9 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../../include/sys/os.h"
+#include <sg/sys/os.h>
 #if defined(OS_WIN)
-# include "../../include/platform/windows/dirent.h"
+# include <sg/platform/windows/dirent.h>
 #endif
 #if defined(OS_LNX)
 # include <bits/errno.h>
@@ -22,11 +22,11 @@
 #if defined(OS_OSX)
 # include <dirent.h>
 #endif
-#include "../../include/sys/file.h"
-#include "../../include/util/def.h"
-#include "../../include/util/assert.h"
-#include "../../include/str/string.h"
-#include "../../include/util/log.h"
+#include <sg/sys/file.h>
+#include <sg/util/def.h>
+#include <sg/util/assert.h>
+#include <sg/str/string.h>
+#include <sg/util/log.h>
 
 int dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
                       uint8_t max_depth, sg_dir_seek_callback cb, void *context);

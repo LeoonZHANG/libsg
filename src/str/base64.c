@@ -10,10 +10,10 @@
 # include "../3rdparty/libb64-1.2.1/include/b64/cencode.h"
 #endif
 #include "../../3rdparty/b64.c/b64.h"
-#include "../../include/str/vlstr.h"
-#include "../../include/str/base64.h"
-#include "../../include/util/assert.h"
-#include "../../include/util/log.h"
+#include <sg/str/vlstr.h>
+#include <sg/str/base64.h>
+#include <sg/util/assert.h>
+#include <sg/util/log.h>
 
 size_t sg_base64_calc_enc_len(size_t data_len);
 

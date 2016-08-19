@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "../include/sys/time.h"
+#include <sg/sys/time.h>
 
 int sg_register(const char *key)
 {
