@@ -28,6 +28,10 @@ set(target_base64 base64)
 file(GLOB src_b64 3rdparty/b64.c/*.c)
 file(GLOB src_cjson 3rdparty/cjson/*.c)
 file(GLOB src_vtd-xml 3rdparty/vtd-xml/*.c)
+## exclude unecessary "lex.yy (2).c" and "lex.yy_old.c" to prevent build failed
+list(REMOVE_ITEM src_vtd-xml
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy (2).c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy_old.c")
 file(GLOB src_str src/str/*.c)
 file(GLOB src_compress src/compress/*.c)
 file(GLOB src_container src/container/*.c)
