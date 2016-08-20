@@ -9,7 +9,13 @@
 #if defined(_WIN32) && !defined(__GNUC__)
 
 #include <stdarg.h>
-#include "../../../include/platform/windows/snprintf.h"
+#include <sg/platform/windows/snprintf.h>
+
+
+/* Microsoft has finally implemented snprintf in Visual Studio 2015, use c99-snprintf instead of for older version. */
+#if defined(_MSC_VER) && _MSC_VER < 1900
+#define snprintf rpl_snprintf
+#endif
 
 /* Emulate snprintf() on Windows, _snprintf() doesn't zero-terminate the buffer on overflow... */
 int sg_snprintf(char *buf, size_t len, const char *fmt, ...)
@@ -18,7 +24,7 @@ int sg_snprintf(char *buf, size_t len, const char *fmt, ...)
 	int n;
 
 	va_start(ap, fmt);
-	n = _vsprintf_p(buf, len, fmt, ap);
+	n = snprintf(buf, len, fmt, ap);
 	va_end(ap);
 
 	/* It's a sad fact of life that no one ever checks the return value of
