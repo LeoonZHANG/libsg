@@ -16,11 +16,11 @@ C language is gradually being forgotten, how to make C programing easier?
 
 #### Easy to install
 
-You can [download pre-built binaries](https://github.com/metalwood/libsg/releases) (static / dynamic library and header files) which don't have any dependency, you don't need to build any code or install any dependency for libsg.
+You can [download pre-built binaries](https://github.com/metalwood/libsg/releases) (static / dynamic library and header files) which don't have any dependency, you don't need to build source code or install any dependency for libsg.
 
 #### Easy to call
 
-Header files of libsg include nothing but only pure API declaration, and they are simpe and clear.
+Header files of libsg include nothing but only pure API declaration, and APIs are simpe and clear.
 
 ## Fast and powerful
 
