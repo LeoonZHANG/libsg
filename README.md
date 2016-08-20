@@ -26,16 +26,11 @@ Header files of libsg include nothing but only pure API declaration, and they ar
 
 There are many modules in this library, and lots of them are optimized. You can create high performance application with libsg.
 
-## Todo list
-Add CMake script.
+## Supported Platforms
 
-Add http / tcp / ring_buffer / blocking_queue modules.
+Linux ／ Windows ／ OS X
 
-Release version 0.1.
-
-...
-
-## Download releases
+## [Download releases](https://github.com/metalwood/libsg/releases)
 
 ## Modules
 
@@ -83,10 +78,6 @@ windows/dial...
 ####util
 assert, dump, log...
 
-## Supported Platforms
-
-Linux ／ Windows ／ OS X
-
 ## Build Instructions
 
 If you want to use libsg in your project, just download the lastest release. Build libsg when you are going to change the code.
@@ -126,5 +117,14 @@ metalwood (metalwood@foxmail.com)
 cole_yang (2973778938@qq.com)
 
 canmor (476010464@qq.com)
+
+...
+
+## Todo list
+Add CMake script.
+
+Add http / tcp / ring_buffer / blocking_queue modules.
+
+Release version 0.1.
 
 ...
