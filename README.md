@@ -24,7 +24,7 @@ Header files of libsg include nothing but only pure API declaration, and they ar
 
 ## Fast and powerful
 
-There are many modules in this library, and lots of them are optimized.
+There are many modules in this library, and lots of them are optimized. You can create high performance application with libsg.
 
 ## Todo list
 Add CMake script.
