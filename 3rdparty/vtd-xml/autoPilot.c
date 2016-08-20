@@ -745,20 +745,6 @@ void declareXPathNameSpace(AutoPilot *ap, UCSChar* prefix, UCSChar *URL){
 		insertItem(ap,prefix,URL);
 }
 
-/**
- * 
- */
-void bind(AutoPilot *ap, VTDNav *new_vn){
-	ap->elementName = NULL;
-	ap->elementName2 = NULL;
-    ap->vn = new_vn;
-	ap->it = UNDEFINED; 
-    ap->ft = TRUE;
-    ap->size = 0;
-    ap->special = FALSE;
-}
-
-
 /* Clear the namespace prefix URL bindings in the global list */
 void clearXPathNameSpaces(){
 	/*nl has been made a package scoped static variable*/
