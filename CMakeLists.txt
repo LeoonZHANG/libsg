@@ -84,6 +84,7 @@ include_directories(include)
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
     include_directories(3rdparty/pcre)
+    include_directories(3rdparty/libxml2/include)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
