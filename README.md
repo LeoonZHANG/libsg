@@ -89,23 +89,18 @@ Linux ／ Windows ／ OS X
 
 ## Build Instructions
 
-#### Linux
+If you want to use libsg in your project, just download the lastest release. Build libsg when you are going to change the code.
+
+#### linux
+        $ chmod +x build_linux.sh & ./build.sh
+
+#### OSX
+        $ chmod +x build_linux.sh & ./build.sh
+open the generated project file `libsg.xcodeproj` by XCode, build it.
 
 #### Windows
-
-#### OS X
-
-1. brew is recommended for installing the dependencies, please visit http://brew.sh for setup brew.
-
-2. Use brew to install dependencies, take libuv as an instance:
-
-        $ brew install libuv
-
-3. Run follow command in project directory to generate XCode project:
-
-        $ cmake -G'Xcode'
-
-4. open the generated project file `libsg.xcodeproj` by XCode, build and enjoy it.
+        $ build.bat
+open the generated project file `libsg.sln` by VisualStudio, build it.
 
 ## API document
 
