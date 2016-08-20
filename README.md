@@ -15,7 +15,7 @@ C language is gradually being forgotten, how to make C programing easier?
 
 #### Easy to install
 
-You can download pre-built binaries (include static, dynamic library and header files) which doesn't have any dependencies, you don't need to install any dependencies by yourself.
+You can [download pre-built binaries](https://github.com/metalwood/libsg/releases) (static / dynamic library and header files) which don't have any dependency, you don't need to build any code or install any dependency for libsg.
 
 #### Easy to call
 
