@@ -2,16 +2,17 @@
 
 ## Overview
 
-libsg (library sigma) is a boost-like cross-platform C utility library focusing on usability.
+libsg is a boost-like cross-platform C utility library, it easy to use, fast and powerful.
 
 ## Idea and goal
+
 C language is gradually being forgotten, how to make C programing easier?
 
 1, Do not reinvent wheels, pack good wheels.
 
 2, Using C to build important infrastructure, not everything.
 
-## Really easy
+## Easy
 
 #### Easy to install
 
@@ -20,6 +21,10 @@ You can [download pre-built binaries](https://github.com/metalwood/libsg/release
 #### Easy to call
 
 Header files of libsg include nothing but only pure API declaration, and they are simpe and clear.
+
+## Fast and powerful
+
+There are many modules in this library, and lots of them are optimized.
 
 ## Todo list
 Add CMake script.
