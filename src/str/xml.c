@@ -145,8 +145,7 @@ static AutoPilot *select_xpath(VTDNav *vn, const char *xpath,char *nsMap[],int n
 	UCSChar *xpathTemp = NULL;
 
 
-	UCSChar *nsMapTemp[nsMapSize];
-	memset(nsMapTemp,0,nsMapSize);
+	UCSChar *nsMapTemp = (UCSChar *) calloc(nsMapSize, sizeof(UCSChar));
 	Try
 			{
 				apTemp = createAutoPilot(vn);
@@ -185,6 +184,7 @@ static AutoPilot *select_xpath(VTDNav *vn, const char *xpath,char *nsMap[],int n
 		UCSChar *s = nsMapTemp[i];
 		free(s);
 	}
+	free(nsMapTemp);
 	return ap;
 
 }
