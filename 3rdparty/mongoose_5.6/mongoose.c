@@ -3463,7 +3463,7 @@ typedef struct DIR {
 } DIR;
 
 // Implementation of POSIX opendir/closedir/readdir for Windows.
-static DIR *opendir(const char *name) {
+DIR *opendir(const char *name) {
   DIR *dir = NULL;
   wchar_t wpath[MAX_PATH_SIZE];
   DWORD attrs;
@@ -3489,7 +3489,7 @@ static DIR *opendir(const char *name) {
   return dir;
 }
 
-static int closedir(DIR *dir) {
+int closedir(DIR *dir) {
   int result = 0;
 
   if (dir != NULL) {
@@ -3505,7 +3505,7 @@ static int closedir(DIR *dir) {
   return result;
 }
 
-static struct dirent *readdir(DIR *dir) {
+struct dirent *readdir(DIR *dir) {
   struct dirent *result = 0;
 
   if (dir) {
