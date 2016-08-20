@@ -22,6 +22,7 @@
 #ifdef OS_WIN
 #include <direct.h> /* getcwd */
 #include <windows.h> /* GetModuleFileName */
+#define PATH_MAX MAX_PATH
 #endif
 
 #ifdef OS_OSX
@@ -52,10 +53,10 @@ int sg_module_path(char *buf, size_t buf_len)
 
     assert(buf);
 
-    res = ::GetModuleFileName(NULL /* current process */, (LPSTR)buf, buf_len);
+    res = GetModuleFileName(NULL /* current process */, (LPSTR)buf, buf_len);
 
     if (res <= 0)
-        sg_log_err("module_dir error:%u.", ::GetLastError());
+        sg_log_err("module_dir error:%u.", GetLastError());
 
     return res > 0 ? 0 : -1;
 }
