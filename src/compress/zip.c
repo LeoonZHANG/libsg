@@ -16,8 +16,8 @@ int sg_zip_compress(char *in, int in_size, char **dest, int *dest_size)
 	int ret = 0;
 	int buf_size = 0;
 	char *buf = NULL;
-	int out_size = 4 * 1024;
-	char out[out_size];
+	char out[4 * 1024];
+	int out_size = sizeof(out);
 	bool is_success = false;
 
 	strm.zalloc = Z_NULL;
@@ -81,8 +81,8 @@ int sg_zip_uncompress(char *in, int in_size, char **dest, int *dest_size)
 	int ret = 0;
 	char *buf = NULL;
 	int buf_size = 0;
-	int out_size = 4 * 1024;
-	char out[out_size];
+	char out[4 * 1024];
+	int out_size = sizeof(out);
 	bool is_success = false;
 
 	strm.zalloc = Z_NULL;

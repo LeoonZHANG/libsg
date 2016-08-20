@@ -137,12 +137,18 @@ int sg_dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
             sg_vlstrcat(fullpath, "/");
         sg_vlstrcat(fullpath, d->d_name);
 
+#if defined(WIN32)
+        DWORD ret = GetFileAttributesA(fullpath);
+        if (!(ret & FILE_ATTRIBUTE_DIRECTORY))
+            continue;
+#else
         ZERO(s, struct stat);
         lstat(sg_vlstrraw(fullpath), &s);
 
         cb(SGDIRSEEKEVENT_FOUND, sg_vlstrraw(fullpath), &s, context);
         if (!(S_IFDIR & s.st_mode))
             continue;
+#endif
         if (max_depth == 0 || cur_depth < max_depth)
             sg_dir_seek_by_depth(sg_vlstrraw(fullpath), cur_depth + 1,
                                  max_depth, cb, context);

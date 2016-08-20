@@ -6,7 +6,7 @@
 
 #include <float.h>
 #include <math.h>
-#include "../../include/math/number.h"
+#include "../../include/sg/math/number.h"
 
 enum sg_num_cmp sg_float_cmp(float left, float right)
 {

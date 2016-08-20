@@ -6,8 +6,11 @@
 
 #include <errno.h>
 #include <string.h>
-#include "../../include/util/err.h"
-#include "../../include/str/vlstr.h"
+#include "../../include/sg/util/err.h"
+#include "../../include/sg/str/vlstr.h"
+#if defined(OS_WIN)
+#include <Windows.h>
+#endif
 
 int sg_err_errno_crt(void)
 {
@@ -46,14 +49,6 @@ sg_vlstr *err_num_to_msg(int err_num)
     #if defined(OS_LNX) || defined(OS_OSX)
     err_msg = sg_vlstralloc2(strerror(errno));
     #elif defined(OS_WIN)
-    DWORD rc = FormatMessageA (
-                FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                NULL, (DWORD) err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                buf, (DWORD) bufsize, NULL );
-
-
-
-
     DWORD errno, sys_locale;
     errno = GetLastError();
     HLOCAL handle_local = NULL;

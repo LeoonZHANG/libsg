@@ -6,15 +6,41 @@
 
 #include <stdio.h>
 #include <string.h>
+#if defined(WIN32)
+#include <Objbase.h>
+
+static void uuid_generate_win32(uuid_t* in)
+{
+    CoCreateGuid(in);
+}
+
+static void uuid_unparse_win32(uuid_t* id, char* out, int (__cdecl *func)(int))
+{
+    int i, j;
+    wchar_t ostr[32+6+3];
+    StringFromGUID2(id, (LPOLESTR)ostr, _countof(ostr));
+    for (i = 1, j = 0; i < 38 + 1; i++, j++)
+        out[j] = func(ostr[i]);
+}
+
+# define uuid_generate(id)          uuid_generate_win32(&id)
+# define uuid_generate_random       uuid_generate
+# define uuid_generate_time         uuid_generate
+# define uuid_generate_time_safe    uuid_generate
+# define uuid_unparse_lower(id, out)    uuid_unparse_win32(&id, out, tolower)
+# define uuid_unparse_upper(id, out)    uuid_unparse_win32(&id, out, toupper)
+
+#else
 #include <uuid/uuid.h>
+#endif
 /* FIXME: There's no uuid_generate_time_safe on macOS, simply use regular one
    instead of *_safe. */
 #if defined(__MACH__)
 # define uuid_generate_time_safe uuid_generate_time
 #endif
-#include "../../include/util/log.h"
-#include "../../include/math/uuid.h"
-#include "../../include/util/assert.h"
+#include "../../include/sg/util/log.h"
+#include "../../include/sg/math/uuid.h"
+#include "../../include/sg/util/assert.h"
 
 struct sg_uuid_str sg_uuid_gen(enum sg_uuid_method method, int uppercase)
 {

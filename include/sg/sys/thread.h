@@ -7,10 +7,10 @@
 #ifndef LIBSG_THREAD_H
 #define LIBSG_THREAD_H
 
-#include "../syst/os.h"
+#include "os.h"
 
 #if defined(OS_WIN)
-# include <windef.h>
+# include <Windows.h>
 #else
 # include <pthread.h>
 #endif

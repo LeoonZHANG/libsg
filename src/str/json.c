@@ -24,8 +24,7 @@ get_key(const char *json_pointer, int *offset) {
 		return NULL;
 	if (json_pointer[*offset] != '/')
 		return NULL;
-	char key[len - *offset];
-	memset(key, 0, sizeof(key));
+	char *key = (char *) calloc(len - *offset, 1);
 	int j = 0;
 	int i = 0;
 	for (i = *offset + 1; i < len;) {
@@ -59,6 +58,7 @@ get_key(const char *json_pointer, int *offset) {
 
 	char * key2 = malloc(j + 1);
 	if (key2 == NULL) {
+		free(key);
 		return NULL;
 	}
 	*offset = i;
@@ -66,6 +66,7 @@ get_key(const char *json_pointer, int *offset) {
 	key2[j] = '\0';
 
 	//printf("key=%s,offset=%d\n", key2, *offset);
+	free(key);
 	return key2;
 }
 

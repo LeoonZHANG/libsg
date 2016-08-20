@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 
+add_subdirectory(3rdparty)
+
 
 # project
 #########
@@ -21,11 +23,18 @@ endif()
 set(target_static lib${lib_name}-static)
 set(target_shared lib${lib_name}-shared)
 set(target_base64 base64)
+set(copyright "Copyright (C) 2016." CACHE STRING "copyright description")
 
 
 # files
 #######
 file(GLOB src_b64 3rdparty/b64.c/*.c)
+file(GLOB src_cjson 3rdparty/cjson/*.c)
+file(GLOB src_vtd-xml 3rdparty/vtd-xml/*.c)
+## exclude unecessary "lex.yy (2).c" and "lex.yy_old.c" to prevent build failed
+list(REMOVE_ITEM src_vtd-xml
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy (2).c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy_old.c")
 file(GLOB src_str src/str/*.c)
 file(GLOB src_compress src/compress/*.c)
 file(GLOB src_container src/container/*.c)
@@ -37,6 +46,7 @@ file(GLOB src_util src/util/*.c)
 
 set(src_lib
     ${src_b64}
+    ${src_cjson}
     3rdparty/mongoose_5.6/mongoose.c
     3rdparty/json_checker/JSON_checker.c
     3rdparty/CryptLib/lib/LibMd5.c
@@ -49,28 +59,60 @@ set(src_lib
     ${src_util}
     )
 
+## Use installed lib on Linux, compile from source is required on other platforms
+if(NOT "${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(src_lib ${src_lib} 
+        ${src_vtd-xml}
+        )
+endif()
+
 set(src_base64
     test/unit/base64.c
     )
 
-# include directory
-include_directories(3rdparty)
-include_directories(include)
+if(WIN32)
+    configure_file(version.rc.in version.rc @ONLY)
+    configure_file(module.def.in module.def @ONLY)
+    set(src_lib ${src_lib} module.def version.rc)
+endif()
+
+
 # build options
 ###############
 ## home brew will install dependencies to /usr/local in default
 if(APPLE)
-    include_directories(/usr/local/include)
+    include_directories(
+		/usr/local/include
+		/usr/local/include/libxml2
+		)
+endif()
+include_directories(3rdparty)
+include_directories(include)
+if(WIN32)
+    include_directories(3rdparty/libiconv/include)
+    include_directories(3rdparty/pcre)
+    include_directories(3rdparty/libxml2/include)
+    include_directories(3rdparty/zlib)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
+endif()
+
+## intend to set a blank link_flags in default to prevent error occurred
+## in the latter call of set_target_properties
+set(link_flags " ")
+
 ## build x86 universal(both i386 and x64) binary target for macOS
 if(APPLE)
     set(c_flags "-arch i386 -arch x86_64")
     set(link_flags "-arch i386 -arch x86_64")
 endif()
 add_definitions(${c_flags})
+if(WIN32)
+    add_definitions(-DUSING_STATIC_LIBICONV -DPCRE_STATIC)
+endif()
 
 
 # targets
@@ -82,12 +124,16 @@ add_executable(${target_base64} ${src_base64})
 set_target_properties(${target_static} PROPERTIES
     OUTPUT_NAME ${lib_name_static})
 set_target_properties(${target_shared} PROPERTIES
-    OUTPUT_NAME ${lib_name})
+    OUTPUT_NAME ${lib_name}
+    SOVERSION ${major_version}
+    VERSION ${version}
+    LINK_FLAGS ${link_flags}
+    )
 
 if(WIN32)
-    set(link_libs )
+    set(link_libs libiconv-static pcre libxml-static libc99-snprintf-static zlibstatic)
 elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre)
+    set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
     set(link_libs iconv dl xml2 curl pthread pcre uuid uv)
 endif()

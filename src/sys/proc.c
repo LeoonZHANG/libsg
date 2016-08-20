@@ -80,8 +80,7 @@ static char *proc_filename(DWORD pid)
         return NULL;
     }
 
-    filename = new char[1000];
-    memset(filename, 0, 1000);
+    filename = (char*)calloc(1000, sizeof(char));
 
     /*
     For the best results use the following table to convert paths.
@@ -96,47 +95,6 @@ static char *proc_filename(DWORD pid)
         printf("err:%d.", GetLastError());
 
     return filename;
-}
-
-proc_list *proc_list_all(void)
-{
-    struct mw_list *proc_list;
-    STARTUPINFO st;
-    PROCESS_INFORMATION pi;
-    PROCESSENTRY32 ps;
-    HANDLE snapshot;
-    DWORD pid;
-
-    ZeroMemory(&st, sizeof(STARTUPINFO));
-    ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
-    st.cb = sizeof(STARTUPINFO);
-    ZeroMemory(&ps,sizeof(PROCESSENTRY32));
-    ps.dwSize = sizeof(PROCESSENTRY32);
-
-    proc_list = mw_list_init();
-    if (!proc_list) {
-        sg_log_err("Process list init failure.");
-        return NULL;
-    }
-
-    snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (snapshot == INVALID_HANDLE_VALUE) {
-        sg_log_err("CreateToolhelp32Snapshot error.");
-        return NULL;
-    }
-
-    if (!Process32First(snapshot, &ps)) {
-        sg_log_err("Process32First error.");
-        CloseHandle(snapshot);
-        return 0;
-    }
-
-    do {
-        mw_list_add_item(proc_list, ITEMDATATYPE_ATTACH, ps.th32ProcessID);
-    } while (Process32Next(snapshot, &ps));
-
-    CloseHandle(snapshot);
-    return proc_list;
 }
 
 /* Up privilege to debug level before open or close process, to avoid "access denied". */
@@ -174,6 +132,66 @@ end:
 	return ret;
 }
 
+DWORD getppid()
+{
+    HANDLE hSnapshot = INVALID_HANDLE_VALUE;
+    PROCESSENTRY32 pe32;
+    DWORD ppid = 0, pid = GetCurrentProcessId();
+
+    hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    __try {
+        if (hSnapshot == INVALID_HANDLE_VALUE) __leave;
+
+        ZeroMemory(&pe32, sizeof(pe32));
+        pe32.dwSize = sizeof(pe32);
+        if (!Process32First(hSnapshot, &pe32)) __leave;
+
+        do {
+            if (pe32.th32ProcessID == pid) {
+                ppid = pe32.th32ParentProcessID;
+                break;
+            }
+        } while (Process32Next(hSnapshot, &pe32));
+
+    }
+    __finally {
+        if (hSnapshot != INVALID_HANDLE_VALUE) CloseHandle(hSnapshot);
+    }
+    return ppid;
+}
+
+uid_t getuid()
+{
+    const int UNLEN = 256;
+    PSID sid = NULL;
+    TCHAR* domain = NULL;
+    DWORD sid_size = 0;
+    DWORD domain_size = 0;
+    SID_NAME_USE use = SidTypeUnknown;
+
+    TCHAR buffer[257];
+    DWORD buffer_len = _countof(buffer);
+
+    if (!GetUserName(buffer, &buffer_len)) {
+        return 0;
+    }
+
+    //Called once to set the size of the sid pointer and domain  
+    LookupAccountName(NULL, buffer, NULL, &sid_size, NULL, &domain_size, &use);
+
+    //Allocate memory based on sid and domain size
+    sid = (PSID)LocalAlloc(LMEM_FIXED, sid_size);
+    domain = (TCHAR*)malloc(domain_size * sizeof(TCHAR));
+
+    //Initialize sid and domain
+    if (!LookupAccountName(NULL, buffer, sid, &sid_size, domain, &domain_size, &use)) {
+        return 0;
+    }
+    if (!IsValidSid(sid)) {
+        return 0;
+    }
+    return (uid_t)sid;
+}
 #else
 
 void ps_e_shell_callback(enum sg_shell_event evt, const char *line, void *context)
@@ -200,7 +218,7 @@ void ps_e_shell_callback(enum sg_shell_event evt, const char *line, void *contex
 
 int sg_proc_list_all(sg_proc_found_callback cb, void *context)
 {
-    int ret;
+    int ret = 0;
     struct sg_proc_shell_context ctx;
 
     assert(cb);
@@ -209,7 +227,41 @@ int sg_proc_list_all(sg_proc_found_callback cb, void *context)
     ctx.context = context;
     ctx.count = 0;
 
+#if defined(WIN32)
+    STARTUPINFO st;
+    PROCESS_INFORMATION pi;
+    PROCESSENTRY32 ps;
+    HANDLE snapshot;
+    DWORD pid;
+
+    ZeroMemory(&st, sizeof(STARTUPINFO));
+    ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+    st.cb = sizeof(STARTUPINFO);
+    ZeroMemory(&ps, sizeof(PROCESSENTRY32));
+    ps.dwSize = sizeof(PROCESSENTRY32);
+
+    snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snapshot == INVALID_HANDLE_VALUE) {
+        sg_log_err("CreateToolhelp32Snapshot error.");
+        return NULL;
+    }
+
+    if (!Process32First(snapshot, &ps)) {
+        sg_log_err("Process32First error.");
+        CloseHandle(snapshot);
+        return 0;
+    }
+
+    do {
+        cb(context);
+        ++ctx.count;
+    } while (Process32Next(snapshot, &ps));
+
+    CloseHandle(snapshot);
+    return proc_list;
+#else
     ret = sg_shell_exec("ps -e", ps_e_shell_callback, &ctx);
+#endif
 
     return (ret == 0) ? ctx.count : -1;
 }

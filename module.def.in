@@ -1,0 +1,12 @@
+LIBRARY "@name@"
+
+EXPORTS
+    sg_vlstrlen
+    sg_vlstrraw
+    sg_vlstrfree
+    sg_logging
+    sg_file_to_buf
+    sg_file_overwrite
+    sg_flex_buf_destroy
+    sg_base64_easy_enc_buf
+    sg_base64_easy_dec_buf

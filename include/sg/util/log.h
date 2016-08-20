@@ -42,40 +42,40 @@ void sg_printf_time_stamp(const char *tag);
 
 #ifdef USE_AV_LOG
 /* Use av_log. */
-#define sg_log(lv, fmt, args...)\
+#define sg_log(lv, fmt, ...)\
 av_log(NULL,\
        lv == SGLOGLEVEL_ERR || lv == SGLOGLEVEL_CRIT ? AV_LOG_ERROR : AV_LOG_INFO,\
-       fmt"\n", ##args)
+       fmt"\n", ##__VA_ARGS__)
 #else
 /* custom logging */
-#define sg_log(lv, fmt, args...)\
-    sg_logging(__FILE__, __LINE__, __FUNCTION__, lv, fmt, ##args)
+#define sg_log(lv, fmt, ...)\
+    sg_logging(__FILE__, __LINE__, __FUNCTION__, lv, fmt, ##__VA_ARGS__)
 #endif
 
 
 /* logging debug level message */
-#define sg_log_dbg(fmt, args...)    sg_log(SGLOGLEVEL_DBG, fmt, ##args)
+#define sg_log_dbg(fmt, ...)    sg_log(SGLOGLEVEL_DBG, fmt, ##__VA_ARGS__)
 
 /* logging notice level message */
-#define sg_log_notice(fmt, args...) sg_log(SGLOGLEVEL_NOTICE, fmt, ##args)
+#define sg_log_notice(fmt, ...) sg_log(SGLOGLEVEL_NOTICE, fmt, ##__VA_ARGS__)
 
 /* logging information level message */
-#define sg_log_inf(fmt, args...)    sg_log(SGLOGLEVEL_INF, fmt, ##args)
+#define sg_log_inf(fmt, ...)    sg_log(SGLOGLEVEL_INF, fmt, ##__VA_ARGS__)
 
 /* logging warning level message */
-#define sg_log_warn(fmt, args...)   sg_log(SGLOGLEVEL_WARN, fmt, ##args)
+#define sg_log_warn(fmt, ...)   sg_log(SGLOGLEVEL_WARN, fmt, ##__VA_ARGS__)
 
 /* logging error level message */
-#define sg_log_err(fmt, args...)    sg_log(SGLOGLEVEL_ERR, fmt, ##args)
+#define sg_log_err(fmt, ...)    sg_log(SGLOGLEVEL_ERR, fmt, ##__VA_ARGS__)
 
 /* logging critical level message */
-#define sg_log_crit(fmt, args...)   sg_log(SGLOGLEVEL_CRIT, fmt, ##args)
+#define sg_log_crit(fmt, ...)   sg_log(SGLOGLEVEL_CRIT, fmt, ##__VA_ARGS__)
 
 /* logging alert level message */
-#define sg_log_alert(fmt, args...)  sg_log(SGLOGLEVEL_ALERT, fmt, ##args)
+#define sg_log_alert(fmt, ...)  sg_log(SGLOGLEVEL_ALERT, fmt, ##__VA_ARGS__)
 
 /* logging emerge level message */
-#define sg_log_emerg(fmt, args...)  sg_log(SGLOGLEVEL_EMERG, fmt, ##args)
+#define sg_log_emerg(fmt, ...)  sg_log(SGLOGLEVEL_EMERG, fmt, ##__VA_ARGS__)
 
 #define sg_log_check_alloc(ptr) \
     if (!(ptr)) \
