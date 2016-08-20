@@ -11,12 +11,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* register libsg with key */
-int sg_register(const char *key);
-
-/* check expiration date*/
-int sg_check_expiration(void);
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

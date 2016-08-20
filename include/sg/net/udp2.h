@@ -4,8 +4,8 @@
  * Udp client library.
  */
 
-#ifndef LIBSG_UDP_CLIENT_H
-#define LIBSG_UDP_CLIENT_H
+#ifndef LIBSG_UDP2_H
+#define LIBSG_UDP2_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -35,4 +35,4 @@ void sg_udp_client_close(sg_udp_client *c);
 
 void sg_udp_client_quit(void);
 
-#endif /* LIBSG_UDP_CLIENT_H */
+#endif /* LIBSG_UDP2_H */
