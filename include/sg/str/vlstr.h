@@ -64,7 +64,11 @@ sg_vlstr *sg_vlstrdup2(sg_vlstr *src);
 sg_vlstr *sg_vlstrndup(const char *src, size_t num);
 
 /* Create a new sg_vlstr and format it. */
+#ifdef __GNUC__
 sg_vlstr *sg_vlstrfmt(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
+#else
+sg_vlstr *sg_vlstrfmt(const char *fmt, ...);
+#endif
 
 /* Create a new sg_vlstr and format it. */
 sg_vlstr *sg_vlstrfmt_ap(const char *fmt, va_list ap);
