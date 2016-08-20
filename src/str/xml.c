@@ -19,6 +19,9 @@
 
 #include <sg/str/xml.h>
 
+#if defined(WIN32)
+#define asprintf rpl_asprintf
+#endif
 
 //=================================
 static char *make_utf8_string(const wchar_t *in, int inSize) {
