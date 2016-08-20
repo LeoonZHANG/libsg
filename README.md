@@ -20,7 +20,7 @@ Lots of modules in libsg are optimized, you can create high performance applicat
 
 #### Easy to install
 
-You can [download pre-built binaries](https://github.com/metalwood/libsg/releases) (static / dynamic library and header files) which don't have any dependency, you don't need to build source code or install any dependency for libsg.
+Official pre-built binaries don't have any dependency, you don't need to build or install dependency for libsg.
 
 #### Easy to call
 
@@ -32,11 +32,11 @@ Linux ／ Windows ／ OS X
 
 ## Download, install and use
 
-download prebuilt-binaries: [https://github.com/metalwood/libsg/releases](https://github.com/metalwood/libsg/releases)
+Download prebuilt-binaries: [https://github.com/metalwood/libsg/releases](https://github.com/metalwood/libsg/releases)
 
-install libsg: run install.sh or install.bat
+Install: run install.sh or install.bat
 
-use libsg in your project: include <sg/sg.h> and compile with -lsg tag
+Use in your project: include \<sg/some_dir/some_h.h\> and compile with libsg library
 
 ## Modules
 
