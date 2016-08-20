@@ -59,7 +59,7 @@ set(src_lib
     )
 
 ## Use installed lib on Linux, compile from source is required on other platforms
-if("${CMAKE_SYSTEM}" MATCHES "Linux")
+if(NOT "${CMAKE_SYSTEM}" MATCHES "Linux")
     set(src_lib ${src_lib} 
         ${src_vtd-xml}
         )
