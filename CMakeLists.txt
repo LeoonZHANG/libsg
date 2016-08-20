@@ -23,6 +23,7 @@ endif()
 set(target_static lib${lib_name}-static)
 set(target_shared lib${lib_name}-shared)
 set(target_base64 base64)
+set(copyright "Copyright (C) 2016." CACHE STRING "copyright description")
 
 
 # files
@@ -68,6 +69,12 @@ endif()
 set(src_base64
     test/unit/base64.c
     )
+
+if(WIN32)
+    configure_file(version.rc.in version.rc @ONLY)
+    configure_file(module.def.in module.def @ONLY)
+    set(src_lib ${src_lib} module.def version.rc)
+endif()
 
 
 # build options
