@@ -19,7 +19,8 @@ extern "C" {
 #endif /* __cplusplus */
 
 #if defined(OS_WIN)
-typedef pid_t int;
+typedef int pid_t;
+typedef int uid_t;
 #endif
 
 typedef void (*sg_proc_found_callback)(const char *id, void *context);
