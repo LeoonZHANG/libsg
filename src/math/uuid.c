@@ -8,27 +8,27 @@
 #include <string.h>
 #if defined(WIN32)
 #include <Objbase.h>
-typedef GUID uuid_t;
 
 static void uuid_generate_win32(uuid_t* in)
 {
-	CoCreateGuid(&in);
+    CoCreateGuid(in);
 }
 
-static void uuid_unparse_lower_win32(uuid_t* id, char* out)
+static void uuid_unparse_win32(uuid_t* id, char* out, int (__cdecl *func)(int))
 {
     int i, j;
     wchar_t ostr[32+6+3];
     StringFromGUID2(id, (LPOLESTR)ostr, _countof(ostr));
     for (i = 1, j = 0; i < 38 + 1; i++, j++)
-        out[j] = tolower(ostr[i]);
+        out[j] = func(ostr[i]);
 }
 
-# define uuid_generate(id)			uuid_generate_win32(&id)
+# define uuid_generate(id)          uuid_generate_win32(&id)
 # define uuid_generate_random       uuid_generate
 # define uuid_generate_time         uuid_generate
 # define uuid_generate_time_safe    uuid_generate
-# define uuid_unparse_lower(id, out)	uuid_unparse_lower_win32(&id, out)
+# define uuid_unparse_lower(id, out)    uuid_unparse_win32(&id, out, tolower)
+# define uuid_unparse_upper(id, out)    uuid_unparse_win32(&id, out, toupper)
 
 #else
 #include <uuid/uuid.h>
