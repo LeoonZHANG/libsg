@@ -30,7 +30,13 @@ Header files of libsg include nothing but only pure API declaration, and APIs ar
 
 Linux ／ Windows ／ OS X
 
-## [Download releases](https://github.com/metalwood/libsg/releases)
+## Download, install and use
+
+download prebuilt-binaries: [https://github.com/metalwood/libsg/releases](https://github.com/metalwood/libsg/releases)
+
+install libsg: run install.sh or install.bat
+
+use libsg in your project: include <sg/sg.h> and compile with -lsg tag
 
 ## Modules
 
