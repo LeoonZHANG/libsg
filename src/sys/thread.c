@@ -7,6 +7,9 @@
 #include <signal.h>
 #include <sg/sys/thread.h>
 #include <sg/util/assert.h>
+#if defined(WIN32)
+# include <process.h>
+#endif
 
 #if defined(OS_WIN)
 static unsigned int __stdcall thread_main_routine(void *arg)
@@ -37,7 +40,7 @@ void sg_thread_init(struct sg_thread *self, sg_thread_routine *routine, void *ar
     self->arg = arg;
     self->handle = (HANDLE)_beginthreadex(NULL, 0, thread_main_routine,
                                           (void *)self, 0 , NULL);
-    assert(self->handler != NULL);
+    assert(self->handle != NULL);
 }
 #else
 void sg_thread_init(struct sg_thread *self, sg_thread_routine *routine, void *arg)
@@ -66,7 +69,7 @@ void sg_thread_init(struct sg_thread *self, sg_thread_routine *routine, void *ar
 #endif
 
 #if defined(OS_WIN)
-void thread_join(struct sg_thread *self)
+void sg_thread_join(struct sg_thread *self)
 {
     DWORD res;
     BOOL bres;

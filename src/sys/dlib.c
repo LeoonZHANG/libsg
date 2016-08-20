@@ -9,7 +9,7 @@
 # include <dlfcn.h>
 #endif
 #if defined(OS_WIN)
-# include <dlfcn.h>
+# include <Windows.h>
 #endif
 #include <string.h>
 #include <sg/util/log.h>

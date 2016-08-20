@@ -10,7 +10,7 @@
 #include "os.h"
 
 #if defined(OS_WIN)
-# include <windef.h>
+# include <Windows.h>
 #else
 # include <pthread.h>
 #endif
