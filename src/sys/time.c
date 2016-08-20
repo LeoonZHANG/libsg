@@ -12,7 +12,278 @@
 #endif
 
 #include <time.h>
+#if defined(WIN32)
+#include <Windows.h>
+
+static int gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+    // Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+    static const __int64 EPOCH = ((__int64)116444736000000000ULL);
+
+    SYSTEMTIME  system_time;
+    FILETIME    file_time;
+    __int64    time;
+
+    GetSystemTime(&system_time);
+    SystemTimeToFileTime(&system_time, &file_time);
+    time = ((__int64)file_time.dwLowDateTime);
+    time += ((__int64)file_time.dwHighDateTime) << 32;
+
+    tp->tv_sec = (long)((time - EPOCH) / 10000000L);
+    tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
+    return 0;
+}
+
+const char * strp_weekdays[] =
+{ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
+const char * strp_monthnames[] =
+{ "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december" };
+BOOL strp_atoi(const char * s, int * result, int low, int high, int offset)
+{
+    BOOL worked = FALSE;
+    char * end;
+    unsigned long num = strtoul(s, &end, 10);
+    if (num >= (unsigned long)low && num <= (unsigned long)high)
+    {
+        *result = (int)(num + offset);
+        s = end;
+        worked = TRUE;
+    }
+    return worked;
+}
+char * strptime(const char *s, const char *format, struct tm *tm)
+{
+    BOOL working = TRUE;
+    while (working && *format && *s)
+    {
+        switch (*format)
+        {
+        case '%':
+        {
+            ++format;
+            switch (*format)
+            {
+            case 'a':
+            case 'A': // weekday name
+                tm->tm_wday = -1;
+                working = FALSE;
+                for (int i = 0; i < 7; ++i)
+                {
+                    size_t len = strlen(strp_weekdays[i]);
+                    if (!strnicmp(strp_weekdays[i], s, len))
+                    {
+                        tm->tm_wday = i;
+                        s += len;
+                        working = TRUE;
+                        break;
+                    }
+                    else if (!strnicmp(strp_weekdays[i], s, 3))
+                    {
+                        tm->tm_wday = i;
+                        s += 3;
+                        working = TRUE;
+                        break;
+                    }
+                }
+                break;
+            case 'b':
+            case 'B':
+            case 'h': // month name
+                tm->tm_mon = -1;
+                working = FALSE;
+                for (size_t i = 0; i < 12; ++i)
+                {
+                    size_t len = strlen(strp_monthnames[i]);
+                    if (!strnicmp(strp_monthnames[i], s, len))
+                    {
+                        tm->tm_mon = i;
+                        s += len;
+                        working = TRUE;
+                        break;
+                    }
+                    else if (!strnicmp(strp_monthnames[i], s, 3))
+                    {
+                        tm->tm_mon = i;
+                        s += 3;
+                        working = TRUE;
+                        break;
+                    }
+                }
+                break;
+            case 'd':
+            case 'e': // day of month number
+                working = strp_atoi(s, &tm->tm_mday, 1, 31, 0);
+                break;
+            case 'D': // %m/%d/%y
+            {
+                const char * s_save = s;
+                working = strp_atoi(s, &tm->tm_mon, 1, 12, -1);
+                if (working && *s == '/')
+                {
+                    ++s;
+                    working = strp_atoi(s, &tm->tm_mday, 1, 31, 0);
+                    if (working && *s == '/')
+                    {
+                        ++s;
+                        working = strp_atoi(s, &tm->tm_year, 0, 99, 0);
+                        if (working && tm->tm_year < 69)
+                            tm->tm_year += 100;
+                    }
+                }
+                if (!working)
+                    s = s_save;
+            }
+            break;
+            case 'H': // hour
+                working = strp_atoi(s, &tm->tm_hour, 0, 23, 0);
+                break;
+            case 'I': // hour 12-hour clock
+                working = strp_atoi(s, &tm->tm_hour, 1, 12, 0);
+                break;
+            case 'j': // day number of year
+                working = strp_atoi(s, &tm->tm_yday, 1, 366, -1);
+                break;
+            case 'm': // month number
+                working = strp_atoi(s, &tm->tm_mon, 1, 12, -1);
+                break;
+            case 'M': // minute
+                working = strp_atoi(s, &tm->tm_min, 0, 59, 0);
+                break;
+            case 'n': // arbitrary whitespace
+            case 't':
+                while (isspace((int)*s))
+                    ++s;
+                break;
+            case 'p': // am / pm
+                if (!strnicmp(s, "am", 2))
+                { // the hour will be 1 -> 12 maps to 12 am, 1 am .. 11 am, 12 noon 12 pm .. 11 pm
+                    if (tm->tm_hour == 12) // 12 am == 00 hours
+                        tm->tm_hour = 0;
+                }
+                else if (!strnicmp(s, "pm", 2))
+                {
+                    if (tm->tm_hour < 12) // 12 pm == 12 hours
+                        tm->tm_hour += 12; // 1 pm -> 13 hours, 11 pm -> 23 hours
+                }
+                else
+                    working = FALSE;
+                break;
+            case 'r': // 12 hour clock %I:%M:%S %p
+            {
+                const char * s_save = s;
+                working = strp_atoi(s, &tm->tm_hour, 1, 12, 0);
+                if (working && *s == ':')
+                {
+                    ++s;
+                    working = strp_atoi(s, &tm->tm_min, 0, 59, 0);
+                    if (working && *s == ':')
+                    {
+                        ++s;
+                        working = strp_atoi(s, &tm->tm_sec, 0, 60, 0);
+                        if (working && isspace((int)*s))
+                        {
+                            ++s;
+                            while (isspace((int)*s))
+                                ++s;
+                            if (!strnicmp(s, "am", 2))
+                            { // the hour will be 1 -> 12 maps to 12 am, 1 am .. 11 am, 12 noon 12 pm .. 11 pm
+                                if (tm->tm_hour == 12) // 12 am == 00 hours
+                                    tm->tm_hour = 0;
+                            }
+                            else if (!strnicmp(s, "pm", 2))
+                            {
+                                if (tm->tm_hour < 12) // 12 pm == 12 hours
+                                    tm->tm_hour += 12; // 1 pm -> 13 hours, 11 pm -> 23 hours
+                            }
+                            else
+                                working = FALSE;
+                        }
+                    }
+                }
+                if (!working)
+                    s = s_save;
+            }
+            break;
+            case 'R': // %H:%M
+            {
+                const char * s_save = s;
+                working = strp_atoi(s, &tm->tm_hour, 0, 23, 0);
+                if (working && *s == ':')
+                {
+                    ++s;
+                    working = strp_atoi(s, &tm->tm_min, 0, 59, 0);
+                }
+                if (!working)
+                    s = s_save;
+            }
+            break;
+            case 'S': // seconds
+                working = strp_atoi(s, &tm->tm_sec, 0, 60, 0);
+                break;
+            case 'T': // %H:%M:%S
+            {
+                const char * s_save = s;
+                working = strp_atoi(s, &tm->tm_hour, 0, 23, 0);
+                if (working && *s == ':')
+                {
+                    ++s;
+                    working = strp_atoi(s, &tm->tm_min, 0, 59, 0);
+                    if (working && *s == ':')
+                    {
+                        ++s;
+                        working = strp_atoi(s, &tm->tm_sec, 0, 60, 0);
+                    }
+                }
+                if (!working)
+                    s = s_save;
+            }
+            break;
+            case 'w': // weekday number 0->6 sunday->saturday
+                working = strp_atoi(s, &tm->tm_wday, 0, 6, 0);
+                break;
+            case 'Y': // year
+                working = strp_atoi(s, &tm->tm_year, 1900, 65535, -1900);
+                break;
+            case 'y': // 2-digit year
+                working = strp_atoi(s, &tm->tm_year, 0, 99, 0);
+                if (working && tm->tm_year < 69)
+                    tm->tm_year += 100;
+                break;
+            case '%': // escaped
+                if (*s != '%')
+                    working = FALSE;
+                ++s;
+                break;
+            default:
+                working = FALSE;
+            }
+        }
+        break;
+        case ' ':
+        case '\t':
+        case '\r':
+        case '\n':
+        case '\f':
+        case '\v':
+            // zero or more whitespaces:
+            while (isspace((int)*s))
+                ++s;
+            break;
+        default:
+            // match character
+            if (*s != *format)
+                working = FALSE;
+            else
+                ++s;
+            break;
+        }
+        ++format;
+    }
+    return (working ? (char *)s : 0);
+}
+#else
 #include <sys/time.h>
+#endif
 #include <stdio.h>
 #include <sg/sys/time.h>
 #include <sg/util/assert.h>
@@ -49,6 +320,12 @@ struct timespec sg_unix_time_ns(void)
     t.tv_sec = mts.tv_sec;
     t.tv_nsec = mts.tv_nsec;
     mach_port_deallocate(mach_task_self(), cclock);
+#elif defined(WIN32)
+    /* FIXME: find out a higher resolution solution */
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    t.tv_sec = tv.tv_sec;
+    t.tv_nsec = tv.tv_usec * 1000;
 #else
     /* Be influenced by adjtime and NTP. */
     clock_gettime(CLOCK_REALTIME, &t);
@@ -80,6 +357,8 @@ unsigned long sg_boot_time_ms(void)
     clock_get_time(cclock, &mts);
     mach_port_deallocate(mach_task_self(), cclock);
     ms = (unsigned long)(mts.tv_sec * 1000) + (unsigned long)(mts.tv_nsec / 1000000);
+#elif defined(WIN32)
+    ms = GetTickCount();
 #else
     struct timespec t;
     /* Unsigned long (32-bit OS) could describe
@@ -112,6 +391,15 @@ unsigned long sg_thread_cpu_time_ms(void)
     t.tv_nsec = info.user_time.microseconds * 1000 + info.system_time.microseconds * 1000;
 
     mach_port_deallocate(mach_task_self(), thread);
+#elif defined(WIN32)
+    FILETIME create, exit, kernel, user;
+    GetThreadTimes(GetCurrentThread, &create, &exit, &kernel, &user);
+    SYSTEMTIME kernel_time, user_time;
+    FileTimeToSystemTime(&kernel, &kernel_time);
+    FileTimeToSystemTime(&user, &user_time);
+    t.tv_sec = (((kernel_time.wDay * 24 + kernel_time.wHour) * 60 + kernel_time.wMinute) * 60) + kernel_time.wSecond
+        + (((user_time.wDay * 24 + user_time.wHour) * 60 + user_time.wMinute) * 60) + user_time.wSecond;
+    t.tv_nsec = (kernel_time.wMilliseconds + user_time.wMilliseconds) * 1000000;
 #else
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &t);
 #endif
