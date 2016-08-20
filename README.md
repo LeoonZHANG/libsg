@@ -91,7 +91,7 @@ Linux ／ Windows ／ OS X
 
 If you want to use libsg in your project, just download the lastest release. Build libsg when you are going to change the code.
 
-#### linux
+#### Linux
         $ chmod +x build_linux.sh & ./build.sh
 
 #### OSX
