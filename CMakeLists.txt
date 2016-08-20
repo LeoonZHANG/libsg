@@ -103,6 +103,9 @@ if(APPLE)
     set(link_flags "-arch i386 -arch x86_64")
 endif()
 add_definitions(${c_flags})
+if(WIN32)
+    add_definitions(-DUSING_STATIC_LIBICONV -DPCRE_STATIC)
+endif()
 
 
 # targets
@@ -121,7 +124,7 @@ set_target_properties(${target_shared} PROPERTIES
     )
 
 if(WIN32)
-    set(link_libs )
+    set(link_libs libiconv-static pcre libxml-static libc99-snprintf-static zlibstatic)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
