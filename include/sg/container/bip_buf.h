@@ -2,6 +2,14 @@
  * bip_buf.h
  * Bip buffer data structure.
  */
+ 
+ /*
+  * 参考实现：
+  * https://github.com/willemt/bipbuffer 清爽，大部分可以直接拿来用
+  * http://blog.csdn.net/hui523hui523hui523/article/details/7389551
+  * https://github.com/ognian-/BipBuffer
+  * 其中，get接口的参数和返回值设计需要疑问，get返回的实际数据量是否一定等于参数指定的大小，这个喝bip buffer的原理有关，需要关注，并正确体现在接口中
+  * */
 
 #ifndef LIBSG_BIP_BUF_H
 #define LIBSG_BIP_BUF_H

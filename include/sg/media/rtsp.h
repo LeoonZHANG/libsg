@@ -3,7 +3,9 @@
  * RTSP client based on libcurl.
  */
  
-/* https://curl.haxx.se/libcurl/c/rtsp.html */
+/* 参考：
+ * https://curl.haxx.se/libcurl/c/rtsp.html
+ * 上述demo是基于easy系列接口写的，多线程可能有问题，请改为multi系列接口的实现*/
  
 #ifndef LIBSG_RTSP_H
 #define LIBSG_RTSP_H
@@ -20,7 +22,12 @@ typedef void (*sg_rtsp_on_close_func_t)(sg_rtsp_t *, int code, const char *reaso
 
 int sg_rtsp_init();
 
-sg_rtsp_t *sg_rtsp_open(const char *url,
+sg_rtsp_t *sg_rtsp_open_url(const char *url,
+                        sg_rtsp_on_open_func_t,
+                        sg_rtsp_on_data_func_t,
+                        sg_rtsp_on_close_func_t);
+                        
+sg_rtsp_t *sg_rtsp_open_sdp(const char *url,
                         sg_rtsp_on_open_func_t,
                         sg_rtsp_on_data_func_t,
                         sg_rtsp_on_close_func_t);

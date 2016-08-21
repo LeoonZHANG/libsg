@@ -1,6 +1,6 @@
 /**
  * udp.h
- * High performance udp client and server library based on libuv.
+ * High performance udp client library based on libuv.
  */
 
 #ifndef LIBSG_UDP_H
@@ -12,7 +12,13 @@
 extern "C" {
 #endif
 
-typedef struct sg_udp_real sg_udp_t;
+typedef struct sg_udp_real {
+    struct sockaddr *server_sock_addr;
+    char *server_ip;
+    int server_port;
+    sg_udp_on_recv_func_t on_recv;
+    void *ctx;
+}sg_udp_t;
 
 /*
 flags is zero: everything is ok.
@@ -20,29 +26,22 @@ flags is UV_UDP_PARTIAL(2): 当前系统UDP接收缓冲区太小, 接收到的�
 */
 typedef void (*sg_udp_on_recv_func_t)(sg_udp_t *, void *data, size_t size, unsigned int flags, void *ctx);
 
-sg_udp_t *
-sg_udp_open_client(sg_udp_on_recv_func_t, void *ctx);
+sg_udp_t *sg_udp_open(const char *server_addr, int server_port, sg_udp_on_recv_func_t, void *ctx);
 
-/* ip: "0.0.0.0" means listen all local address */
-sg_udp_t *
-sg_udp_open_server(const char *ip, int port, sg_udp_on_recv_func_t, void *ctx);
-
-/* Sync api to loop udp client or server.*/
-void
-sg_udp_run(sg_udp_t *);
+/* Sync api to loop udp client.*/
+void sg_udp_run(sg_udp_t *);
 
 /* If data_realloc is true, api will re malloc buffer for data. */
-int
-sg_udp_send(sg_udp_t *, const struct sockaddr *, const void *data, size_t size, bool data_realloc);
+int sg_udp_send(sg_udp_t *, const void *data, size_t size, bool data_realloc);
 
-int
-sg_udp_send2(sg_udp_t *, const char *ip, int port, const void *data, size_t size, bool data_realloc);
+/* 限制客户端发送速度, kbps为0不做任何限制 */
+void sg_udp_set_max_send_speed(sg_udp_t *, size_t kbps);
 
-int
-sg_udp_set_broadcast(sg_udp_t *, bool on);
+int sg_udp_get_speed(sg_udp_t *, size_t &send_kbps, size_t &recv_kbps);
 
-void
-sg_udp_close(sg_udp_t *);
+int sg_udp_set_broadcast(sg_udp_t *, bool on);
+
+void sg_udp_close(sg_udp_t *);
 
 #ifdef __cplusplus
 }
