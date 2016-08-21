@@ -16,7 +16,6 @@ sypedef enum sg_speed_mode {
 }
 
 typedef enum sg_speed_unit {
-    SGSPEEDUNIT_ADAPTIVE = -1,
     SGSPEEDUNIT_MIN  = 0,
     /* bit mode */
     SGSPEEDUNIT_bps  = 0,
@@ -36,7 +35,7 @@ typedef struct sg_speed_real sg_speed_t;
 typedef struct sg_speed_stat_real sg_speed_stat_t;
 
 
-sg_speed_t *sg_speed_open(sg_speed_mode mode);
+sg_speed_t *sg_speed_open();
 
 void sg_speed_set(float speed, enum sg_speed_unit);
 
@@ -44,6 +43,11 @@ int sg_speed_get(sg_speed_t *src, enum sg_speed_unit get_unit,
         float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
 
 int sg_speed_fmt(sg_speed_t *src, enum sg_speed_unit dst_unit, char **dst_str);
+
+int sg_speed_get_auto(sg_speed_t *src, enum sg_speed_mode mode,
+        float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
+
+int sg_speed_fmt_auto(sg_speed_t *src, enum sg_speed_mode mode, char **dst_str);
 
 void sg_speed_close(sg_speed_t *);
 
