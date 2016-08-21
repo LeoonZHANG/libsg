@@ -71,7 +71,7 @@ typedef unsigned char bool;
  */
 
 /* 速度统计采样总数，必须是2的N次方 */
-＃define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
+#define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
 
 /* 多长统计一次瞬间发送速度 */
 #define SG_ETP_CALC_SPEED_INTERVAL_MS 2000
