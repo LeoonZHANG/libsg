@@ -139,4 +139,5 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
-target_link_libraries(${target_base64} ${target_shared})
+target_link_libraries(${target_static} ${link_libs})
+target_link_libraries(${target_base64} ${target_static})
