@@ -13,14 +13,10 @@ extern "C" {
 typedef enum sg_speed_stat_unit {
     SGSPEEDSTATUNIT_MIN  = 0,
     SGSPEEDSTATUNIT_bps  = 0,
-    SGSPEEDSTATUNIT_Bps  = 1,
-    SGSPEEDSTATUNIT_Kbps = 2,
-    SGSPEEDSTATUNIT_KBps = 3,
-    SGSPEEDSTATUNIT_Mbps = 4,
-    SGSPEEDSTATUNIT_MBps = 5,
-    SGSPEEDSTATUNIT_Gbps = 6,
-    SGSPEEDSTATUNIT_GBps = 7,
-    SGSPEEDSTATUNIT_MAX  = 7,
+    SGSPEEDSTATUNIT_Kbps = 1,
+    SGSPEEDSTATUNIT_Mbps = 2,
+    SGSPEEDSTATUNIT_Gbps = 3,
+    SGSPEEDSTATUNIT_MAX  = 3,
 };
 
 typedef struct sg_speed_stat_real sg_speed_stat_t;
