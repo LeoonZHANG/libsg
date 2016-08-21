@@ -2,15 +2,20 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#include "../../include/sg/net/speed_stat.h"
+#include "../../include/sg/math/speed.h"
 
 #define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
 struct sg_speed_stat_real {
     int stat_duration_ms;
     int head, tail;
     int byte_slots[SG_ETP_SPEED_STAT_SAMPLE_COUNT];
-
 };
+
+struct sg_speed_real {
+    uint64_t value_Bps;
+    float value_non_Bps;
+    enum sg_speed_unit unit;
+}
 
 
 sg_speed_stat_t *sg_speed_stat_open(int stat_duration_ms)
