@@ -17,9 +17,9 @@ static void uuid_generate_win32(uuid_t* in)
 static void uuid_unparse_win32(uuid_t* id, char* out, int (__cdecl *func)(int))
 {
     int i, j;
-    wchar_t ostr[32+6+3];
+    wchar_t ostr[36+3];
     StringFromGUID2(id, (LPOLESTR)ostr, _countof(ostr));
-    for (i = 1, j = 0; i < 38 + 1; i++, j++)
+    for (i = 1, j = 0; i < 36 + 1; i++, j++)
         out[j] = func(ostr[i]);
 }
 
