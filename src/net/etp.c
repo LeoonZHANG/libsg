@@ -5,7 +5,7 @@
  
 #include "uv.h"
 #include "ikcp.h"
-#include "../../include/sg/net/etp.h"
+#include "etp.h"
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #   ifndef PLATFORM_LINUX
@@ -222,7 +222,7 @@ static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *use
         /* 限速 */
         if (client->max_speed_limit > 0 && client->current_speed > client->max_speed_limit)
             return ret;
-
+			
     	req = (send_req_t *)malloc(sizeof(send_req_t));
         SG_ASSERT_BRK(NULL != req, "create send_req_t failed");
 
