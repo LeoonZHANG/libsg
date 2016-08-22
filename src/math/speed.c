@@ -4,41 +4,86 @@
 #include <assert.h>
 #include "../../include/sg/math/speed.h"
 
-#define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
-struct sg_speed_stat_real {
-    int stat_duration_ms;
-    int head, tail;
-    int byte_slots[SG_ETP_SPEED_STAT_SAMPLE_COUNT];
-};
+#define SG_SPEED_COUNTER_SAMPLE_COUNT 16
 
 struct sg_speed_real {
     uint64_t value_Bps;
     float value_non_Bps;
     enum sg_speed_unit unit;
-}
+};
+
+struct sg_speed_counter_real {
+    int stat_duration_ms;
+    int head, tail;
+    int byte_slots[SG_SPEED_COUNTER_SAMPLE_COUNT];
+};
 
 
-sg_speed_stat_t *sg_speed_stat_open(int stat_duration_ms)
+
+
+
+
+sg_speed_t *sg_speed_open(void)
 {
-    sg_speed_stat_t *speed_stat = malloc(sizeof(sg_speed_stat_t));
-    assert(speed_stat);
-    memset(speed_stat, 0, sizeof(sg_speed_stat_t));
-
-    speed_stat->stat_duration_ms = stat_duration_ms;
-    return speed_stat;
+    struct sg_speed_real *s = (struct sg_speed_real *)malloc(sizeof(struct sg_speed_real));
+    return (sg_speed_t *)s;
 }
 
-
-void sg_speed_add_data_size(sg_speed_stat_t *speed_stat, size_t bytes)
+void sg_speed_set_val(float speed, enum sg_speed_unit)
 {
-    speed_stat->byte_slots[speed_stat->tail++] = bytes;
-    speed_stat->tail &= (SG_ETP_SPEED_STAT_SAMPLE_COUNT - 1);
-    if (speed_stat->tail == speed_stat->head)
-        speed_stat->head = (speed_stat->head + 1) & (SG_ETP_SPEED_STAT_SAMPLE_COUNT - 1);
+    uint64_t val_uint64;
+    
+    
+}
+
+int sg_speed_get_val(sg_speed_t *src, enum sg_speed_unit get_unit,
+        float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid)
+{
+}
+
+int sg_speed_get_val_auto(sg_speed_t *src, enum sg_speed_mode mode,
+        float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid)
+{
+}
+        
+int sg_speed_get_str(sg_speed_t *src, enum sg_speed_unit dst_unit, const char *per_sec_str,
+        char *dst_buf, size_t dst_buf_len)
+{
+}
+
+int sg_speed_get_str_auto(sg_speed_t *src, enum sg_speed_mode mode, const char *per_sec_str
+        char *dst_buf, size_t dst_buf_len)
+{
+}
+
+void sg_speed_close(sg_speed_t *s)
+{
+    free(s);
 }
 
 
-int sg_speed_stat_get_speed(sg_speed_stat_t *speed_stat,
+
+sg_speed_counter_t *sg_speed_stat_open(int stat_duration_ms)
+{
+    sg_speed_counter_t *counter = (sg_speed_counter_t *)malloc(sizeof(sg_speed_counter_t));
+    assert(counter);
+    memset(counter, 0, sizeof(sg_speed_counter_t));
+
+    counter->stat_duration_ms = stat_duration_ms;
+    return counter;
+}
+
+
+void sg_speed_counter_reg(sg_speed_counter_t *counter, size_t byte_size)
+{
+    counter->byte_slots[counter->tail++] = byte_size;
+    counter->tail &= (SG_SPEED_COUNTER_SAMPLE_COUNT - 1);
+    if (counter->tail == counter->head)
+        counter->head = (counter->head + 1) & (SG_SPEED_COUNTER_SAMPLE_COUNT - 1);
+}
+
+
+int sg_speed_counter_read(sg_speed_counter_t *counter,
                             uint64_t *speed_bps,
                             float *speed_adaptive,
                             enum sg_speed_stat_unit *speed_unit_adaptive)
@@ -48,16 +93,17 @@ int sg_speed_stat_get_speed(sg_speed_stat_t *speed_stat,
     int bytes = 0;
     float bps = 0;
     int unit = SGSPEEDSTATUNIT_bps;
+    
     // 计算速度
-    for (i = speed_stat->head; i != speed_stat->tail; i = (i + 1) & (SG_ETP_SPEED_STAT_SAMPLE_COUNT - 1)) {
-        bytes += speed_stat->byte_slots[i];
+    for (i = counter->head; i != counter->tail; i = (i + 1) & (SG_SPEED_COUNTER_SAMPLE_COUNT - 1)) {
+        bytes += counter->byte_slots[i];
         count += 1;
     }
     // 还没有采样
     if (count == 0)
         return -1;
 
-    bps = bytes / (count * speed_stat->stat_duration_ms * 0.001);
+    bps = bytes / (count * counter->stat_duration_ms * 0.001);
     if (speed_bps) {
         *speed_bps = (int) bps;
     }
@@ -79,8 +125,8 @@ int sg_speed_stat_get_speed(sg_speed_stat_t *speed_stat,
 }
 
 
-void sg_speed_stat_close(sg_speed_stat_t *speed_stat)
+void sg_speed_counter_close(sg_speed_counter_t *counter)
 {
-    assert(speed_stat);
-    free(speed_stat);
+    assert(counter);
+    free(counter);
 }

@@ -1,6 +1,6 @@
 /**
  * speed.h
- * Speed conversion and statistics utility.
+ * Speed conversion and counter utility.
  */
  
 #ifndef LIBSG_SPEED_H
@@ -32,27 +32,26 @@ typedef enum sg_speed_unit {
 
 
 typedef struct sg_speed_real sg_speed_t;
-typedef struct sg_speed_stat_real sg_speed_stat_t;
+typedef struct sg_speed_counter_real sg_speed_counter_t;
 
 
-sg_speed_t *sg_speed_open();
+sg_speed_t *sg_speed_open(void);
 
-void sg_speed_set(float speed, enum sg_speed_unit);
+void sg_speed_set_val(float speed, enum sg_speed_unit);
 
-int sg_speed_get(sg_speed_t *src, enum sg_speed_unit get_unit,
+int sg_speed_get_val(sg_speed_t *src, enum sg_speed_unit get_unit,
         float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
 
-int sg_speed_fmt(sg_speed_t *src, enum sg_speed_unit dst_unit, char **dst_str);
-
-int sg_speed_get_auto(sg_speed_t *src, enum sg_speed_mode mode,
+int sg_speed_get_val_auto(sg_speed_t *src, enum sg_speed_mode mode,
         float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
+        
+int sg_speed_get_str(sg_speed_t *src, enum sg_speed_unit dst_unit, const char *per_sec_str,
+        char *dst_buf, size_t dst_buf_len);
 
-int sg_speed_fmt_auto(sg_speed_t *src, enum sg_speed_mode mode, char **dst_str);
+int sg_speed_get_str_auto(sg_speed_t *src, enum sg_speed_mode mode, const char *per_sec_str
+        char *dst_buf, size_t dst_buf_len);
 
 void sg_speed_close(sg_speed_t *);
-
-
-
 
 
 
@@ -61,12 +60,12 @@ void sg_speed_close(sg_speed_t *);
  * function: 接收或者发送数据之后立即把数据量登记进统计工具，注意，要立即。
  * stat_duration_ms: 统计时长，最小值100，该范围之内的数据都会纳入统计, 统计时长越长，结果越平滑.
  */
-sg_speed_stat_t *sg_speed_stat_open(int stat_duration_ms);
+sg_speed_counter_t *sg_speed_counter_open(int stat_duration_ms);
 
 /**
  * function: 接收或者发送数据之后立即把数据量登记进统计工具，注意，要立即。
  */
-void sg_speed_stat_add_data_size(sg_speed_stat_t *, size_t byte_size);
+void sg_speed_counter_reg(sg_speed_counter_t *, size_t byte_size);
 
 /**
  * function: 获取当前速度，get一次计算一次，不get不计算。
@@ -75,9 +74,9 @@ void sg_speed_stat_add_data_size(sg_speed_stat_t *, size_t byte_size);
  * @speed_unit_adaptive: 最合适的速度单位.
  * return: 返回0表示正常，返回其它值表示获取出错。
  */
-int sg_speed_stat_get_speed(sg_speed_stat_t *, sg_speed_t *);
+int sg_speed_counter_read(sg_speed_counter_t *, sg_speed_t *);
 
-void sg_speed_stat_close(sg_speed_stat_t *);
+void sg_speed_counter_close(sg_speed_counter_t *);
 
 #ifdef __cplusplus
 }
