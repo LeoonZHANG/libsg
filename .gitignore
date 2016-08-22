@@ -23,3 +23,6 @@ CMakeCache.txt
 cmake_install.cmake
 *.opendb
 *.db
+/3rdparty/libxml2/win32/bin.msvc
+/3rdparty/libxml2/win32/int.a.msvc
+/3rdparty/libxml2/win32/int.msvc

@@ -131,7 +131,8 @@ set_target_properties(${target_shared} PROPERTIES
     )
 
 if(WIN32)
-    set(link_libs libiconv-static pcre libxml-static libc99-snprintf-static zlibstatic)
+    set(libxml-static-file ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib)
+    set(link_libs libiconv-static pcre ${libxml-static-file} libc99-snprintf-static zlibstatic)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
