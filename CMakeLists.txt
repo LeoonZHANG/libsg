@@ -40,6 +40,7 @@ file(GLOB src_container src/container/*.c)
 file(GLOB src_db src/db/*.c)
 file(GLOB src_math src/math/*.c)
 file(GLOB src_net src/net/*.c)
+file(GLOB src_platform src/platform/windows/*.c)
 file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
 
@@ -54,6 +55,7 @@ set(src_lib
     ${src_container}
     ${src_db}
     ${src_math}
+    ${src_platform}
     ${src_sys}
     ${src_util}
     )
