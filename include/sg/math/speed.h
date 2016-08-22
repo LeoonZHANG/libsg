@@ -44,7 +44,7 @@ int sg_speed_get_val(sg_speed_t *src, enum sg_speed_unit get_unit,
 
 int sg_speed_get_val_auto(sg_speed_t *src, enum sg_speed_mode mode,
         float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
-        
+
 int sg_speed_get_str(sg_speed_t *src, enum sg_speed_unit dst_unit, const char *per_sec_str,
         char *dst_buf, size_t dst_buf_len);
 

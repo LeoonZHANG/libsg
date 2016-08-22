@@ -126,13 +126,3 @@ canmor (476010464@qq.com)
 
 ...
 
-## Todo list
-Add CMake script.
-
-Add http / tcp / ring_buffer / blocking_queue modules.
-
-Release version 0.1.
-
-...
-
-
