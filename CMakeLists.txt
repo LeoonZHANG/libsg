@@ -22,7 +22,6 @@ if(WIN32)
 endif()
 set(target_static lib${lib_name}-static)
 set(target_shared lib${lib_name}-shared)
-set(target_base64 base64)
 set(copyright "Copyright (C) 2016." CACHE STRING "copyright description")
 
 
@@ -65,10 +64,6 @@ if(NOT "${CMAKE_SYSTEM}" MATCHES "Linux")
         ${src_vtd-xml}
         )
 endif()
-
-set(src_base64
-    test/unit/base64.c
-    )
 
 if(WIN32)
     configure_file(version.rc.in version.rc @ONLY)
@@ -119,7 +114,6 @@ endif()
 #########
 add_library(${target_static} STATIC ${src_lib})
 add_library(${target_shared} SHARED ${src_lib})
-add_executable(${target_base64} ${src_base64})
 
 set_target_properties(${target_static} PROPERTIES
     OUTPUT_NAME ${lib_name_static})
@@ -141,4 +135,5 @@ endif()
 
 target_link_libraries(${target_shared} ${link_libs})
 target_link_libraries(${target_static} ${link_libs})
-target_link_libraries(${target_base64} ${target_static})
+
+add_subdirectory(test/unit)
