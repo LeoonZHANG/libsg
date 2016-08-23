@@ -100,36 +100,36 @@ static char *proc_filename(DWORD pid)
 /* Up privilege to debug level before open or close process, to avoid "access denied". */
 int proc_current_enable_debug_privil(void)
 {
-	int ret = -1;
-	HANDLE token = INVALID_HANDLE_VALUE;
-	TOKEN_PRIVILEGES tp;
+    int ret = -1;
+    HANDLE token = INVALID_HANDLE_VALUE;
+    TOKEN_PRIVILEGES tp;
 
-	/* Open current process token. */
-	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES /* | TOKEN_QUERY */, &token)) {
-		//GetLastError()
-		goto end;
-	}
+    /* Open current process token. */
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES /* | TOKEN_QUERY */, &token)) {
+        //GetLastError()
+        goto end;
+    }
 
-	/* Lookup privilege of current process. */
-	if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME /* SE_SHUTDOWN_NAME */, &tp.Privileges[0].Luid)) {
-		//GetLastError()
-		goto end;
-	}
+    /* Lookup privilege of current process. */
+    if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME /* SE_SHUTDOWN_NAME */, &tp.Privileges[0].Luid)) {
+        //GetLastError()
+        goto end;
+    }
 
-	/* Give privileges. */
-	tp.PrivilegeCount = 1;
-	tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+    /* Give privileges. */
+    tp.PrivilegeCount = 1;
+    tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-	/* Notify Windows to change privilege for current process to debug level. */
-	if (!AdjustTokenPrivileges(token, FALSE, &tp, sizeof(tp), (PTOKEN_PRIVILEGES)NULL, NULL)) {
-		//GetLastError()
-		goto end;
-	}
+    /* Notify Windows to change privilege for current process to debug level. */
+    if (!AdjustTokenPrivileges(token, FALSE, &tp, sizeof(tp), (PTOKEN_PRIVILEGES)NULL, NULL)) {
+        //GetLastError()
+        goto end;
+    }
 
 end:
-	if (token != INVALID_HANDLE_VALUE)
-		CloseHandle(token);
-	return ret;
+    if (token != INVALID_HANDLE_VALUE)
+        CloseHandle(token);
+    return ret;
 }
 
 DWORD getppid()
@@ -192,8 +192,9 @@ uid_t getuid()
     }
     return (uid_t)sid;
 }
-#else
+#endif
 
+#if !defined(OS_WIN)
 void ps_e_shell_callback(enum sg_shell_event evt, const char *line, void *context)
 {
 #define PROC_ID_MAX_LEN 32
@@ -215,6 +216,7 @@ void ps_e_shell_callback(enum sg_shell_event evt, const char *line, void *contex
     if (strlen(pid) > 0)
         proc_found(pid, ctx->context);
 }
+#endif
 
 int sg_proc_list_all(sg_proc_found_callback cb, void *context)
 {
@@ -243,7 +245,7 @@ int sg_proc_list_all(sg_proc_found_callback cb, void *context)
     snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snapshot == INVALID_HANDLE_VALUE) {
         sg_log_err("CreateToolhelp32Snapshot error.");
-        return NULL;
+        return 0;
     }
 
     if (!Process32First(snapshot, &ps)) {
@@ -253,12 +255,13 @@ int sg_proc_list_all(sg_proc_found_callback cb, void *context)
     }
 
     do {
-        cb(context);
+        char id[32] = { 0 };
+        itoa(pid, id, 10);
+        cb(id, context);
         ++ctx.count;
     } while (Process32Next(snapshot, &ps));
 
     CloseHandle(snapshot);
-    return proc_list;
 #else
     ret = sg_shell_exec("ps -e", ps_e_shell_callback, &ctx);
 #endif
@@ -294,18 +297,19 @@ sg_vlstr *sg_proc_filename(pid_t pid)
         return NULL;
     snprintf(list_cmd, PROC_LIST_CMD_LEN, "ls -l /proc/%d/exe", pid);
 
+#if defined(OS_LNX)
     ret = sg_shell_exec(list_cmd, ls_l_shell_callback, filename);
     //printf("ret:%d\n", ret);
     assert(ret == 0);
-
+#else
+    sg_vlstrcpy(filename, "not support except on Linux");
+#endif
     if (sg_vlstrlen(filename) > 0)
         return filename;
 
     sg_vlstrfree(&filename);
     return NULL;
 }
-
-#endif
 
 pid_t sg_proc_id_current(void)
 {
@@ -329,7 +333,17 @@ int sg_proc_kill(pid_t pid)
     assert(pid > 0);
 
 #if defined(OS_WIN)
-    /* TerminateProcess */
+    DWORD dwDesiredAccess = PROCESS_TERMINATE;
+    BOOL  bInheritHandle = FALSE;
+    HANDLE hProcess = OpenProcess(dwDesiredAccess, bInheritHandle, (DWORD) pid);
+    if (hProcess == NULL)
+        return FALSE;
+
+    BOOL result = TerminateProcess(hProcess, 0);
+
+    CloseHandle(hProcess);
+
+    return result;
 #else
     ret = kill(pid, SIGKILL);
     if (ret != 0) {

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <dirent.h>
+#include <sg/platform/windows/dirent.h>
 #include <sg/sys/proc.h>
 #include <sg/sys/shell.h>
 
