@@ -17,3 +17,4 @@ EXPORTS
     sg_proc_user_id_current
     sg_proc_kill
     sg_proc_open
+    sg_charset_conv

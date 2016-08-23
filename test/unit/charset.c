@@ -1,4 +1,4 @@
-/*
+﻿/*
  * charset.c
  * Author: wangwei.
  * Test for util module charset.
