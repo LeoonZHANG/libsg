@@ -15,8 +15,6 @@ extern "C" {
 #define IPv6_MAX_LEN 46
 #define IP_MAX_LEN IPv6_MAX_LEN
 
-int sg_net_intranet_ip(void);
-
 /*
  Get human readable ip address and port from struct sockaddr
  return 0: OK.

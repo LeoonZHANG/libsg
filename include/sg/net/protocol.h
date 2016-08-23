@@ -12,22 +12,14 @@ extern "C" {
 #endif /* __cplusplus */
 
 typedef enum sg_protocol {
-	SG_PROTOCOL_FTP   = 0,
-	SG_PROTOCOL_FTPS  = 1,
-	SG_PROTOCOL_HTTP  = 2,
-	SG_PROTOCOL_HTTPS = 3,
+	SGPROTOCOL_FTP   = 0,
+	SGPROTOCOL_FTPS  = 1,
+	SGPROTOCOL_HTTP  = 2,
+	SGPROTOCOL_HTTPS = 3, /* https://www.google.com */
+    SGPROTOCOL_SMTP  = 4, /* mailto://admin@admin.net */
+    SGPROTOCOL_RTSP  = 5,
+    SGPROTOCOL_RTMP  = 6
 }
-
-/*
-
-HTTP
-RTSP
-RTMP
-POP3
-mailto://
-
-*/
-
 
 #ifdef __cplusplus
 }

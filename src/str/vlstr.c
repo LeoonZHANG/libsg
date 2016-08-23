@@ -23,14 +23,14 @@ struct vlstr_hd {
     uint32_t increment; /* increment when strcat... */
 };
 
-sg_vlstr *sg_vlstralloc(void)
+sg_vlstr_t *sg_vlstralloc(void)
 {
     return sg_vlstralloc3(1);
 }
 
-sg_vlstr *sg_vlstralloc2(const char *str)
+sg_vlstr_t *sg_vlstralloc2(const char *str)
 {
-    sg_vlstr *v;
+    sg_vlstr_t *v;
 
     assert(str);
 
@@ -41,7 +41,7 @@ sg_vlstr *sg_vlstralloc2(const char *str)
     return sg_vlstrcpy(v, str);
 }
 
-sg_vlstr *sg_vlstralloc3(uint64_t size)
+sg_vlstr_t *sg_vlstralloc3(uint64_t size)
 {
     struct vlstr_hd *v;
 
@@ -61,19 +61,19 @@ sg_vlstr *sg_vlstralloc3(uint64_t size)
     return v;
 }
 
-uint64_t sg_vlstrlen(sg_vlstr *str)
+uint64_t sg_vlstrlen(sg_vlstr_t *str)
 {
     assert(str);
 
     return str->used_size - 1 /* terminator */;
 }
 
-char *sg_vlstrraw(sg_vlstr *str)
+char *sg_vlstrraw(sg_vlstr_t *str)
 {
     return str ? str->buf : NULL;
 }
 
-sg_vlstr *sg_vlstrcpy(sg_vlstr *dst, const char *src)
+sg_vlstr_t *sg_vlstrcpy(sg_vlstr_t *dst, const char *src)
 {
     assert(dst);
     assert(src);
@@ -98,7 +98,7 @@ sg_vlstr *sg_vlstrcpy(sg_vlstr *dst, const char *src)
     return dst;
 }
 
-sg_vlstr *sg_vlstrncpy(sg_vlstr *dst, const char *src, size_t num)
+sg_vlstr_t *sg_vlstrncpy(sg_vlstr_t *dst, const char *src, size_t num)
 {
     assert(src);
     if (num == 0)
@@ -108,14 +108,14 @@ sg_vlstr *sg_vlstrncpy(sg_vlstr *dst, const char *src, size_t num)
     return sg_vlstrncat(dst, src, num);
 }
 
-void sg_vlstrsetinc(sg_vlstr *str, uint32_t increment)
+void sg_vlstrsetinc(sg_vlstr_t *str, uint32_t increment)
 {
     assert(str);
 
     str->increment = increment;
 }
 
-sg_vlstr *sg_vlstrcat(sg_vlstr *dst, const char *src)
+sg_vlstr_t *sg_vlstrcat(sg_vlstr_t *dst, const char *src)
 {
     assert(dst);
     assert(src);
@@ -123,7 +123,7 @@ sg_vlstr *sg_vlstrcat(sg_vlstr *dst, const char *src)
     return sg_vlstrncat(dst, src, strlen(src));
 }
 
-sg_vlstr *sg_vlstrncat(sg_vlstr *dst, const char *src, size_t num)
+sg_vlstr_t *sg_vlstrncat(sg_vlstr_t *dst, const char *src, size_t num)
 {
     char *new_buf;
     uint32_t inc;     /* increment */
@@ -165,14 +165,14 @@ sg_vlstr *sg_vlstrncat(sg_vlstr *dst, const char *src, size_t num)
     return dst;
 }
 
-sg_vlstr *sg_vlstrdup(const char *src)
+sg_vlstr_t *sg_vlstrdup(const char *src)
 {
     assert(src);
 
     return sg_vlstrndup(src, strlen(src) + 1);
 }
 
-sg_vlstr *sg_vlstrdup2(sg_vlstr *src)
+sg_vlstr_t *sg_vlstrdup2(sg_vlstr_t *src)
 {
     assert(src);
     assert(src->buf);
@@ -180,9 +180,9 @@ sg_vlstr *sg_vlstrdup2(sg_vlstr *src)
     return sg_vlstrndup(src->buf, strlen(src->buf) + 1);
 }
 
-sg_vlstr *sg_vlstrndup(const char *src, size_t num)
+sg_vlstr_t *sg_vlstrndup(const char *src, size_t num)
 {
-    sg_vlstr *v;
+    sg_vlstr_t *v;
 
     assert(src);
 
@@ -193,9 +193,9 @@ sg_vlstr *sg_vlstrndup(const char *src, size_t num)
     return sg_vlstrncat(v, src, num);
 }
 
-sg_vlstr *sg_vlstrfmt(const char *fmt, ...)
+sg_vlstr_t *sg_vlstrfmt(const char *fmt, ...)
 {
-    sg_vlstr *v = NULL;
+    sg_vlstr_t *v = NULL;
     va_list ap;
 
     assert(fmt);
@@ -207,9 +207,9 @@ sg_vlstr *sg_vlstrfmt(const char *fmt, ...)
     return v;
 }
 
-sg_vlstr *sg_vlstrfmt_ap(const char *fmt, va_list ap)
+sg_vlstr_t *sg_vlstrfmt_ap(const char *fmt, va_list ap)
 {
-    sg_vlstr *v = NULL;
+    sg_vlstr_t *v = NULL;
     int ret;
     int increment = 256;
     size_t open_size = 0;
@@ -262,7 +262,7 @@ sg_vlstr *sg_vlstrfmt_ap(const char *fmt, va_list ap)
     return v;
 }
 
-void sg_vlstrempty(sg_vlstr *str)
+void sg_vlstrempty(sg_vlstr_t *str)
 {
     assert(str);
 
@@ -270,7 +270,7 @@ void sg_vlstrempty(sg_vlstr *str)
     str->used_size = 0;
 }
 
-void sg_vlstrfree(sg_vlstr **str)
+void sg_vlstrfree(sg_vlstr_t **str)
 {
     assert(str);
     if (!*str)

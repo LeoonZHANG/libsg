@@ -15,30 +15,30 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* Types. */
-typedef struct vlstr_list_real sg_vlstr_list;
+typedef struct sg_vlstr_list_real sg_vlstr_list_t;
 
 /* Create a null variable length string list. */
-sg_vlstr_list *sg_vlstr_list_alloc(void);
+sg_vlstr_list_t *sg_vlstr_list_alloc(void);
 
 /* Get size of variable length string list. */
-size_t sg_vlstr_list_size(sg_vlstr_list *vl);
+size_t sg_vlstr_list_size(sg_vlstr_list_t *vl);
 
 /* Get char buffer pointer by zero based index
    from variable length string list. */
-char *sg_vlstr_list_get(sg_vlstr_list *vl, int index);
+char *sg_vlstr_list_get(sg_vlstr_list_t *vl, int index);
 
 /* Add source string to variable length string list. */
-int sg_vlstr_list_push(sg_vlstr_list *vl, const char *src);
+int sg_vlstr_list_push(sg_vlstr_list_t *vl, const char *src);
 
 /* Add first num characters of source string to variable length string list. */
-int sg_vlstr_list_push2(sg_vlstr_list *vl, const char *src, size_t num);
+int sg_vlstr_list_push2(sg_vlstr_list_t *vl, const char *src, size_t num);
 
-/* Join all sg_vlstr_list items to one vlstr. */
-sg_vlstr *sg_vlstr_list_join(sg_vlstr_list *vl);
+/* Join all sg_vlstr_list_t items to one vlstr. */
+sg_vlstr *sg_vlstr_list_join(sg_vlstr_list_t *vl);
 
 /* Free variable length string list and all items.
    Attention, vl is a pointer to pointer. */
-void sg_vlstr_list_free(sg_vlstr_list **vl);
+void sg_vlstr_list_free(sg_vlstr_list_t **vl);
 
 #ifdef __cplusplus
 }

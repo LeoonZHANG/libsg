@@ -15,12 +15,12 @@
 #include <sg/util/assert.h>
 #include <sg/util/log.h>
 
-size_t sg_base64_calc_enc_len(size_t data_len);
+size_t _base64_calc_enc_len(size_t data_len);
 
 /* decoded data size equals dec_size, or 1~2 byte(s) smaller than dec_size */
-size_t sg_base64_calc_dec_len(size_t base64_str_len);
+size_t _base64_calc_dec_len(size_t b64_str_len);
 
-size_t sg_base64_calc_enc_len(size_t data_len)
+size_t _base64_calc_enc_len(size_t data_len)
 {
     if (data_len == 0)
         return 0;
@@ -31,7 +31,7 @@ size_t sg_base64_calc_enc_len(size_t data_len)
     return (data_len / 3) * 4;
 }
 
-size_t sg_base64_estimate_dec_len(size_t base64_str_len)
+size_t _base64_estimate_dec_len(size_t base64_str_len)
 {
     if (base64_str_len % 4 != 0) {
         sg_log_err("Error base64 string length %lu.", base64_str_len);
@@ -102,33 +102,34 @@ struct sg_vlbuf *sg_base64_easy_dec_buf(const char *base64_str)
 }
 #endif
 
-sg_vlstr *sg_base64_easy_enc_buf(void *data, size_t size)
+int sg_base64_enc(const void *bin_buf, size_t bin_buf_len, sg_vlstr_t *b64_str);
 {
     size_t b64_size;
-    sg_vlstr *b64_str;
     char *b64_buf;
 
-    sg_assert(data);
-    sg_assert(size > 0);
+    sg_assert(bin_buf);
+    sg_assert(bin_buf_len > 0);
+    sg_assert(b64_str);
 
-    b64_size = sg_base64_calc_enc_len(size) + 1 /* Terminator */;
-    b64_buf = b64_encode((const unsigned char *)data, size);
+    b64_size = _base64_calc_enc_len(bin_buf_len) + 1 /* Terminator */;
+    b64_buf = b64_encode((const unsigned char *)bin_buf, bin_buf_len);
 
-    b64_str = sg_vlstralloc2(b64_buf);
+    sg_vlstrcpy(b64_str, b64_buf);
     free(b64_buf);
-    return b64_str;
+    return 0;
 }
 
-struct sg_vlbuf *sg_base64_easy_dec_buf(const char *base64_str)
+int sg_base64_dec(const char *b64_str, size_t b64_str_len, sg_vlbuf_t *bin_buf);
+//struct sg_vlbuf *sg_base64_dec(const char *b64_str, size_t b64_str_len)
 {
     struct sg_vlbuf *buf;
     unsigned char *dec_buf;
     size_t dec_size;
 
-    sg_assert(base64_str);
-    sg_assert(strlen(base64_str) > 0);
+    sg_assert(b64_str);
+    sg_assert(b64_str_len > 0);
 
-    dec_buf = (unsigned char *)malloc(sg_base64_estimate_dec_len(strlen(base64_str)));
+    dec_buf = (unsigned char *)malloc(_base64_estimate_dec_len(b64_str_len));
     if (!dec_buf)
         return NULL;
     buf = sg_vlstralloc();
@@ -137,7 +138,7 @@ struct sg_vlbuf *sg_base64_easy_dec_buf(const char *base64_str)
         return NULL;
     }
 
-    dec_buf = b64_decode_ex(base64_str, strlen(base64_str), &dec_size);
+    dec_buf = b64_decode_ex(b64_str, b64_str_len, &dec_size);
     sg_vlstrncat(buf, (const char*)(dec_buf), dec_size);
     free(dec_buf);
     return buf;

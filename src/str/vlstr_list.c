@@ -11,15 +11,15 @@
 #include <sg/str/vlstr_list.h>
 #include <sg/util/log.h>
 
-struct vlstr_list_real {
+struct sg_vlstr_list_real {
     struct sg_list *list;
 };
 
-sg_vlstr_list *sg_vlstr_list_alloc(void)
+sg_vlstr_list_t *sg_vlstr_list_alloc(void)
 {
-    sg_vlstr_list *vl;
+    sg_vlstr_list_t *vl;
 
-    vl = (sg_vlstr_list *)malloc(sizeof(sg_vlstr_list));
+    vl = (sg_vlstr_list_t *)malloc(sizeof(sg_vlstr_list_t));
     if (!vl)
         return NULL;
 
@@ -32,7 +32,7 @@ sg_vlstr_list *sg_vlstr_list_alloc(void)
     return vl;
 }
 
-size_t sg_vlstr_list_size(sg_vlstr_list *vl)
+size_t sg_vlstr_list_size(sg_vlstr_list_t *vl)
 {
     assert(vl);
     if (!vl->list)
@@ -41,7 +41,7 @@ size_t sg_vlstr_list_size(sg_vlstr_list *vl)
     return (size_t)sg_list_size(vl->list);
 }
 
-char *sg_vlstr_list_get(sg_vlstr_list *vl, int index)
+char *sg_vlstr_list_get(sg_vlstr_list_t *vl, int index)
 {
     sg_vlstr *s;
 
@@ -55,7 +55,7 @@ char *sg_vlstr_list_get(sg_vlstr_list *vl, int index)
     return sg_vlstrraw(s);
 }
 
-int sg_vlstr_list_push(sg_vlstr_list *vl, const char *src)
+int sg_vlstr_list_push(sg_vlstr_list_t *vl, const char *src)
 {
     sg_vlstr *s;
     struct sg_item *item;
@@ -73,7 +73,7 @@ int sg_vlstr_list_push(sg_vlstr_list *vl, const char *src)
     return item ? 0 : -1;
 }
 
-int sg_vlstr_list_push2(sg_vlstr_list *vl, const char *src, size_t num)
+int sg_vlstr_list_push2(sg_vlstr_list_t *vl, const char *src, size_t num)
 {
     sg_vlstr *s;
     struct sg_item *item;
@@ -90,14 +90,14 @@ int sg_vlstr_list_push2(sg_vlstr_list *vl, const char *src, size_t num)
     return item ? 0 : -1;
 }
 
-sg_vlstr *sg_vlstr_list_join(sg_vlstr_list *vl)
+sg_vlstr *sg_vlstr_list_join(sg_vlstr_list_t *vl)
 {
     sg_log_crit("Uncompleted API.");
     abort();
     return NULL;
 }
 
-void sg_vlstr_list_free(sg_vlstr_list **vl)
+void sg_vlstr_list_free(sg_vlstr_list_t **vl)
 {
     struct sg_item *cur;
     sg_vlstr *s;

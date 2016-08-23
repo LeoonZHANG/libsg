@@ -11,23 +11,23 @@
 extern "C" {
 #endif /* __cplusplus */
 
-struct sg_flex_buf {
+struct sg_vlbuf_real {
     void *mem;
     size_t size;
-};
+} sg_vlbuf_t;
 
-struct sg_flex_buf *sg_flex_buf_create(void);
+sg_vlbuf_t *sg_flex_buf_create(void);
 
-struct sg_flex_buf *sg_flex_buf_create2(size_t initial_size);
+sg_vlbuf_t *sg_flex_buf_create2(size_t initial_size);
 
-int sg_flex_buf_insert(struct sg_flex_buf *buf, const void *mem, size_t size);
+int sg_vlbuf_append(sg_vlbuf_t *buf, const void *mem, size_t size);
 
-void sg_flex_buf_reset(struct sg_flex_buf *buf);
+void sg_vlbuf_reset(sg_vlbuf_t *buf);
 
-void sg_flex_buf_destroy(struct sg_flex_buf *buf);
+void sg_vlbuf_destroy(sg_vlbuf_t *buf);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_FLEX_BUF_H */
+#endif /* LIBSG_VLBUF_H */

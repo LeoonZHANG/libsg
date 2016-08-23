@@ -8,39 +8,21 @@
 #define LIBSG_BASE64_H
 
 #include <stdlib.h> /* size_t */
-#include "..//str/vlstr.h"
+#include "../str/vlstr.h"
 #include "../util/vlbuf.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-struct sg_base64_enc;
-struct sg_base64_dec;
+int sg_base64_enc(const void *bin_buf, size_t bin_buf_len, sg_vlstr_t *b64_str);
 
-sg_vlstr *
-sg_base64_easy_enc_buf(void *data, size_t size);
+int sg_base64_dec(const char *b64_str, size_t b64_str_len, sg_vlbuf_t *bin_buf);
 
-struct sg_vlbuf *
-sg_base64_easy_dec_buf(const char *base64_str);
+/*
+sg_vlstr *sg_base64_enc(const void *data, size_t size);
 
-struct sg_base64_enc *
-sg_base64_enc_start(void);
-
-void
-sg_base64_enc_update(struct sg_base64_enc *, void *data, size_t size);
-
-int
-sg_base64_enc_finish(struct sg_base64_enc *, sg_vlstr *);
-
-struct sg_base64_dec *
-sg_base64_dec_start(void);
-
-void
-sg_base64_dec_update(struct sg_base64_dec *, void *data, size_t size);
-
-int
-sg_base64_dec_finish(struct sg_base64_dec *, sg_vlstr *);
+struct sg_vlbuf *sg_base64_dec(const char *b64_str, size_t b64_str_len);*/
 
 #ifdef __cplusplus
 }

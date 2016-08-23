@@ -4,6 +4,7 @@
  */
  
 /* 仅供参考，不推荐：http://blog.csdn.net/furney/article/details/7165341 */
+/* 如果头文件中有设计不合理的地方，请酌情调整 */
 
 #ifndef LIBSG_BIG_NUM_H
 #define LIBSG_BIG_NUM_H
