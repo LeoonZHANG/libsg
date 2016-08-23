@@ -8,26 +8,26 @@
 #include <string.h>
 #include <ras.h>
 #include <raserror.h>
-#include "../../../include/platform/windows/dial.h"
+#include <sg/platform/windows/dial.h>
 
-static bool find_conn_desc(LPCWSTR name, LPRASCONNW conn)
+static bool find_conn_desc(LPCSTR name, LPRASCONNA conn)
 {
-    LPRASCONNW conns = NULL;
+    LPRASCONNA conns = NULL;
     DWORD buffer_size = 0, n = 0, ret, i;
     BOOL found = FALSE;
 
-    ret = RasEnumconnsW(NULL, &buffer_size, &n);
+    ret = RasEnumConnectionsA(NULL, &buffer_size, &n);
     if (ret != ERROR_BUFFER_TOO_SMALL)
         goto cleanup;
 
-    conns = (RASCONNW *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, buffer_size);
-    conns[0].dwSize = sizeof(RASCONNW);
-    ret = RasEnumconnsW(conns, &buffer_size, &n);
+    conns = (RASCONNA *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, buffer_size);
+    conns[0].dwSize = sizeof(RASCONNA);
+    ret = RasEnumConnectionsA(conns, &buffer_size, &n);
     if (ret != ERROR_SUCCESS)
         goto cleanup;
 
     for (i = 0; i < n; ++i)
-        if (wcscmp(name, conns[i].szEntryName) == 0) {
+        if (strcmp(name, conns[i].szEntryName) == 0) {
             found = TRUE;
             if (conn)
                 *conn = conns[i];
@@ -42,7 +42,7 @@ cleanup:
 
 bool dial_find_conn(const char *name)
 {
-    return find_conn_desc((LPCWSTR)name, NULL);
+    return find_conn_desc((LPCSTR)name, NULL);
 }
 
 bool dial_open_conn(const char *name)
@@ -50,7 +50,7 @@ bool dial_open_conn(const char *name)
     BOOL pwd;
     DWORD ret, i = 0;
     HRASCONN conn = NULL;
-    RASDIALPARAMSW params;
+    RASDIALPARAMSA params;
 
     if (dial_find_conn(name))
         return TRUE;
@@ -62,11 +62,11 @@ bool dial_open_conn(const char *name)
             break;
         ++i;
     }
-    ret = RasGetEntryDialParamsW(NULL, &params, &pwd);
+    ret = RasGetEntryDialParamsA(NULL, &params, &pwd);
     if (ERROR_SUCCESS != ret)
         return FALSE;
 
-    ret = RasDialW(NULL, NULL, &params, 0, NULL, &conn);
+    ret = RasDialA(NULL, NULL, &params, 0, NULL, &conn);
     if (ERROR_SUCCESS != ret)
         return FALSE;
     return TRUE;
@@ -74,17 +74,17 @@ bool dial_open_conn(const char *name)
 
 bool dial_close_conn(const char *name)
 {
-    RASCONNW conn;
-    RASCONNSTATUSW status;
+    RASCONNA conn;
+    RASCONNSTATUSA status;
     DWORD ret;
 
     if (!find_conn_desc(name, &conn))
         return FALSE;
 
     status.dwSize = sizeof(status);
-    if (RasHangUpW(conn) == ERROR_SUCCESS) {
+    if (RasHangUpA(conn.hrasconn) == ERROR_SUCCESS) {
         do {
-            ret = RasGetConnectStatusW(conn, &status);
+            ret = RasGetConnectStatusA(conn.hrasconn, &status);
             Sleep(100);
         } while (ret != ERROR_INVALID_HANDLE);
     }

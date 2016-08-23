@@ -10,3 +10,11 @@ EXPORTS
     sg_flex_buf_destroy
     sg_base64_easy_enc_buf
     sg_base64_easy_dec_buf
+    sg_proc_list_all
+    sg_proc_filename
+    sg_proc_id_current
+    sg_proc_id_parent
+    sg_proc_user_id_current
+    sg_proc_kill
+    sg_proc_open
+    sg_charset_conv

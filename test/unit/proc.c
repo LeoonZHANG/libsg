@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include <dirent.h>
-#include "../../libsg/include/proc.h"
-#include "../../libsg/include/shell.h"
+#include <sg/platform/windows/dirent.h>
+#include <sg/sys/proc.h>
+#include <sg/sys/shell.h>
 
 /* http://lovesoo.org/view-processes-running-linux-full-path-method.html */
 
@@ -73,10 +73,10 @@ long *find_pid_by_name(char *pidName)
 
 void proc_found(const char *id, void *context)
 {
-    vlstr *filename;
+    sg_vlstr *filename;
     filename = sg_proc_filename(atoi(id));
-    if(vlstrlen(filename) > 0)
-        printf("%s", vlstrraw(filename));
+    if(sg_vlstrlen(filename) > 0)
+        printf("%s", sg_vlstrraw(filename));
 }
 
 int main(void)
