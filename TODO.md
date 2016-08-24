@@ -8,11 +8,11 @@ random “真”随机数生成
 
 speed 速度换算和计数器
 
-bloom_filter 布隆过滤器
+bloom_filter 布隆过滤器 counting scaling
 
 hash 哈希方法集合
 
-sha1 sha1哈希
+sha1 / rc4 / sha256 / sha512 哈希
 
 msgpack msgpack操作库
 
@@ -20,7 +20,9 @@ msgpack_json_conv msgpack和json相互转换
 
 queue 队列，支持非阻塞和阻塞
 
-snappy 快速数据压缩解压
+snappy 快速数据压缩解压 c－blocs
+
+pig-z ?
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
 
