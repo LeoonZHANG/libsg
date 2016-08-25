@@ -1,28 +1,55 @@
 ## Todo list
 
-big_num 大数处理库，包括整数、浮点数
+big_int 基于mpir的大整数模块 80
 
-net_card 网卡信息获取
+big_float 基于mpir的大浮点数模块 80
 
-random “真”随机数生成
+net_card 调用系统API,获取网卡基本信息 100
 
-speed 速度换算和计数器
+random “真”随机数生成,可以基于第三方库 50
 
-bloom_filter 布隆过滤器 counting scaling
+speed 速度换算和计数器 100
 
-hash 哈希方法集合
+bloom_filter 基于开源布隆过滤器bloomd封装的布隆过滤器,接口基本完全一致 100 
 
-sha1 / rc4 / sha256 / sha512 哈希
+digest_hash 基于openssl的接口封装的常见摘要算法,包括md5、sha1、sha256、sha512
+
+reg_crypto 基于openssl的接口封装的常见加密算法, 包括aes、ces、rabbit、rc4、tripleDes
+
+
+
+
+crc32
 
 msgpack msgpack操作库
 
 msgpack_json_conv msgpack和json相互转换
 
-queue 队列，支持非阻塞和阻塞
-
 snappy 快速数据压缩解压 c－blocs
 
 pig-z ?
+
+7z
+
+kcp + reed-solomon
+
+kfifo
+
+dl_list 重构
+
+queue(支持非阻塞和阻塞)
+
+bitmap hash_set hash_map、tree_map、tree_set 用途？
+
+dir重构
+
+dial 增加其他平台支持
+
+rwlock
+
+spin_lock
+
+str_hash 字符哈希方法集合
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
 

@@ -14,6 +14,10 @@
 #ifndef LIBSG_BIP_BUF_H
 #define LIBSG_BIP_BUF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef struct sg_bip_buf sg_bip_buf_t;
 
 /**
@@ -66,5 +70,9 @@ int sg_bip_buf_is_empty(const sg_bip_buf_t *me);
 /**
  * Free the bip buffer */
 void sg_bip_buf_destroy(sg_bip_buf_t *me);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* LIBSG_BIP_BUF_H */
