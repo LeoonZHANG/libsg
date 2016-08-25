@@ -6,7 +6,7 @@ libsg is a boost-like cross-platform C utility library, it's high-performance an
 
 ## Idea
 
-C language is gradually being forgotten, how to make C programing easier?
+Development in C is inefficient, how to make C programing easier?
 
 1, Do not reinvent wheels, pack good wheels.
 
