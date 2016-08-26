@@ -10,12 +10,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-sypedef enum sg_speed_mode {
-    SGSPEEDMODE_BIT = 0,  /* bps, Kbps, Mbps, Gbps. For network transfer speed... */
+enum sg_speed_mode {
+    SGSPEEDMODE_BIT  = 0, /* bps, Kbps, Mbps, Gbps. For network transfer speed... */
     SGSPEEDMODE_BYTE = 0, /* Bps, KBps, MBps, GBps. For disk copy speed... */
 }
 
-typedef enum sg_speed_unit {
+enum sg_speed_unit {
     SGSPEEDUNIT_MIN  = 0,
     /* bit mode */
     SGSPEEDUNIT_bps  = 0,
@@ -30,28 +30,34 @@ typedef enum sg_speed_unit {
     SGSPEEDUNIT_MAX  = 7
 };
 
+struct sg_speed_val {
+    double             val; /* 1PB会不会溢出?要不要改成uint64 val_int加short val_decimal */
+    enum sg_speed_unit unit;
+};
 
-typedef struct sg_speed_real sg_speed_t;
 typedef struct sg_speed_counter_real sg_speed_counter_t;
 
 
-sg_speed_t *sg_speed_open(void);
 
-void sg_speed_set_val(float speed, enum sg_speed_unit);
 
-int sg_speed_get_val(sg_speed_t *src, enum sg_speed_unit get_unit,
-        float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
 
-int sg_speed_get_val_auto(sg_speed_t *src, enum sg_speed_mode mode,
-        float *dst, enum sg_speed_unit *dst_unit, bool *is_dst_decimal_valid);
+struct sg_speed_val *sg_speed_alloc(void);
 
-int sg_speed_get_str(sg_speed_t *src, enum sg_speed_unit dst_unit, const char *per_sec_str,
-        char *dst_buf, size_t dst_buf_len);
+void sg_speed_set(struct sg_speed_val *, double speed, enum sg_speed_unit);
 
-int sg_speed_get_str_auto(sg_speed_t *src, enum sg_speed_mode mode, const char *per_sec_str
-        char *dst_buf, size_t dst_buf_len);
+int sg_speed_conv(struct sg_speed_val *, enum sg_speed_unit new_unit);
 
-void sg_speed_close(sg_speed_t *);
+/* 以最合适的速度单位转换速度数值, 确保速度单位前的数值在［1，1024］之间，比如1.1Kbps而不是1300bps. */
+int sg_speed_conv_auto(struct sg_speed_val *);
+
+/* 格式化输出 */
+int sg_speed_fmt_str(struct sg_speed_val *, const char *per_sec_str,
+                     char *dst_buf, size_t dst_buf_len);
+
+void sg_speed_free(struct sg_speed_val *);
+
+
+
 
 
 
@@ -69,12 +75,9 @@ void sg_speed_counter_reg(sg_speed_counter_t *, size_t byte_size);
 
 /**
  * function: 获取当前速度，get一次计算一次，不get不计算。
- * @speed_bps: 以bps为单位输出的速度值。
- * @speed_adaptive: 以最合适的速度单位输出的速度数值, 确保速度单位前的数值在［1，1024］之间，比如1.1Kbps而不是1300bps.
- * @speed_unit_adaptive: 最合适的速度单位.
  * return: 返回0表示正常，返回其它值表示获取出错。
  */
-int sg_speed_counter_read(sg_speed_counter_t *, sg_speed_t *);
+int sg_speed_counter_read(sg_speed_counter_t *, struct sg_speed_val *speed);
 
 void sg_speed_counter_close(sg_speed_counter_t *);
 

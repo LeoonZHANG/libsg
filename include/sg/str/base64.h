@@ -9,7 +9,7 @@
 
 #include <stdlib.h> /* size_t */
 #include "../str/vlstr.h"
-#include "../util/vlbuf.h"
+#include "sg/container/vlbuf.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,11 +18,6 @@ extern "C" {
 int sg_base64_enc(const void *bin_buf, size_t bin_buf_len, sg_vlstr_t *b64_str);
 
 int sg_base64_dec(const char *b64_str, size_t b64_str_len, sg_vlbuf_t *bin_buf);
-
-/*
-sg_vlstr *sg_base64_enc(const void *data, size_t size);
-
-struct sg_vlbuf *sg_base64_dec(const char *b64_str, size_t b64_str_len);*/
 
 #ifdef __cplusplus
 }

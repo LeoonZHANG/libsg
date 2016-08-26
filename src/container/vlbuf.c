@@ -9,7 +9,7 @@
 #include <string.h>
 #include "../../include/sg/util/log.h"
 #include "../../include/sg/util/assert.h"
-#include "../../include/sg/util/vlbuf.h"
+#include "sg/container/vlbuf.h"
 
 struct sg_flex_buf *sg_flex_buf_create(void)
 {
