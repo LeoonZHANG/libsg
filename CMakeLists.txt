@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 2.8.11)
 
 add_subdirectory(3rdparty)
 
@@ -40,7 +40,7 @@ file(GLOB src_container src/container/*.c)
 file(GLOB src_db src/db/*.c)
 file(GLOB src_math src/math/*.c)
 file(GLOB src_net src/net/*.c)
-file(GLOB src_platform src/platform/windows/*.c)
+file(GLOB src_platform_windows src/platform/windows/*.c)
 file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
 
@@ -55,10 +55,15 @@ set(src_lib
     ${src_container}
     ${src_db}
     ${src_math}
-    ${src_platform}
     ${src_sys}
     ${src_util}
     )
+
+if(WIN32)
+    set(src_lib ${src_lib}
+        ${src_platform_windows}
+        )
+endif()
 
 ## Use installed lib on Linux, compile from source is required on other platforms
 if(NOT "${CMAKE_SYSTEM}" MATCHES "Linux")
@@ -77,12 +82,6 @@ endif()
 # build options
 ###############
 ## home brew will install dependencies to /usr/local in default
-if(APPLE)
-    include_directories(
-		/usr/local/include
-		/usr/local/include/libxml2
-		)
-endif()
 include_directories(3rdparty)
 include_directories(include)
 if(WIN32)
@@ -90,11 +89,20 @@ if(WIN32)
     include_directories(3rdparty/pcre)
     include_directories(3rdparty/libxml2/include)
     include_directories(3rdparty/zlib)
+elseif(APPLE)
+    include_directories(
+		/usr/local/include
+		/usr/local/include/libxml2
+		)
+elseif(UNIX)
+    include_directories(
+		/usr/include/libxml2
+		)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 endif()
 
 ## intend to set a blank link_flags in default to prevent error occurred
@@ -132,7 +140,7 @@ if(WIN32)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
-    set(link_libs iconv dl xml2 curl pthread pcre uuid uv)
+    set(link_libs dl xml2 pthread pcre uuid uv)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
