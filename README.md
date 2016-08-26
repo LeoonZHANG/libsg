@@ -14,6 +14,8 @@ Cross-platform C utility library focusing on efficient development and easy-to-u
 
 #### Efficient development
 
+Common C API vs libsg API sample
+
 #### Easy-to-install source code
 
 Official pre-built binaries don't have any dependency, you don't need to build or install dependency for libsg.

@@ -13,10 +13,14 @@ extern "C" {
 #endif /* __cplusplus */
 
 enum sg_mac_type {
-    SGMACTYPE_HMAC_MD5    = 0,
-    SGMACTYPE_HMAC_SHA1   = 1,
-    SGMACTYPE_HAMC_SHA256 = 2,
-    SGMACTYPE_HMAC_SHA512 = 3
+    SGMACTYPE_HMAC_MD2    = 0,
+    SGMACTYPE_HMAC_MD4    = 1,
+    SGMACTYPE_HMAC_MD5    = 2,
+    SGMACTYPE_HMAC_SHA1   = 3,
+    SGMACTYPE_HAMC_SHA224 = 4,
+    SGMACTYPE_HAMC_SHA256 = 5,
+    SGMACTYPE_HAMC_SHA384 = 6,
+    SGMACTYPE_HMAC_SHA512 = 7
 };
 
 /* 如果定义不对，请修改 */
