@@ -47,7 +47,7 @@ uid_t sg_proc_user_id_current(void);
 
 /* Get process filename by process id.
  * Remember to free return result. */
-sg_vlstr *sg_proc_filename(pid_t pid);
+sg_vlstr_t *sg_proc_filename(pid_t pid);
 
 /* Get process priviledge by process id. */
 enum sg_proc_priviledge

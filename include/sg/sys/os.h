@@ -60,7 +60,7 @@ enum os_win_ver {
 #endif
 
 /* Get distribution of OS. */
-sg_vlstr *sg_os_distribution(void);
+sg_vlstr_t *sg_os_distribution(void);
 
 /* sg_start_with_os(const char *binary_filename);
 

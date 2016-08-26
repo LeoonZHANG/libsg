@@ -218,7 +218,7 @@ void ps_e_shell_callback(enum sg_shell_event evt, const char *line, void *contex
 }
 #endif
 
-int sg_proc_list_all(sg_proc_found_callback cb, void *context)
+int sg_proc_id_all(sg_proc_found_callback cb, void *context)
 {
     int ret = 0;
     struct sg_proc_shell_context ctx;
@@ -271,7 +271,7 @@ int sg_proc_list_all(sg_proc_found_callback cb, void *context)
 
 void ls_l_shell_callback(enum sg_shell_event evt, const char *line, void *context)
 {
-    sg_vlstr *filename = (sg_vlstr *)context;
+    sg_vlstr_t *filename = (sg_vlstr_t *)context;
     char *exe_str;
     const char *exe_tag = "exe -> /"; /* Use '/' for avoiding 'exe -> ' string in filename. */
 
@@ -284,13 +284,13 @@ void ls_l_shell_callback(enum sg_shell_event evt, const char *line, void *contex
         sg_vlstrcat(filename, exe_str + strlen(exe_tag) - 1 /* '/' char in the end */);
 }
 
-sg_vlstr *sg_proc_filename(pid_t pid)
+sg_vlstr_t *sg_proc_filename(pid_t pid)
 {
 #define PROC_LIST_CMD_LEN 256
     int ret;
     struct sg_proc_shell_context ctx;
     char list_cmd[PROC_LIST_CMD_LEN];
-    sg_vlstr *filename;
+    sg_vlstr_t *filename;
 
     filename = sg_vlstralloc();
     if (!filename)

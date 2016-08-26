@@ -34,14 +34,14 @@ int sg_regex_exec(char *src, sg_pattern *pat, sg_regex_callback cb, void *contex
 
 /* Matches a compiled regular expression against a given subject string.
    Match results are stored in vlstr_list, remember to free the list. */
-sg_vlstr_list *sg_regex_exec2(char *src, sg_pattern *pat);
+sg_vlstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat);
 
 /* Free internal form of regular expression. */
 void sg_regex_free_pattern(sg_pattern **pat);
 
 /* Matches a regular expression string against a given subject string.
    Match results are stored in vlstr_list, remember to free the list. */
-sg_vlstr_list *sg_regex_match(char *src, const char *pattern_str);
+sg_vlstr_list_t *sg_regex_match(char *src, const char *pattern_str);
 
 #ifdef __cplusplus
 }

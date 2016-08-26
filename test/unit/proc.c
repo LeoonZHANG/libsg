@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sg/sys/proc.h>
 #include <sg/sys/shell.h>
@@ -6,7 +7,7 @@
 
 void proc_found(const char *id, void *context)
 {
-    sg_vlstr *filename;
+    sg_vlstr_t *filename;
     filename = sg_proc_filename(atoi(id));
     if(sg_vlstrlen(filename) > 0)
         printf("%s", sg_vlstrraw(filename));
@@ -15,6 +16,6 @@ void proc_found(const char *id, void *context)
 int main(void)
 {
     printf("user id:%d\n", sg_proc_user_id_current());
-    sg_proc_list_all(proc_found, NULL);
+    sg_proc_id_all(proc_found, NULL);
     return 0;
 }

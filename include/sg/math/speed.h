@@ -13,7 +13,7 @@ extern "C" {
 enum sg_speed_mode {
     SGSPEEDMODE_BIT  = 0, /* bps, Kbps, Mbps, Gbps. For network transfer speed... */
     SGSPEEDMODE_BYTE = 0, /* Bps, KBps, MBps, GBps. For disk copy speed... */
-}
+};
 
 enum sg_speed_unit {
     SGSPEEDUNIT_MIN  = 0,

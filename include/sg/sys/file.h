@@ -46,11 +46,11 @@ int sg_dir_seek(const char *dir_path, uint8_t depth, sg_dir_seek_callback cb, vo
 
 /* Get suffix name of full path with the dot(.),
  * remember to free it. */
-sg_vlstr *sg_file_get_ext(const char *filename, int uppercase);
+sg_vlstr_t *sg_file_get_ext(const char *filename, int uppercase);
 
 /* Read file to string. */
 /* Untested. */
-sg_vlstr *sg_file_to_str(const char *filename);
+sg_vlstr_t *sg_file_to_str(const char *filename);
 
 /* Read file to memory buffer. */
 int sg_file_to_buf(const char *filename, uint8_t **buffer, size_t *size);

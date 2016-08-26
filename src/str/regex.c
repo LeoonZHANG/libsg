@@ -12,7 +12,7 @@
 #include <sg/util/log.h>
 #include <sg/util/def.h>
 
-int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list *vl);
+int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list_t *vl);
 
 sg_pattern *sg_regex_make_pattern(const char *pattern_str)
 {
@@ -41,10 +41,10 @@ int sg_regex_exec(char *src, sg_pattern *pat, sg_regex_callback cb, void *contex
     return regex_exec_real(src, pat, cb, context, NULL);
 }
 
-sg_vlstr_list *sg_regex_exec2(char *src, sg_pattern *pat)
+sg_vlstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat)
 {
     int ret;
-    sg_vlstr_list *vl;
+    sg_vlstr_list_t *vl;
 
     assert(src);
     assert(pat);
@@ -75,10 +75,10 @@ void sg_regex_free_pattern(sg_pattern **pat)
     *p = NULL;
 }
 
-sg_vlstr_list *sg_regex_match(char *src, const char *pattern_str)
+sg_vlstr_list_t *sg_regex_match(char *src, const char *pattern_str)
 {
     sg_pattern *pat;
-    sg_vlstr_list *vl;
+    sg_vlstr_list_t *vl;
 
     assert(src);
     assert(pattern_str);
@@ -96,7 +96,7 @@ sg_vlstr_list *sg_regex_match(char *src, const char *pattern_str)
 }
 
 /* Matches a compiled regular expression against a given subject string. */
-int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list *vl)
+int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list_t *vl)
 {
     int i;
     int rc;

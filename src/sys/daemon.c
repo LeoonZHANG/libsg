@@ -58,7 +58,7 @@ int sg_daemon_start_with_os(void)
 #else
     const char *filename = "/etc/rc.local";
     char module[SG_PATH_MAX]; /* executable filename */
-    sg_vlstr *file_str;
+    sg_vlstr_t *file_str;
     int retval;
 
     if (sg_module_path(module, SG_PATH_MAX) != 0) {

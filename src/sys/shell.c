@@ -198,7 +198,7 @@ end:
 #if defined(OS_LNX) || defined(OS_OSX)
 void shell_colorful_print_psx(const char *str, const char *color)
 {
-    sg_vlstr *s;
+    sg_vlstr_t *s;
 
     s = sg_vlstrfmt("%s%s%s", color, str, IN_SHELLCOLOR_DEFAULT);
 

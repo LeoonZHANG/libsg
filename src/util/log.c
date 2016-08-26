@@ -29,8 +29,8 @@ void sg_log_cancel_colorful(void)
 
 void sg_logging(const char *file, int line, const char *func, enum sg_log_level lv, const char *fmt, ...)
 {
-    sg_vlstr *log;
-    sg_vlstr *log_fmt;
+    sg_vlstr_t *log;
+    sg_vlstr_t *log_fmt;
     va_list ap;
     char mod_path[1024] = {0};
     char log_path[1024] = {0};
@@ -84,8 +84,8 @@ end:
 /*
 void sg_logging(const char *file, int line, const char *func, enum sg_log_level lv, const char *fmt, ...)
 {
-    sg_vlstr *log;
-    sg_vlstr *log_fmt;
+    sg_vlstr_t *log;
+    sg_vlstr_t *log_fmt;
     va_list ap;
     char mod_path[1024] = {0};
     char log_path[1024] = {0};

@@ -106,7 +106,7 @@ int sg_dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
                          uint8_t max_depth, sg_dir_seek_callback cb, void *context)
 {
     DIR *dir;
-    sg_vlstr *fullpath;
+    sg_vlstr_t *fullpath;
     size_t dir_path_len;
     struct dirent *d;
     struct stat s;
@@ -175,9 +175,9 @@ int sg_dir_seek(const char *dir_path, uint8_t depth, sg_dir_seek_callback cb, vo
     return sg_dir_seek_by_depth(dir_path, 1, depth, cb, context);
 }
 
-sg_vlstr *sg_file_get_ext(const char *filename, int uppercase)
+sg_vlstr_t *sg_file_get_ext(const char *filename, int uppercase)
 {
-    sg_vlstr *v;
+    sg_vlstr_t *v;
     char *dot;
 
     assert(filename);
@@ -201,11 +201,11 @@ sg_vlstr *sg_file_get_ext(const char *filename, int uppercase)
     return v;
 }
 
-sg_vlstr *sg_file_to_str(const char *filename)
+sg_vlstr_t *sg_file_to_str(const char *filename)
 {
     FILE *fp;
     size_t size;
-    sg_vlstr *retval;
+    sg_vlstr_t *retval;
     char *raw;
 
     fp = fopen(filename, "rb");

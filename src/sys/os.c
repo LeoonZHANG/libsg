@@ -6,7 +6,7 @@
 
 #include <sg/sys/os.h>
 
-sg_vlstr *sg_os_distribution(void)
+sg_vlstr_t *sg_os_distribution(void)
 {
     return NULL;
 }
