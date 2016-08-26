@@ -11,7 +11,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-struct sg_vlbuf_real {
+struct sg_vlbuf {
     void *mem;
     size_t size;
 } sg_vlbuf_t;
