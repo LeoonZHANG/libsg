@@ -41,10 +41,51 @@ Use in your project: include \<sg/some_dir/some_h.h\> and compile with libsg lib
 ## Modules
 
 ####sys
-atom, mutex, rwlock, spin_lock, memory, module, os, proc, time, file, flag, shell, sleep, thread, ntp
+atom
+
+mutex
+
+rwlock
+
+spin_lock
+
+memory
+
+module
+
+os
+
+proc
+
+time
+
+file
+
+flag
+
+shell
+
+sleep
+
+thread
+
+ntp
 
 ####str
-charset, regex, json, sprintf, vlstr(variable length string), xml, msgpack, bson
+
+charset
+
+regex
+
+json
+
+sprintf
+
+vlstr(variable length string)
+
+xml
+
+msgpack
 
 ####net
 
@@ -61,28 +102,74 @@ websocket: websocket client based on libwebsocket.
 ftp: ftp client based on libcurl.
 
 ####db
-mysql, mongodb, redis, sqlite, postgresql,unqlite...
+
+mysql
+
+mongodb
+
+redis
+
+sqlite
+
+postgresql
 
 ####container
-ring_buf, list, queue, blocking_queue...
+
+ring_buf
+
+list
+
+queue
+
+blocking_queue
 
 ####compress
-zip, gzip, md5, sha1...
 
-####crypt
-...
+zip
+
+gzip
+
+####crypto
+
+md: message digest algorithm pack including MD2/MD4/MD5/SHA1/SHA224/SHA256/SHA512.
+
+mac: message authentication code algorithm pack including HmacMD5...
+
+sym: symmetric encryption algorithm pack including DES/3DES/AES.
+
+####hash
+
+uuid
+
+murmur
 
 ####media
-capture_v, capture_a, 
+
+capture_v
+
+capture_a
 
 ####math
-number, uuid
+
+c_int
+
+c_float
+
+big_int
+
+big_float
 
 ####platform
+
 windows/dial...
 
 ####util
-assert, dump, log...
+
+assert
+
+dump
+
+log
 
 ## Build Instructions
 

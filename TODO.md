@@ -11,7 +11,6 @@ sym: 基于openssl到对常用对称加密算法的封装
 crc: crc8/ccitt/16/32/64, github等地方代码大把, 封装到一起, 可以基于tbox的实现做, crc64的另找开源实现
 
 
-kfifo: 啥都没写, 从内核代码里扒, 按libsg一贯的接口设计原则和风格重构一下
 msgpack_json_conv: msgpack和json相互转换,其中,对_b64后缀结束的json字段自动进行base64的转换
 msgpack msgpack操作库
 snappy 快速数据压缩解压 c－blocs
@@ -19,6 +18,7 @@ pig-z ?
 7z
 dl_list 重构
 queue(支持非阻塞和阻塞)
+kfifo: 啥都没写, 从内核代码里扒, 按libsg一贯的接口设计原则和风格重构一下
 bitmap / hash_set / hash_map / tree_map / tree_set
 dir重构
 dial 增加其他平台支持
