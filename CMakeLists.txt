@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.11)
 
+## 导入第三方依赖库的 CMake 规则，直接把需要的库编译进来，而不用再去单独编译安装。
+## 以简化安装和使用，这样主要是针对像 Windows 这种没有包管理的系统。
 add_subdirectory(3rdparty)
 
 
@@ -7,7 +9,8 @@ add_subdirectory(3rdparty)
 #########
 project(libsg)
 
-## Version number is quiet important for *nix dynamic lib, specify here.
+## 库的版本号对于 *nix 一系的操作系统的动态库（so, dylib等）来说都很重要，
+## 通常是辨别 API 接品兼容性的重要属性，最好在这里指定。
 set(major_version 1)
 set(minor_version 0)
 set(patch_version 0)
@@ -16,12 +19,13 @@ set(version ${major_version}.${minor_version}.${patch_version})
 
 set(lib_name sg)
 set(lib_name_static ${lib_name})
-## Take different names for static lib and dynamic lib on Windows, or they're .lib file will conflicted.
+## 为 Windows 和静态库和动态库取不同的名字，否则它们的 .lib 文件会有名字冲突，并相互覆盖。
 if(WIN32)
     set(lib_name_static lib${lib_name_static})
 endif()
 set(target_static lib${lib_name}-static)
 set(target_shared lib${lib_name}-shared)
+## 为 Windows 的 dll 文件指定 copyright 信息。
 set(copyright "Copyright (C) 2016." CACHE STRING "copyright description")
 
 
@@ -30,7 +34,7 @@ set(copyright "Copyright (C) 2016." CACHE STRING "copyright description")
 file(GLOB src_b64 3rdparty/b64.c/*.c)
 file(GLOB src_cjson 3rdparty/cjson/*.c)
 file(GLOB src_vtd-xml 3rdparty/vtd-xml/*.c)
-## exclude unecessary "lex.yy (2).c" and "lex.yy_old.c" to prevent build failed
+## 排除不必要的文件 "lex.yy (2).c", "lex.yy_old.c" 以免编译失败
 list(REMOVE_ITEM src_vtd-xml
     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy (2).c"
     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy_old.c")
@@ -59,19 +63,21 @@ set(src_lib
     ${src_util}
     )
 
+## 有些文件是 Windwos 专用的。
 if(WIN32)
     set(src_lib ${src_lib}
         ${src_platform_windows}
         )
 endif()
 
-## Use installed lib on Linux, compile from source is required on other platforms
+## 有些文件在 Linux 上不需要包含进来编译，直接引用安装好的库
 if(NOT "${CMAKE_SYSTEM}" MATCHES "Linux")
     set(src_lib ${src_lib} 
         ${src_vtd-xml}
         )
 endif()
 
+## Windows 下生成 DLL 所需的资源文件件和 API 定义文件。CMake 会用变量替换 *.in 模板文件的 @variable@ 风格的宏。
 if(WIN32)
     configure_file(version.rc.in version.rc @ONLY)
     configure_file(module.def.in module.def @ONLY)
@@ -81,40 +87,43 @@ endif()
 
 # build options
 ###############
-## home brew will install dependencies to /usr/local in default
+## 添加 3rdparty, include 到头文件搜索目录
 include_directories(3rdparty)
 include_directories(include)
+## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
     include_directories(3rdparty/pcre)
     include_directories(3rdparty/libxml2/include)
     include_directories(3rdparty/zlib)
+## macOS 需要添加 local 目录，因为 home brew 包管理器会把文件安装到 /usr/local。
 elseif(APPLE)
     include_directories(
 		/usr/local/include
 		/usr/local/include/libxml2
 		)
+## Linux 下需要添加 libxml2
 elseif(UNIX)
     include_directories(
 		/usr/include/libxml2
 		)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 endif()
 
-## intend to set a blank link_flags in default to prevent error occurred
-## in the latter call of set_target_properties
+## 为了防止后面调用 set_target_properties 时出现参数错误，这里故意设置一个空的默认值给 link_flags，
 set(link_flags " ")
 
-## build x86 universal(both i386 and x64) binary target for macOS
+## macOS 下把文件编译成同时支持32位和64位的二进制文件，但是似乎在xcode 7上不起作用。
 if(APPLE)
     set(c_flags "-arch i386 -arch x86_64")
     set(link_flags "-arch i386 -arch x86_64")
 endif()
 add_definitions(${c_flags})
+# Windows 下由于直接包含依赖库所需要设置的几个预处理器
 if(WIN32)
     add_definitions(-DUSING_STATIC_LIBICONV -DPCRE_STATIC)
 endif()
@@ -122,6 +131,7 @@ endif()
 
 # targets
 #########
+## 分别设置静态库和动态库目标
 add_library(${target_static} STATIC ${src_lib})
 add_library(${target_shared} SHARED ${src_lib})
 
@@ -129,11 +139,12 @@ set_target_properties(${target_static} PROPERTIES
     OUTPUT_NAME ${lib_name_static})
 set_target_properties(${target_shared} PROPERTIES
     OUTPUT_NAME ${lib_name}
-    SOVERSION ${major_version}
+    SOVERSION ${major_version} # 对于 *nix 类系统，major 版本号识别 API 兼容性
     VERSION ${version}
     LINK_FLAGS ${link_flags}
     )
 
+## Windows 下直接连接合并编译的库文件
 if(WIN32)
     set(libxml-static-file ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib)
     set(link_libs libiconv-static pcre ${libxml-static-file} libc99-snprintf-static zlibstatic Rasapi32.lib)
@@ -144,6 +155,8 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
+## 把静态库也链接一下，这样会生成独立的静态库文件，方便使用
 target_link_libraries(${target_static} ${link_libs})
 
+## 最后再调用测试的 CMake，之所以放到最后是因为，测试程序依赖 sg 库，需要链接 sg 库，放到最后这样可以方便调用生成好的文件和变量。
 add_subdirectory(test/unit)
