@@ -2,29 +2,33 @@
 
 ## Overview
 
-libsg is a boost-like cross-platform C utility library, it's high-performance and easy to use.
+Cross-platform C utility library focusing on efficient development and easy-to-use.
 
 ## Idea
 
-Development in C is inefficient, how to make C programing easier?
-
-1, Do not reinvent wheels, pack good wheels.
+1, Reuse, not rework or reinvent.
 
 2, Using C to build important infrastructure, not everything.
 
-## High-performance
+## Feature
 
-Lots of modules in libsg are optimized, you can create high performance application with libsg.
+#### Efficient development
 
-## Easy to use
-
-#### Easy to install
+#### Easy-to-install source code
 
 Official pre-built binaries don't have any dependency, you don't need to build or install dependency for libsg.
 
-#### Easy to call
+#### Easy-to-understand APIs
 
-Header files of libsg include nothing but only pure API declaration, and APIs are simpe and clear.
+Header files of libsg include nothing but only pure API declaration, and APIs will not cause misunderstanding.
+
+Common C API vs libsg API sample
+
+#### Performance
+
+Key modules are optimized, you can create high performance application with libsg.
+
+
 
 ## Supported Platforms
 
