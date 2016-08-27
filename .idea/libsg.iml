@@ -8,7 +8,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/container/list.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/container/vlbuf.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/db/pgsql.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/platform/windows/dial.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/util/err.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/util/dump.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/util/log.c" isTestSource="false" />
@@ -42,62 +41,41 @@
       <sourceFolder url="file://$MODULE_DIR$/test/unit/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit/charset.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/json_checker/JSON_checker.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/json_checker/JSON_checker.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/CryptLib/lib/LibMd5.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/CryptLib/lib/LibMd5.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/mongoose_5.6/mongoose.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/mongoose_5.6/mongoose.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/b64.c/encode.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/b64.c/decode.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastLongBuffer.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdNav.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/arrayList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/funcExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/arrayList.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/unaryExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/indexHandler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/contextBuffer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLModifier.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/literalExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/contextBuffer.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLModifier.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdGen.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/helper.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/textIter.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/intHash.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/autoPilot.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/numberExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/helper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/indexHandler.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLChar.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/cachedExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/lex.yy.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/l8.tab.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/filterExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/textIter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastIntBuffer.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/elementFragmentNs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/variableExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastIntBuffer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/elementFragmentNs.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/binaryExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/unionExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/pathExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/decoder.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/autoPilot.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLChar.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/transcoder.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/locationPathExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/decoder.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdGen.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/transcoder.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastLongBuffer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdNav.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/cjson/cJSON.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/cjson/cJSON.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/CMakeLists.txt" isTestSource="false" />
     </content>

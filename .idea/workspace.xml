@@ -16,10 +16,83 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3532586-594b-4944-9715-22f357f42b46" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/.gitignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Linux/Md5String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Linux/Rc4Output" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Linux/Sha1String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Linux/Sha256String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Linux/Sha512String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/OSX/Md5String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/OSX/Rc4Output" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/OSX/Sha1String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/OSX/Sha256String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/OSX/Sha512String" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Windows/Md5String.exe" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Windows/Rc4Output.exe" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Windows/Sha1String.exe" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Windows/Sha256String.exe" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Exe/Windows/Sha512String.exe" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/Projects.sln" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/UNLICENSE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/CryptLibTest.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/CryptLibTest.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Md5String.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Md5String.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/ProofOfWork.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/ProofOfWork.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Rc4Output.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Rc4Output.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Sha1String.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Sha1String.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Sha256String.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Sha256String.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Sha512String.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/Sha512String.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/All.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/Debug.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/Win32.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/Win32Debug.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/Win32Release.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/x64.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/x64Debug.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/VSProjectFiles/props/x64Release.props" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibMd5.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibMd5.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibRc4.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibRc4.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibSha1.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibSha1.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibSha256.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibSha256.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibSha512.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/lib/LibSha512.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/projects/CryptLibTest/CryptLibTest.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/projects/Md5String/Md5String.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/projects/Rc4Output/Rc4Output.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/projects/Sha1String/Sha1String.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/projects/Sha256String/Sha256String.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/projects/Sha512String/Sha512String.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/CryptLib/stdbool/stdbool.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/.gitignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/CMakeLists.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/LICENSE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/demo/CMakeLists.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/demo/main.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/CMakeLists.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/hmac_sha1.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/hmac_sha1.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/hmac_sha2.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/hmac_sha2.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/sha1.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/sha1.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/sha2.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/mad-hmac/src/sha2.h" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libsg.iml" afterPath="$PROJECT_DIR$/.idea/libsg.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TODO.md" afterPath="$PROJECT_DIR$/TODO.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/sg/crypto/mac.h" afterPath="$PROJECT_DIR$/include/sg/crypto/mac.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/3rdparty/3rdparty.version.txt" afterPath="$PROJECT_DIR$/3rdparty/3rdparty.version.txt" />
     </list>
     <ignored path="libsg.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -39,12 +112,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TODO.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TODO.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TODO.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="406">
-                <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
+              <first_editor relative-caret-position="255">
+                <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -68,7 +141,7 @@
       <file leaf-file-name="mac.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/sg/crypto/mac.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-138">
+            <state relative-caret-position="330">
               <caret line="22" column="29" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
               <folding>
                 <element signature="e#183#195#0" expanded="true" />
@@ -77,7 +150,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="md.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="md.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/sg/crypto/md.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="375">
@@ -124,7 +197,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1280" />
-    <option name="height" value="709" />
+    <option name="height" value="712" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -580,19 +653,21 @@
       <workItem from="1472201920118" duration="303000" />
       <workItem from="1472202674993" duration="1905000" />
       <workItem from="1472204879360" duration="405000" />
+      <workItem from="1472260575099" duration="144000" />
+      <workItem from="1472262015255" duration="191000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29378000" />
+    <option name="totallyTimeSpent" value="29713000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="709" extended-state="6" />
-    <editor active="false" />
+    <frame x="0" y="23" width="1280" height="712" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3281493" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -896,7 +971,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
           <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -918,10 +992,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="3" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
-          <folding>
-            <element signature="e#486#498#0" expanded="true" />
-            <element signature="e#2542#2543#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -929,10 +999,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
-          <folding>
-            <element signature="e#118#150#0" expanded="true" />
-            <element signature="e#229#241#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -940,10 +1006,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="21" column="6" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="6" />
-          <folding>
-            <element signature="e#93#105#0" expanded="true" />
-            <element signature="e#834#835#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -951,7 +1013,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -959,10 +1020,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <element signature="e#154#166#0" expanded="true" />
-            <element signature="e#213#214#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -977,26 +1034,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TODO.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="406">
-            <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/sg/crypto/mac.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-138">
+        <state relative-caret-position="330">
           <caret line="22" column="29" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
           <folding>
             <element signature="e#183#195#0" expanded="true" />
@@ -1008,6 +1048,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="25" column="2" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TODO.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="255">
+            <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
