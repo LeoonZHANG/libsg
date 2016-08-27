@@ -7,8 +7,6 @@
 #ifndef LIBSG_HTTP_CLIENT_H
 #define LIBSG_HTTP_CLIENT_H
 
-#include "../util/type.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

@@ -16,7 +16,7 @@
 #include <sg/sys/daemon.h>
 #include <sg/sys/module.h>
 #include <sg/util/log.h>
-#include <sg/util/limit.h>
+#include <sg/sys/limit.h>
 #include <sg/str/vlstr.h>
 #include <sg/sys/file.h>
 

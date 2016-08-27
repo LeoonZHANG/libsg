@@ -11,20 +11,24 @@ sym: 基于openssl到对常用对称加密算法的封装
 crc: crc8/ccitt/16/32/64, github等地方代码大把, 封装到一起, 可以基于tbox的实现做, crc64的另找开源实现
 
 
-msgpack_json_conv: msgpack和json相互转换,其中,对_b64后缀结束的json字段自动进行base64的转换
-msgpack msgpack操作库
-snappy 快速数据压缩解压 c－blocs
-pig-z ?
-7z
-dl_list 重构
-queue(支持非阻塞和阻塞)
-kfifo: 啥都没写, 从内核代码里扒, 按libsg一贯的接口设计原则和风格重构一下
-bitmap / hash_set / hash_map / tree_map / tree_set
+msgpack msgpack操作库,包括msgpack和json相互转换,其中,对_b64后缀结束的json字段自动进行base64的转换
+snappy 快速数据压缩解压
+pig-z https://github.com/kjk/pigz 和 https://github.com/madler/pigz
 dir重构
 dial 增加其他平台支持
 rwlock
 spin_lock
-str_hash 字符哈希方法集合
+list 重构
+queue(支持非阻塞和阻塞)
+kfifo: 啥都没写, 从内核代码里扒, 按libsg一贯的接口设计原则和风格重构一下
+sqlite
+BerkeleyDB
+ejdb
+murmur
+
+------------------------------------------------------------
+
+http_server 重构http服务器, h2o + libwebsocket
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－ Release
 
@@ -34,7 +38,17 @@ kcp + reed-solomon
 //非对称加密算法 asym: RSA、Elgamal、背包算法、Rabin、D-H、ECC
 //数字签名算法
 //数字证书
+/*bitmap
+  hash_set
+  hash_map
+  tree_map
+  tree_set*/
+//  str_hash 字符哈希方法集合
+c－blosc
+7z
+zlib zip gzip
 
+  
 speed_test 速度测试
 
 hls hls客户端？需要这个模块吗？
@@ -48,8 +62,6 @@ rtsp_server rtsp服务器
 hls_server HLS服务器
 
 raft 分布式raft封装？
-
-http_server 重构http服务器
 
 tor tor代理
 

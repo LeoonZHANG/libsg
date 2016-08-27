@@ -13,13 +13,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/util/log.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/mutex.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/sleep.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/daemon.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/proc.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/time.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/os.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/proc.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/shell.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/dlib.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/file.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/shell.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/daemon.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/flag.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/module.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/cron.c" isTestSource="false" />
@@ -27,9 +27,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/compress/zip.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/str/snprintf.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/str/charset.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/str/json.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/str/json_check.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/str/xml.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/container/json.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/container/json_check.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/container/xml.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/str/string.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/str/base64.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/str/vlstr.c" isTestSource="false" />
@@ -47,20 +47,20 @@
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/b64.c/decode.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastLongBuffer.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdNav.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/funcExpr.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/numberExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/arrayList.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/unaryExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/literalExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/contextBuffer.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLModifier.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/helper.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/textIter.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/intHash.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/numberExpr.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/indexHandler.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/cachedExpr.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/indexHandler.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/lex.yy.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/l8.tab.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/filterExpr.c" isTestSource="false" />

@@ -1,1 +1,0 @@
-gcc -g -O0 -static ../3rdparty/b64.c/*.c ../3rdparty/mongoose_5.6/mongoose.c ../3rdparty/mongoose_6.2/mongoose.c ../3rdparty/json_checker/JSON_checker.c ../3rdparty/CryptLib/lib/LibMd5.c ../src/str/*.c ../src/compress/*.c ../src/container/*.c ../src/db/*.c ../src/math/*.c ../src/net/*.c ../src/sys/*.c ../src/util/*.c  -liconv -ldl -lxml2 -lcurl -lpthread -lpcre -luuid -luv -o sg
