@@ -43,12 +43,12 @@ size_t sg_vlstr_list_size(sg_vlstr_list_t *vl)
 
 char *sg_vlstr_list_get(sg_vlstr_list_t *vl, int index)
 {
-    sg_vlstr *s;
+    sg_vlstr_t *s;
 
     assert(vl);
     assert(index >= 0);
 
-    s = (sg_vlstr *)sg_list_get_data_ptr(vl->list, (uint32_t)index);
+    s = (sg_vlstr_t *)sg_list_get_data_ptr(vl->list, (uint32_t)index);
     if (!s)
         return NULL;
 
@@ -57,7 +57,7 @@ char *sg_vlstr_list_get(sg_vlstr_list_t *vl, int index)
 
 int sg_vlstr_list_push(sg_vlstr_list_t *vl, const char *src)
 {
-    sg_vlstr *s;
+    sg_vlstr_t *s;
     struct sg_item *item;
 
     assert(vl);
@@ -68,14 +68,14 @@ int sg_vlstr_list_push(sg_vlstr_list_t *vl, const char *src)
         return -1;
 
     item = sg_list_add_item(vl->list, ITEMDATATYPE_ATTACH,
-                            (void *)s, sizeof(sg_vlstr *), 0, NULL);
+                            (void *)s, sizeof(sg_vlstr_t *), 0, NULL);
 
     return item ? 0 : -1;
 }
 
 int sg_vlstr_list_push2(sg_vlstr_list_t *vl, const char *src, size_t num)
 {
-    sg_vlstr *s;
+    sg_vlstr_t *s;
     struct sg_item *item;
 
     assert(vl);
@@ -85,12 +85,12 @@ int sg_vlstr_list_push2(sg_vlstr_list_t *vl, const char *src, size_t num)
     if (!s)
         return -1;
 
-    item = sg_list_add_item(vl->list, ITEMDATATYPE_ATTACH, (void *)s, sizeof(sg_vlstr *), 0, NULL);
+    item = sg_list_add_item(vl->list, ITEMDATATYPE_ATTACH, (void *)s, sizeof(sg_vlstr_t *), 0, NULL);
 
     return item ? 0 : -1;
 }
 
-sg_vlstr *sg_vlstr_list_join(sg_vlstr_list_t *vl)
+sg_vlstr_t *sg_vlstr_list_join(sg_vlstr_list_t *vl)
 {
     sg_log_crit("Uncompleted API.");
     abort();
@@ -100,7 +100,7 @@ sg_vlstr *sg_vlstr_list_join(sg_vlstr_list_t *vl)
 void sg_vlstr_list_free(sg_vlstr_list_t **vl)
 {
     struct sg_item *cur;
-    sg_vlstr *s;
+    sg_vlstr_t *s;
 
     assert(vl);
     if (!*vl || !(*vl)->list)
@@ -108,7 +108,7 @@ void sg_vlstr_list_free(sg_vlstr_list_t **vl)
 
     cur = sg_list_begin((*vl)->list);
     while (cur) {
-        s = (sg_vlstr *)cur->data;
+        s = (sg_vlstr_t *)cur->data;
         if (s)
             sg_vlstrfree(&s);
 

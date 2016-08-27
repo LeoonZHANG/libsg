@@ -11,16 +11,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-struct sg_vlbuf {
+typedef struct sg_vlbuf {
     void *mem;
     size_t size;
 } sg_vlbuf_t;
 
-sg_vlbuf_t *sg_flex_buf_create(void);
+sg_vlbuf_t *sg_vlbuf_create(void);
 
-sg_vlbuf_t *sg_flex_buf_create2(size_t initial_size);
-
-int sg_vlbuf_append(sg_vlbuf_t *buf, const void *mem, size_t size);
+int sg_vlbuf_insert(sg_vlbuf_t *buf, const void *mem, size_t size);
 
 void sg_vlbuf_reset(sg_vlbuf_t *buf);
 

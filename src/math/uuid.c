@@ -38,9 +38,9 @@ static void uuid_unparse_win32(uuid_t* id, char* out, int (__cdecl *func)(int))
 #if defined(__MACH__)
 # define uuid_generate_time_safe uuid_generate_time
 #endif
-#include "../../include/sg/util/log.h"
-#include "../../include/sg/math/uuid.h"
-#include "../../include/sg/util/assert.h"
+#include <sg/util/log.h>
+#include <sg/hash/uuid.h>
+#include <sg/util/assert.h>
 
 struct sg_uuid_str sg_uuid_gen(enum sg_uuid_method method, int uppercase)
 {

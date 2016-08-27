@@ -37,14 +37,14 @@ int sg_err_last_num(void)
     return errno;
 }
 
-sg_vlstr *err_last_msg(void)
+sg_vlstr_t *err_last_msg(void)
 {
     return NULL;
 }
 
-sg_vlstr *err_num_to_msg(int err_num)
+sg_vlstr_t *err_num_to_msg(int err_num)
 {
-    sg_vlstr *err_msg;
+    sg_vlstr_t *err_msg;
 
     #if defined(OS_LNX) || defined(OS_OSX)
     err_msg = sg_vlstralloc2(strerror(errno));

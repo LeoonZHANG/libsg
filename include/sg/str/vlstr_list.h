@@ -34,7 +34,7 @@ int sg_vlstr_list_push(sg_vlstr_list_t *vl, const char *src);
 int sg_vlstr_list_push2(sg_vlstr_list_t *vl, const char *src, size_t num);
 
 /* Join all sg_vlstr_list_t items to one vlstr. */
-sg_vlstr *sg_vlstr_list_join(sg_vlstr_list_t *vl);
+sg_vlstr_t *sg_vlstr_list_join(sg_vlstr_list_t *vl);
 
 /* Free variable length string list and all items.
    Attention, vl is a pointer to pointer. */
