@@ -89,23 +89,14 @@ endif()
 ## 添加 3rdparty, include 到头文件搜索目录
 include_directories(3rdparty)
 include_directories(include)
+include_directories(3rdparty/pcre)
+include_directories(3rdparty/libxml2/include)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
-    include_directories(3rdparty/pcre)
-    include_directories(3rdparty/libxml2/include)
     include_directories(3rdparty/zlib)
-## macOS 需要添加 local 目录，因为 home brew 包管理器会把文件安装到 /usr/local。
 elseif(APPLE)
-    include_directories(
-		/usr/local/include
-		/usr/local/include/libxml2
-		)
-## Linux 下需要添加 libxml2
 elseif(UNIX)
-    include_directories(
-		/usr/include/libxml2
-		)
 endif()
 
 ## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
@@ -116,12 +107,6 @@ endif()
 ## 为了防止后面调用 set_target_properties 时出现参数错误，这里故意设置一个空的默认值给 link_flags，
 set(link_flags " ")
 
-## macOS 下把文件编译成同时支持32位和64位的二进制文件，但是似乎在xcode 7上不起作用。
-if(APPLE)
-    set(c_flags "-arch i386 -arch x86_64")
-    set(link_flags "-arch i386 -arch x86_64")
-endif()
-add_definitions(${c_flags})
 # Windows 下由于直接包含依赖库所需要设置的几个预处理器
 if(WIN32)
     add_definitions(-DUSING_STATIC_LIBICONV -DPCRE_STATIC)
