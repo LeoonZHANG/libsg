@@ -53,7 +53,6 @@ set(src_lib
     ${src_cjson}
     3rdparty/mongoose_5.6/mongoose.c
     3rdparty/json_checker/JSON_checker.c
-    3rdparty/CryptLib/lib/LibMd5.c
     ${src_str}
     ${src_compress}
     ${src_container}
