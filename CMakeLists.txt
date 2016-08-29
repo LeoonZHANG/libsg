@@ -90,6 +90,7 @@ endif()
 include_directories(3rdparty)
 include_directories(include)
 include_directories(3rdparty/pcre)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre)
 include_directories(3rdparty/libxml2/include)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
