@@ -104,6 +104,11 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 endif()
 
+## 部分Linux 下需要加 PIC 以通过链接
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+endif()
+
 ## 为了防止后面调用 set_target_properties 时出现参数错误，这里故意设置一个空的默认值给 link_flags，
 set(link_flags " ")
 
