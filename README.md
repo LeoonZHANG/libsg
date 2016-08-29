@@ -183,16 +183,11 @@ log
 
 If you want to use libsg in your project, just download the lastest release. Build libsg when you are going to change the code.
 
-#### Linux
-        $ chmod +x build_linux.sh & ./build.sh
+        mkdir build
+        cd build
+        cmake ..
+        make -j4
 
-#### OSX
-        $ chmod +x build_linux.sh & ./build.sh
-open the generated project file `libsg.xcodeproj` by XCode, build it.
-
-#### Windows
-        $ build.bat
-open the generated project file `libsg.sln` by VisualStudio, build it.
 
 ## API document
 
