@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 2.8)
 
 ## 导入第三方依赖库的 CMake 规则，直接把需要的库编译进来，而不用再去单独编译安装。
 ## 以简化安装和使用，这样主要是针对像 Windows 这种没有包管理的系统。
@@ -90,6 +90,7 @@ endif()
 include_directories(3rdparty)
 include_directories(include)
 include_directories(3rdparty/pcre)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre)
 include_directories(3rdparty/libxml2/include)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
@@ -97,11 +98,17 @@ if(WIN32)
     include_directories(3rdparty/zlib)
 elseif(APPLE)
 elseif(UNIX)
+    include_directories(3rdparty/libuuid/include)
 endif()
 
 ## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
+endif()
+
+## 部分Linux 下需要加 PIC 以通过链接
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 endif()
 
 ## 为了防止后面调用 set_target_properties 时出现参数错误，这里故意设置一个空的默认值给 link_flags，
@@ -135,9 +142,18 @@ if(WIN32)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
-    set(link_libs dl ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a pthread 'pcre' uuid uv)
+    set(link_libs
+        rt
+        dl
+        pthread
+        'pcre'
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
+        )
     add_dependencies(${target_shared} libxml2)
     add_dependencies(${target_static} libxml2)
+    add_dependencies(${target_shared} libuuid)
+    add_dependencies(${target_static} libuuid)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})

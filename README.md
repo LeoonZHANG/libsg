@@ -1,5 +1,7 @@
 # ![](res/image/logo.png)
 
+[![Build Status](https://travis-ci.org/canmor/libsg.svg?branch=master)](https://travis-ci.org/canmor/libsg)
+
 ## Overview
 
 Cross-platform C utility library focusing on efficient development and easy-to-use.
