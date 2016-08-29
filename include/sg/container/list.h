@@ -140,15 +140,6 @@ bool sg_list_is_empty(struct sg_list *list);
    Even if source items are attached. */
 struct sg_list *sg_list_clone(struct sg_list *src);
 
-/* Untested! */
-/* Serialize the list. */
-int sg_list_serialize(struct sg_list *src, uint8_t **out_buf,
-                      size_t *out_size);
-
-/* Untested! */
-/* Deserialize to a new list. */
-struct sg_list *sg_list_deserialize(uint8_t *mem, size_t mem_size);
-
 /* Cleanup list. */
 void sg_list_uninit(struct sg_list *list);
 
