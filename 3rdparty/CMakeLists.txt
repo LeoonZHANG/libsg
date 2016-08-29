@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8)
 
 ## 有意声明一个 project，主要是为了让后面的 CMAKE_SYSTEM 有值，CMake 要求 CMAKE_SYSTEM 必须在 project 之后。
 project(3rdparty)

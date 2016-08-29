@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 2.8)
 
 ## 导入第三方依赖库的 CMake 规则，直接把需要的库编译进来，而不用再去单独编译安装。
 ## 以简化安装和使用，这样主要是针对像 Windows 这种没有包管理的系统。
