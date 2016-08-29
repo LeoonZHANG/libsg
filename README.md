@@ -40,11 +40,6 @@ Linux ／ Windows ／ OS X
 
 ## Download > Install > Use
 
-Download prebuilt-binaries: [https://github.com/metalwood/libsg/releases](https://github.com/metalwood/libsg/releases)
-
-Install: run install.sh or install.bat
-
-Use in your project: include \<sg/some_dir/some_h.h\> and compile with libsg library
 
 ## Modules
 
