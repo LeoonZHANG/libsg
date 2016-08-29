@@ -7,10 +7,12 @@ EXPORTS
     sg_logging
     sg_file_to_buf
     sg_file_overwrite
-    sg_flex_buf_destroy
-    sg_base64_easy_enc_buf
-    sg_base64_easy_dec_buf
-    sg_proc_list_all
+    sg_vlbuf_create
+    sg_vlbuf_destroy
+    sg_vlbuf_insert
+    sg_base64_enc
+    sg_base64_dec
+    sg_proc_id_all
     sg_proc_filename
     sg_proc_id_current
     sg_proc_id_parent
