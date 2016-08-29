@@ -1,6 +1,6 @@
 # ![](res/image/logo.png)
 
-[![Build Status](https://travis-ci.org/canmor/libsg.svg?branch=master)](https://travis-ci.org/canmor/libsg)
+[![Build Status](https://travis-ci.org/metalwood/libsg.svg?branch=master)](https://travis-ci.org/metalwood/libsg)
 
 ## Overview
 
