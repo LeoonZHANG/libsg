@@ -16,6 +16,15 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
         LOG_CONFIGURE 1
         LOG_BUILD 1
         )
+    ExternalProject_Add(
+        libuuid
+        PREFIX ${3RDPARTY_DIR}/libuuid
+        SOURCE_DIR ${3RDPARTY_DIR}/libuuid
+        CONFIGURE_COMMAND ${3RDPARTY_DIR}/libuuid/configure --prefix=${3RDPARTY_DIR}/libuuid --with-pic
+        BUILD_COMMAND ${MAKE}
+        LOG_CONFIGURE 1
+        LOG_BUILD 1
+        )
 endif()
 
 add_subdirectory(pcre)

@@ -97,6 +97,7 @@ if(WIN32)
     include_directories(3rdparty/zlib)
 elseif(APPLE)
 elseif(UNIX)
+    include_directories(3rdparty/libuuid/include)
 endif()
 
 ## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
@@ -140,9 +141,18 @@ if(WIN32)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
-    set(link_libs dl ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a pthread 'pcre' uuid uv)
+    set(link_libs
+        dl
+        pthread
+        uv
+        'pcre'
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
+        )
     add_dependencies(${target_shared} libxml2)
     add_dependencies(${target_static} libxml2)
+    add_dependencies(${target_shared} libuuid)
+    add_dependencies(${target_static} libuuid)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
