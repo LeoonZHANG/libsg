@@ -142,6 +142,7 @@ elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre z)
 elseif(UNIX)
     set(link_libs
+        rt
         dl
         pthread
         'pcre'
