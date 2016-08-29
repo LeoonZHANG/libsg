@@ -24,6 +24,11 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
         )
 endif()
 
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set (CMAKE_C_FLAGS "-fPIC")
+    set (CMAKE_CXX_FLAGS "-fPIC")
+endif()
+
 add_subdirectory(pcre)
 if(WIN32)
     add_subdirectory(libiconv)
