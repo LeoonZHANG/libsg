@@ -144,7 +144,6 @@ elseif(UNIX)
     set(link_libs
         dl
         pthread
-        uv
         'pcre'
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
