@@ -13,8 +13,6 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
         SOURCE_DIR ${3RDPARTY_DIR}/libxml2
         CONFIGURE_COMMAND ${3RDPARTY_DIR}/libxml2/configure --prefix=${3RDPARTY_DIR}/libxml2 --without-python --with-pic
         BUILD_COMMAND ${MAKE}
-        LOG_CONFIGURE 1
-        LOG_BUILD 1
         )
     ExternalProject_Add(
         libuuid
@@ -22,8 +20,6 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
         SOURCE_DIR ${3RDPARTY_DIR}/libuuid
         CONFIGURE_COMMAND ${3RDPARTY_DIR}/libuuid/configure --prefix=${3RDPARTY_DIR}/libuuid --with-pic
         BUILD_COMMAND ${MAKE}
-        LOG_CONFIGURE 1
-        LOG_BUILD 1
         )
 endif()
 
