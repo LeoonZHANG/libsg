@@ -134,7 +134,7 @@ int sg_base64_dec(const char *b64_str, size_t b64_str_len, sg_vlbuf_t *bin_buf)
         return 0;
 
     dec_buf = b64_decode_ex(b64_str, b64_str_len, &dec_size);
-    sg_vlstrncat(bin_buf, (const char*)(dec_buf), dec_size);
+    sg_vlbuf_insert(bin_buf, (const char*)(dec_buf), dec_size);
     free(dec_buf);
     return 0;
 }
