@@ -21,6 +21,7 @@ CMakeFiles
 CMakeScripts
 CMakeCache.txt
 cmake_install.cmake
+.idea
 *.opendb
 *.db
 /3rdparty/libxml2/win32/bin.msvc
