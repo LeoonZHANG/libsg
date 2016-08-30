@@ -80,15 +80,9 @@ charset
 
 regex
 
-json
-
 sprintf
 
 vlstr(variable length string)
-
-xml
-
-msgpack
 
 ####net
 
@@ -106,25 +100,26 @@ ftp: ftp client based on libcurl.
 
 ####db
 
-mysql
-
-mongodb
-
-redis
-
 sqlite
 
-postgresql
+ejdb
+
+berkeleydb
 
 ####container
 
-ring_buf
+bip_buf
 
 list
 
 queue
 
-blocking_queue
+xml
+
+msgpack
+
+json
+
 
 ####compress
 
@@ -193,8 +188,6 @@ If you want to use libsg in your project, just download the lastest release. Bui
 English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle)
 
 简体中文: [Linux内核编码风格](http://www.cnblogs.com/baochuan/archive/2013/04/08/3006615.html)
-
-Tool: http://astyle.sourceforge.net/astyle.html --style=linux
 
 ## Contact
 
