@@ -3,10 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 ## 有意声明一个 project，主要是为了让后面的 CMAKE_SYSTEM 有值，CMake 要求 CMAKE_SYSTEM 必须在 project 之后。
 project(3rdparty)
 
+include(ExternalProject)
+set(3RDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 ## 展开第三方依赖库直接编译进来，以简化安装和使用
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
-    include(ExternalProject)
-    set(3RDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
     ExternalProject_Add(
         libxml2
         PREFIX ${3RDPARTY_DIR}/libxml2
@@ -44,6 +45,15 @@ add_subdirectory(zlib)
 
 if(WIN32)
     add_subdirectory(libiconv)
-    add_subdirectory(libxml2/win32)
     add_subdirectory(c99-snprintf)
+
+    ExternalProject_Add(
+        libxml2
+        PREFIX ${3RDPARTY_DIR}/libxml2
+        SOURCE_DIR ${3RDPARTY_DIR}/libxml2/win32
+        CONFIGURE_COMMAND cscript configure.js compiler=msvc iconv=no
+        BUILD_COMMAND nmake /f Makefile.msvc libxmla
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1
+        )
 endif()
