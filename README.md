@@ -8,9 +8,9 @@ Cross-platform C utility library focusing on efficient development and easy-to-u
 
 ## Idea
 
-1, Reuse, not rework or reinvent.
+Reuse, not rework or reinvent.
 
-2, Using C to build important infrastructure, not everything.
+Using C to build important infrastructure, not everything.
 
 ## Feature
 
