@@ -15,8 +15,8 @@ extern "C" {
 /* type of JSON value */
 enum sg_json_val_type {
     SGJSONVALTYPE_ERROR,	/* error */
-    SGJSONVALTYPE_NULL,	/* null */
-    SGJSONVALTYPE_BOOL,	/* boolean value (true, false) */
+    SGJSONVALTYPE_NULL,	    /* null */
+    SGJSONVALTYPE_BOOL,	    /* boolean value (true, false) */
     SGJSONVALTYPE_NUMBER,	/* numeric */
     SGJSONVALTYPE_STRING,	/* literal string */
     SGJSONVALTYPE_ARRAY,	/* array */

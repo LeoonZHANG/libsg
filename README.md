@@ -171,13 +171,19 @@ log
 
 ## Build Instructions
 
-If you want to use libsg in your project, just download the lastest release. Build libsg when you are going to change the code.
+Linux / MacOS.
 
-        mkdir build
-        cd build
-        cmake ..
-        make -j4
+        $ mkdir build
+        $ cd build
+        $ cmake ..
+        $ make -j4
 
+Windows
+
+        $ md build
+        $ cd build
+        $ cmake ..
+        open .sln and compile the project
 
 ## API document
 
