@@ -171,7 +171,9 @@ log
 
 ## Build Instructions
 
-Linux / MacOS.
+Before building, make sure CMake and C compiler(gcc/clang/msvc) has been installed correctly.
+
+Linux / MacOS
 
         $ mkdir build
         $ cd build
@@ -183,7 +185,7 @@ Windows
         $ md build
         $ cd build
         $ cmake ..
-        open .sln and compile the project
+        open .sln with Visual Studio and compile the project
 
 ## API document
 
