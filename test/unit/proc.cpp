@@ -3,7 +3,7 @@
 #include <string.h>
 #include <sg/sys/proc.h>
 #include <sg/sys/shell.h>
-
+#include <gtest/gtest.h>
 
 void proc_found(const char *id, void *context)
 {
@@ -13,9 +13,13 @@ void proc_found(const char *id, void *context)
         printf("%s", sg_vlstrraw(filename));
 }
 
-int main(void)
-{
-    printf("user id:%d\n", sg_proc_user_id_current());
-    sg_proc_id_all(proc_found, NULL);
-    return 0;
+TEST(test_sg_proc, user_id_current) {
+    uid_t uid = sg_proc_user_id_current();
+    printf("user id:%d\n", uid);
+    ASSERT_GT(uid, 0);
+}
+
+TEST(test_sg_proc, id_all) {
+    int ret = sg_proc_id_all(proc_found, NULL);
+    ASSERT_GE(ret, 0);
 }
