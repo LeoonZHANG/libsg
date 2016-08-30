@@ -26,17 +26,17 @@
       <sourceFolder url="file://$MODULE_DIR$/src/util/dump.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/util/log.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/mutex.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/sleep.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/daemon.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/time.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/os.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/module.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/time.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/sleep.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/proc.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/dlib.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/file.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/shell.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/daemon.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/flag.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sys/module.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/cron.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sys/shell.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sys/thread.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/compress/zlib.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/str/snprintf.c" isTestSource="false" />
@@ -51,35 +51,65 @@
       <sourceFolder url="file://$MODULE_DIR$/test/unit/proc.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit/charset.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/json_checker/JSON_checker.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/json_checker/JSON_checker.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/test/minigzip.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/test/example.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/win32/zlib1.rc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/zlib.pc.cmakein" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/adler32.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/gzclose.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/zutil.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inftrees.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inftrees.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/gzguts.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inffixed.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inffast.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/crc32.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inffast.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/crc32.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/zlib.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/gzread.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/uncompr.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/zutil.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/zconf.h.cmakein" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/deflate.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/gzlib.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/deflate.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/trees.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/infback.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inflate.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/trees.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/inflate.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/gzwrite.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/zlib/compress.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/b64.c/encode.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/b64.c/decode.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/mongoose_5.6/mongoose.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/mongoose_5.6/mongoose.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_jit_compile.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_tables.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_byte_order.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcregrep.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_study.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_chartables.c.dist" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_newline.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_tables.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_get.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_compile.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_stringpiece.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_config.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_xclass.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/config-cmake.h.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_maketables.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_ucd.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_exec.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_xclass.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcregrep.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_string_utils.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_study.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_newline.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcrecpp_unittest.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_stringpiece.h.in" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_dfa_exec.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_globals.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_version.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcrecpp.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_stringpiece.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_ord2utf8.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_valid_utf8.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_scanner.h" isTestSource="false" />
@@ -101,20 +131,20 @@
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/pcre/pcre_stringpiece_unittest.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastLongBuffer.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdNav.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/arrayList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/funcExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/arrayList.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/unaryExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/unaryExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/indexHandler.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/nodeRecorder.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/contextBuffer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLModifier.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/literalExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/contextBuffer.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/XMLModifier.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdGen.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/helper.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/textIter.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/intHash.c" isTestSource="false" />
@@ -129,7 +159,6 @@
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/filterExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/textIter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastIntBuffer.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastLongBuffer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/elementFragmentNs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/variableExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastIntBuffer.h" isTestSource="false" />
@@ -143,13 +172,15 @@
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/transcoder.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/locationPathExpr.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/decoder.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/bookMark.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdGen.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/transcoder.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdGen.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/fastLongBuffer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdNav.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/cjson/cJSON.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/cjson/cJSON.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/mongoose_5.6/mongoose.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/mongoose_5.6/mongoose.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
@@ -325,10 +356,14 @@
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Headers" />
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers" />
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
-          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/pcre" />
-          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/pcre" />
           <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/MinSizeRel/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/MinSizeRel/3rdparty/zlib" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/zlib" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/zlib" />
           <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/RelWithDebInfo/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/RelWithDebInfo/3rdparty/zlib" />
           <root url="file:///Library/Developer/CommandLineTools/usr/include" />
           <root url="file:///Library/Developer/CommandLineTools/usr/lib/clang/7.3.0/include" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
@@ -505,19 +540,23 @@
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Headers" />
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers" />
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
-          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/pcre" />
-          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/pcre" />
           <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/MinSizeRel/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/MinSizeRel/3rdparty/zlib" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/zlib" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/zlib" />
           <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/RelWithDebInfo/3rdparty/pcre" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/RelWithDebInfo/3rdparty/zlib" />
           <root url="file:///Library/Developer/CommandLineTools/usr/include" />
           <root url="file:///Library/Developer/CommandLineTools/usr/lib/clang/7.3.0/include" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
           <root url="file:///usr/include" />
         </SOURCES>
         <excluded>
-          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/pcre/pcre_chartables.c" />
-          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/pcre/pcre_chartables.c" />
           <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/MinSizeRel/3rdparty/pcre/pcre_chartables.c" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Debug/3rdparty/pcre/pcre_chartables.c" />
+          <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/Release/3rdparty/pcre/pcre_chartables.c" />
           <root url="file://$USER_HOME$/Library/Caches/CLion2016.2/cmake/generated/libsg-433b0d9d/433b0d9d/RelWithDebInfo/3rdparty/pcre/pcre_chartables.c" />
         </excluded>
       </library>

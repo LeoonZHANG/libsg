@@ -6,11 +6,15 @@
       <config projectName="libsg" targetName="pcre_scanner_unittest" />
       <config projectName="libsg" targetName="pcretest" />
       <config projectName="libsg" targetName="pcrecpp" />
+      <config projectName="libsg" targetName="minigzip" />
       <config projectName="libsg" targetName="proc" />
+      <config projectName="libsg" targetName="zlib" />
       <config projectName="libsg" targetName="libxml2" />
+      <config projectName="libsg" targetName="zlibstatic" />
       <config projectName="libsg" targetName="libsg-shared" />
       <config projectName="libsg" targetName="libsg-static" />
       <config projectName="libsg" targetName="pcregrep" />
+      <config projectName="libsg" targetName="example" />
       <config projectName="libsg" targetName="pcre" />
       <config projectName="libsg" targetName="pcrecpp_unittest" />
       <config projectName="libsg" targetName="pcre_stringpiece_unittest" />
@@ -25,9 +29,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3532586-594b-4944-9715-22f357f42b46" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/tool/code_fmt/bin/AStyle.exe" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libsg.iml" afterPath="$PROJECT_DIR$/.idea/libsg.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/3rdparty/zlib/zconf.h" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tool/code_fmt/fmt_win.bat.txt" afterPath="$PROJECT_DIR$/tool/code_fmt/fmt_win.bat" />
     </list>
     <ignored path="libsg.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -73,7 +76,7 @@
       <file leaf-file-name="etp.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/net/etp.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-105">
+            <state relative-caret-position="1380">
               <caret line="92" column="36" selection-start-line="92" selection-start-column="36" selection-end-line="92" selection-end-column="36" />
               <folding>
                 <element signature="e#351#420#0" expanded="true" />
@@ -252,6 +255,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="libsg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libsg" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libsg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libsg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="code_fmt" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -691,7 +716,23 @@
       <envs />
       <method />
     </configuration>
-    <list size="15">
+    <configuration default="false" name="example" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="libsg" TARGET_NAME="example" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="libsg" RUN_TARGET_NAME="example">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="minigzip" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="libsg" TARGET_NAME="minigzip" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="libsg" RUN_TARGET_NAME="minigzip">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="zlib" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="libsg" TARGET_NAME="zlib" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="zlibstatic" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="libsg" TARGET_NAME="zlibstatic" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <list size="19">
       <item index="0" class="java.lang.String" itemvalue="Application.Build All" />
       <item index="1" class="java.lang.String" itemvalue="Application.libsg-shared" />
       <item index="2" class="java.lang.String" itemvalue="Application.libsg-static" />
@@ -707,6 +748,10 @@
       <item index="12" class="java.lang.String" itemvalue="Application.pcregrep" />
       <item index="13" class="java.lang.String" itemvalue="Application.pcreposix" />
       <item index="14" class="java.lang.String" itemvalue="Application.pcretest" />
+      <item index="15" class="java.lang.String" itemvalue="Application.example" />
+      <item index="16" class="java.lang.String" itemvalue="Application.minigzip" />
+      <item index="17" class="java.lang.String" itemvalue="Application.zlib" />
+      <item index="18" class="java.lang.String" itemvalue="Application.zlibstatic" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -740,17 +785,18 @@
       <workItem from="1472463852787" duration="1142000" />
       <workItem from="1472520738085" duration="1427000" />
       <workItem from="1472526749113" duration="1431000" />
+      <workItem from="1472537255054" duration="38000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53211000" />
+    <option name="totallyTimeSpent" value="53249000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="709" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1280" height="709" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26875" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -1128,7 +1174,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/net/etp.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
+        <state relative-caret-position="1380">
           <caret line="92" column="36" selection-start-line="92" selection-start-column="36" selection-end-line="92" selection-end-column="36" />
           <folding>
             <element signature="e#351#420#0" expanded="true" />
