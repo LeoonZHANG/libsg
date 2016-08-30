@@ -148,7 +148,7 @@ if(WIN32)
     add_dependencies(${target_shared} libxml2)
     add_dependencies(${target_static} libxml2)
 elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre z)
+    set(link_libs iconv dl xml2 curl pthread pcre zlibstatic)
 elseif(UNIX)
     set(link_libs
         rt
