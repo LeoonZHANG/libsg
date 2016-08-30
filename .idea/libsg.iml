@@ -51,7 +51,6 @@
       <sourceFolder url="file://$MODULE_DIR$/test/unit/proc.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit/charset.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/json_checker/JSON_checker.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/json_checker/JSON_checker.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/b64.c/encode.c" isTestSource="false" />
@@ -150,7 +149,7 @@
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/vtd-xml/vtdNav.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/cjson/cJSON.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/3rdparty/cjson/cJSON.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/3rdparty/libxml2/tmp/libxml2-cfgcmd.txt.in" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3rdparty/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
