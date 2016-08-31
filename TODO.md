@@ -46,7 +46,7 @@ zip重构 zlib zip gzip
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－ Release
 
 kcp + reed-solomon
-
+Nat traversal, P2P
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
 //非对称加密算法 asym: RSA、Elgamal、背包算法、Rabin、D-H、ECC
@@ -62,8 +62,7 @@ c－blosc
 7z
 snappy 快速数据压缩解压,直接对文件、字符串喝buffer进行操作对接口要有, 累计填充数据对偏底层接口也要有。
 
-
-dial 增加其他平台支持?
+dial 增加其他平台支持? 编程调用bat也可以了其实
   
 speed_test 速度测试
 

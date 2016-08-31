@@ -1,4 +1,4 @@
-/*
+/**
  * cl.h
  * Author: wangwei.
  * Compiler macros.

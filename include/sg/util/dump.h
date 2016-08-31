@@ -1,4 +1,4 @@
-/*
+/**
  * dump.h
  * Author: wangwei.
  * Dump toolkit.

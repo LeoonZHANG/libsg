@@ -1,6 +1,7 @@
 /**
  * sym.h
- * Common symmetric encryption algorithm based on openssl, including DES / 3DES / AES / IDEA / RC2 / RC4 / RC5 / BlowFish等等
+ * Common symmetric encryption algorithm based on openssl,
+ * including DES / 3DES / AES / IDEA / RC2 / RC4 / RC5 / BlowFish等等
  * 这个模块整合的对称加密算法中可以把输入输出抽象的如头文件接口设计等那些对称加密算法,如果有些对称加密算法确定不可以这样抽象,那么就不要放这个模块
  * enum sg_sym_type请补齐
  */
@@ -42,6 +43,7 @@ int sg_sym_set_key(sg_sym_t *ctx, const unsigned char *key, size_t key_bits);
 
 void sg_sym_put(sg_sym_t *, void *data, size_t data_size);
 
+/* 结束计算,如果内部buffer有剩余数据, 请清空 */
 void sg_sym_flush(sg_sym_t *);
 
 void sg_sym_free(sg_sym_t *);
@@ -53,7 +55,7 @@ int sg_sym_buf(enum sg_sym_type, const char *key, enum sg_sym_mode mode,
                const void *src, size_t src_len, sg_vlbuf_t *res);
 
 int sg_sym_file(enum sg_sym_type, const char *key, enum sg_sym_mode mode,
-                const char *src_fn, const char *res_fn);
+                const char *src_filename, const char *res_filename);
 
 
 #ifdef __cplusplus

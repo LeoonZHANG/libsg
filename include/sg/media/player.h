@@ -1,4 +1,5 @@
 /**
+ * player.h
  * Simple video player play from filename / stream / memory, without fast go / fast back / drag play.
  */
 
@@ -9,7 +10,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct sg_player sg_player_t;
+typedef struct sg_player_real sg_player_t;
 
 sg_player_t *sg_player_create(void);
 

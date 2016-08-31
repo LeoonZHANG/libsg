@@ -1,4 +1,4 @@
-/*
+/**
  * rtsp.h
  * RTSP client based on libcurl.
  */
@@ -22,15 +22,11 @@ typedef void (*sg_rtsp_on_close_func_t)(sg_rtsp_t *, int code, const char *reaso
 
 int sg_rtsp_init(void);
 
-sg_rtsp_t *sg_rtsp_open_url(const char *url,
-                        sg_rtsp_on_open_func_t,
-                        sg_rtsp_on_data_func_t,
-                        sg_rtsp_on_close_func_t);
+sg_rtsp_t *sg_rtsp_open_url(const char *url, sg_rtsp_on_open_func_t,
+                        sg_rtsp_on_data_func_t, sg_rtsp_on_close_func_t);
                         
-sg_rtsp_t *sg_rtsp_open_sdp(const char *url,
-                        sg_rtsp_on_open_func_t,
-                        sg_rtsp_on_data_func_t,
-                        sg_rtsp_on_close_func_t);
+sg_rtsp_t *sg_rtsp_open_sdp(const char *url, sg_rtsp_on_open_func_t,
+                        sg_rtsp_on_data_func_t, sg_rtsp_on_close_func_t);
 
 int sg_rtsp_run(sg_rtsp_t *, int interval_ms);
 

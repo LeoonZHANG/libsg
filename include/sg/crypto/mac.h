@@ -35,32 +35,32 @@ struct sg_mac_sum {
     char    hex_str[SGENCHASHHEXSTR_MAXLEN]; /* Output hash as a hexadecimal number. */
 };
 
-/* Md5 handle opened by mac5_open. */
+/* Mac handle opened by mac5_open. */
 typedef void sg_mac_ctx;
 
-/* Md5 hash for a binary buffer.
+/* Mac hash for a binary buffer.
    Length must > 0. */
 int sg_mac_buf(void *buf, size_t len, enum sg_mac_type type,
                const char *key, struct sg_mac_sum *rst);
 
-/* Md5 hash for a c plain string.
+/* Mac for a c plain string.
    String length must > 0. */
 int sg_mac_str(const char *str, enum sg_mac_type type,
                const char *key, struct sg_mac_sum *rst);
 
-/* Md5 hash for a file.
+/* Mac hash for a file.
    Length of path must > 0. */
 int sg_mac_file(const char *path, enum sg_mac_type type,
                 const char *key, struct sg_mac_sum *rst);
 
-/* Open a mac5 context. */
+/* Open a mac context. */
 sg_mac_ctx *sg_mac_start(enum sg_mac_type type, const char *key);
 
 /* Update data to hash it.
    Length must > 0. */
 int sg_mac_update(sg_mac_ctx *ctx, void *input, size_t input_len);
 
-/* Close the mac5 context and get the result. */
+/* Close the mac context and get the result. */
 int sg_mac_finish(sg_mac_ctx *ctx, struct sg_mac_sum *rst);
 
 #ifdef __cplusplus
