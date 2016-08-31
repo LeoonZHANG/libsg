@@ -98,11 +98,13 @@ if(WIN32)
     include_directories(3rdparty/zlib)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib)
 elseif(APPLE)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 elseif(UNIX)
     include_directories(3rdparty/libuuid/include)
     include_directories(3rdparty/libiconv-1.14/local/include)
     include_directories(3rdparty/zlib)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 endif()
 
 ## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
@@ -149,8 +151,10 @@ if(WIN32)
     add_dependencies(${target_static} libxml2)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
-        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/.libs/libmpir.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
         )
+    add_dependencies(${target_shared} libmpir)
+    add_dependencies(${target_static} libmpir)
 elseif(UNIX)
     set(link_libs
         rt
@@ -160,9 +164,10 @@ elseif(UNIX)
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libiconv-1.14/local/lib/libiconv.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
          )
-    add_dependencies(${target_shared} libxml2 libuuid libiconv)
-    add_dependencies(${target_static} libxml2 libuuid libiconv)
+    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir)
+    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})

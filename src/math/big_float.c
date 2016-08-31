@@ -1,7 +1,7 @@
 #include <sg/math/c_float.h>
 #include <sg/math/big_float.h>
 #include <sg/math/big_int.h>
-#include <mpir/mpir.h>
+#include <mpir.h>
 #include <string.h>
 
 #define BIG_FLOAT_ORDER   1
