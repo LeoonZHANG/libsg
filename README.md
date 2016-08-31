@@ -32,14 +32,33 @@ Common C API vs libsg API sample
 
 Key modules are optimized, you can create high performance application with libsg.
 
-
-
 ## Supported Platforms
 
 Linux ／ Windows ／ OS X
 
-## Download > Install > Use
+## Download > Build > Use
 
+## Build Instructions
+
+Before building, make sure CMake and C compiler(gcc/clang/msvc) has been installed correctly.
+
+Linux / MacOS
+
+        $ mkdir build
+        $ cd build
+        $ cmake ..
+        $ make -j4
+
+Windows
+
+        $ md build
+        $ cd build
+        $ cmake ..
+        open .sln with Visual Studio and compile the project
+
+## API document
+
+## Demo
 
 ## Modules
 
@@ -168,28 +187,6 @@ assert
 dump
 
 log
-
-## Build Instructions
-
-Before building, make sure CMake and C compiler(gcc/clang/msvc) has been installed correctly.
-
-Linux / MacOS
-
-        $ mkdir build
-        $ cd build
-        $ cmake ..
-        $ make -j4
-
-Windows
-
-        $ md build
-        $ cd build
-        $ cmake ..
-        open .sln with Visual Studio and compile the project
-
-## API document
-
-## Demo
 
 ## Code specification
 
