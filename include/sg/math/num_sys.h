@@ -12,6 +12,8 @@ enum sg_num_sys {
     SGNUMSYS_DEC = 1, /* decimal system */
     SGNUMSYS_HEX = 2, /* hex system */
     SGNUMSYS_MAX = 2
-}
+};
+
+#define SG_COMPUTE_BASE(sys) (sys == SGNUMSYS_DEC ? 10 : sys == SGNUMSYS_HEX ? 16 : sys == SGNUMSYS_BIN ? 2 : 0)
 
 #endif /* LIBSG_NUM_SYS_H */

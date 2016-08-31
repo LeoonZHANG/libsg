@@ -148,7 +148,9 @@ if(WIN32)
     add_dependencies(${target_shared} libxml2)
     add_dependencies(${target_static} libxml2)
 elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre z)
+    set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/.libs/libmpir.a
+        )
 elseif(UNIX)
     set(link_libs
         rt
@@ -166,6 +168,8 @@ endif()
 target_link_libraries(${target_shared} ${link_libs})
 ## 把静态库也链接一下，这样会生成独立的静态库文件，方便使用
 target_link_libraries(${target_static} ${link_libs})
+
+enable_testing()
 
 ## 最后再调用测试的 CMake，之所以放到最后是因为，测试程序依赖 sg 库，需要链接 sg 库，放到最后这样可以方便调用生成好的文件和变量。
 add_subdirectory(test/unit)
