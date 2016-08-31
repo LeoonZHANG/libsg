@@ -16,7 +16,7 @@ Using C to build important infrastructure, not everything.
 
 #### Efficient development
 
-Common C API vs libsg API sample
+Common C API vs libsg API sample.
 
 #### Easy-to-install source code
 

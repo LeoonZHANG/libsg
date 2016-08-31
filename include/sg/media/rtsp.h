@@ -20,7 +20,7 @@ typedef void (*sg_rtsp_on_open_func_t)(sg_rtsp_t *);
 typedef void (*sg_rtsp_on_data_func_t)(sg_rtsp_t *, char *data, size_t size);
 typedef void (*sg_rtsp_on_close_func_t)(sg_rtsp_t *, int code, const char *reason);
 
-int sg_rtsp_init();
+int sg_rtsp_init(void);
 
 sg_rtsp_t *sg_rtsp_open_url(const char *url,
                         sg_rtsp_on_open_func_t,
