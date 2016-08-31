@@ -2,7 +2,7 @@
 #include <string.h>
 #include <sg/math/c_int.h>
 #include <sg/math/big_int.h>
-#include <mpir/mpir.h>
+#include <mpir.h>
 
 #define BIG_INT_ORDER   1
 #define BIG_INT_ENDIAN  0
