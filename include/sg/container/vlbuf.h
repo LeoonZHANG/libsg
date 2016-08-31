@@ -7,6 +7,8 @@
 #ifndef LIBSG_VLBUF_H
 #define LIBSG_VLBUF_H
 
+#include <stdlib.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
