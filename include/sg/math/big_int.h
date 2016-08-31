@@ -9,7 +9,9 @@
 #ifndef LIBSG_BIG_INT_H
 #define LIBSG_BIG_INT_H
 
-#include "vlbuf.h"
+#include <stdbool.h>
+#include <sg/container/vlbuf.h>
+#include <sg/str/vlstr.h>
 #include "c_int.h"
 #include "num_sys.h"
 #include "big_float.h"
@@ -19,8 +21,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 typedef struct sg_big_int_real sg_big_int_t;
+typedef struct sg_big_float_real sg_big_float_t;
 
-enum sg_big_int_cmp {
+enum sg_big_int_cmp_result {
     SGBIGINTCMP_A_BIGGER = 0, /* Left number is bigger than right. */
     SGBIGINTCMP_EQUALS   = 1, /* Left number equals right. */
     SGBIGINTCMP_B_BIGGER = 2  /* Right number is bigger than left. */
@@ -28,7 +31,7 @@ enum sg_big_int_cmp {
 
 sg_big_int_t *sg_big_int_alloc(void);
 
-int sg_big_int_set_bin(sg_big_int_t *dst, const unsigned char *bin, int bin_len);
+int sg_big_int_set_bin(sg_big_int_t* dst, const unsigned char* bin, size_t bin_len);
 
 /* Set number such like int32_t / sg_big_int_t / sg_big_float_t as value. */
 /* dst = c_num */
@@ -62,7 +65,7 @@ int sg_big_int_sqrt(sg_big_int_t *a, sg_big_int_t *res);
 int sg_big_int_shift(sg_big_int_t *a, bool left_shift, size_t n, sg_big_int_t *res);
 
 /* compare between a and b */
-int sg_big_int_cmp(sg_big_int_t *a, sg_big_int_t *b, enum sg_big_int_cmp *res);
+enum sg_big_int_cmp_result sg_big_int_cmp(sg_big_int_t *a, sg_big_int_t *b);
 
 /* return: ＋1 positive, ==0 zero, －1 negative, otherwise error */
 int sg_big_int_cmp_zero(sg_big_int_t *);
@@ -73,10 +76,10 @@ int sg_big_int_try_to_get_c_int_type(sg_big_int_t *src, enum sg_c_int_type *type
 /* Check a string is number or not. */
 bool sg_big_int_check_num_str(const char *int_str, enum sg_num_sys sys);
 
-int sg_big_int_get_bin(sg_bit_int_t *src, sg_vlbuf_t *);
-int sg_big_int_get_c_int(sg_bit_int_t *src, void *c_int_ptr, enum sg_c_int_type);
-int sg_big_int_get_c_float(sg_bit_int_t *src, void *c_float_ptr, enum sg_c_float_type);
-int sg_big_int_get_str(sg_bit_int_t *src, enum sg_num_sys sys, sg_vlstr_t *);
+int sg_big_int_get_bin(sg_big_int_t *src, sg_vlbuf_t *);
+int sg_big_int_get_c_int(sg_big_int_t *src, void *c_int_ptr, enum sg_c_int_type);
+int sg_big_int_get_c_float(sg_big_int_t *src, void *c_float_ptr, enum sg_c_float_type);
+int sg_big_int_get_str(sg_big_int_t *src, enum sg_num_sys sys, sg_vlstr_t *);
 
 void sg_big_int_free(sg_big_int_t *);
 

@@ -148,7 +148,9 @@ if(WIN32)
     add_dependencies(${target_shared} libxml2)
     add_dependencies(${target_static} libxml2)
 elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre zlibstatic)
+    set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/.libs/libmpir.a
+        )
 elseif(UNIX)
     set(link_libs
         rt
