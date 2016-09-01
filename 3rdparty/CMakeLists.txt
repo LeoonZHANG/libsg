@@ -35,6 +35,16 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
         )
 endif()
 
+if(UNIX)
+    ExternalProject_Add(
+        libmpir
+        PREFIX ${3RDPARTY_DIR}/mpir
+        SOURCE_DIR ${3RDPARTY_DIR}/mpir
+        CONFIGURE_COMMAND ${3RDPARTY_DIR}/mpir/configure --prefix=${3RDPARTY_DIR}/mpir --with-pic
+        BUILD_COMMAND ${MAKE}
+        )
+endif()
+
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     set (CMAKE_C_FLAGS "-fPIC")
     set (CMAKE_CXX_FLAGS "-fPIC")
