@@ -35,7 +35,7 @@ uint32_t sg_etp_now(sg_etp_t *);
 /* 限制客户端发送速度, kbps为0不做任何限制 */
 void sg_etp_set_max_send_speed(sg_etp_t *, size_t kbps);
 
-int sg_etp_get_speed(sg_etp_t *, size_t &send_kbps, size_t &recv_kbps);
+int sg_etp_get_speed(sg_etp_t *, size_t * send_kbps, size_t * recv_kbps);
 
 void sg_etp_close(sg_etp_t *);
 

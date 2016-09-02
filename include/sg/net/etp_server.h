@@ -36,10 +36,10 @@ void sg_etp_server_run(sg_etp_server_t *, int interval_ms); /* 实际上就是�
 int sg_etp_server_send(sg_etp_client_t *, void *data, size_t size);
 int sg_etp_server_get_conn_size(sg_etp_server_t *);
 void sg_etp_server_set_max_conn(sg_etp_server_t *, int); /* 设置最大连接数， 如果是0表示不受限制， 因为超过此参数导致拒绝新客户连接时，请在日志中输出日志 */
-int sg_etp_server_get_speed(sg_etp_server_t *, size_t &send_kbps, size_t &recv_kbps);
+int sg_etp_server_get_speed(sg_etp_server_t *, size_t * send_kbps, size_t * recv_kbps);
 int sg_etp_server_iter_client(sg_etp_server_t *, sg_etp_server_on_iter_client_func_t, void *ctx);
 int sg_etp_server_get_client_info(sg_etp_client_t *, char **addr, int *port);
-int sg_etp_server_get_client_speed(sg_etp_client_t *, size_t &send_kbps, size_t &recv_kbps);
+int sg_etp_server_get_client_speed(sg_etp_client_t *, size_t * send_kbps, size_t * recv_kbps);
 void sg_etp_server_set_client_max_send_speed(sg_etp_client_t *, size_t kbps); /* 限制对此客户端的发送速度 */
 void sg_etp_server_close_client(sg_etp_client_t *);
 void sg_etp_server_close(sg_etp_server_t *);

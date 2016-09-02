@@ -1,8 +1,25 @@
+/*===========================================================================*\
+ * Vincent (vin@misday.com)
+ *
+ * This is the server routin for kcp protocol with libuv, using UDP for
+ * the data transfore protocol.
+ *
+\*===========================================================================*/
+
+
+/*===========================================================================*\
+ * Header Files
+\*===========================================================================*/
 #include <stdio.h>
 #include <string.h>
 #include "uv.h"
 #include "ikcp.h"
+#include "linkhash.h"
 #include "etp_server.h"
+
+/*===========================================================================*\
+ * #define MACROS
+\*===========================================================================*/
 
 typedef unsigned char bool;
 #define true    1
@@ -11,34 +28,56 @@ typedef unsigned char bool;
 #define OK      0
 #define ERROR (-1)
 
-#define SG_ASSERT(exp, prmpt)          if (exp) {} else { printf("%d:%s() " prmpt "\n", __LINE__, __FUNCTION__); return; }
-#define SG_ASSERT_RET(exp, prmpt, ret) if (exp) {} else { printf("%d:%s() " prmpt "\n", __LINE__, __FUNCTION__); return(ret); }
-#define SG_ASSERT_BRK(exp, prmpt)      if (exp) {} else { printf("%d:%s() " prmpt "\n", __LINE__, __FUNCTION__); break; }
+#if defined(PLATFORM_WINDOWS)
+/* FIXME: change variable argument macros definition if needed. */
+#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#elif defined(PLATFORM_LINUX)
+#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#elif defined(PLATFORM_MACOS) || defined(PLATFORM_BSD)
+/* FIXME: change variable argument macros definition if needed. */
+#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#else
+/* FIXME: change variable argument macros definition if needed. */
+#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#endif
 
-typedef struct DBLL_Entry_T
-{
-    struct DBLL_Entry_T *next;  /**< Next entry in list */
-    struct DBLL_Entry_T *prev;  /**< Previous entry in list */
-}
-DBLL_Entry_T;
+#define SG_ASSERT(exp, prmpt)          if (exp) {} else { LOG_W(prmpt); return; }
+#define SG_ASSERT_RET(exp, prmpt, ret) if (exp) {} else { LOG_W(prmpt); return(ret); }
+#define SG_ASSERT_BRK(exp, prmpt)      if (exp) {} else { LOG_W(prmpt); break; }
 
-typedef struct DBLL_List_T
-{
-  DBLL_Entry_T *first;  /**< Pointer to first entry in list; NULL if list is empty. */
-  DBLL_Entry_T *last;   /**< Pointer to last entry in list; NULL if list is empty. */
-  uint32_t count;       /**< Number of entries in list. */
-}
-DBLL_List_T;
+/*
+ * 网速统计方法说明
+ * 以SG_ETP_CALC_SPEED_INTERVAL_MS为最小统计单位，在这期间内计算一次瞬间网速，
+ * 然后，存入大小为SG_ETP_SPEED_STAT_SAMPLE_COUNT的环形数组，
+ * 最后，计算环形数组的所有元素值的平均值，作为当前的瞬间速度，这样的统计值比较平滑。
+ */
 
-void DBLL_Init(DBLL_List_T * pLL);
-void DBLL_Destroy(DBLL_List_T * pLL);
-void DBLL_Add_Entry(DBLL_List_T * pLL, DBLL_Entry_T * pEntry);
-void DBLL_Insert_After(DBLL_List_T * pLL, DBLL_Entry_T * pEntry, DBLL_Entry_T * pNeighbor);
-void *DBLL_Remove_Entry(DBLL_List_T * pLL, DBLL_Entry_T * pEntry);
-uint32_t DBLL_Get_Count(DBLL_List_T const *pLL);
-void *DBLL_Get_First(DBLL_List_T const *pLL);
-void *DBLL_Get_Next(DBLL_Entry_T const *pEntry);
-void * DBLL_Find(DBLL_List_T * pLL, uint32_t conv);
+/* 速度统计采样总数，必须是2的N次方 */
+#define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
+
+/* 多长统计一次瞬间发送速度 */
+#define SG_ETP_CALC_SPEED_INTERVAL_MS 2000
+
+/*===========================================================================*\
+ * Local Type Declarations
+\*===========================================================================*/
+
 
 /* 速度统计采样总数，必须是2的N次方 */
 #define SG_ETP_SPEED_STAT_SAMPLE_COUNT 16
@@ -47,7 +86,6 @@ void * DBLL_Find(DBLL_List_T * pLL, uint32_t conv);
 
 typedef struct sg_etp_client_real
 {
-    DBLL_Entry_T        le;
     IUINT32             conv;
     uv_loop_t         * loop;
     uv_udp_t          * udp;
@@ -55,15 +93,15 @@ typedef struct sg_etp_client_real
     uv_idle_t           idle;
     struct sockaddr     addr;
     ikcpcb            * kcp;
-    IUINT32             next_update;
+    IUINT32             kcp_update_time;
     int                 to_close;
     sg_etp_server_t   * server;
     sg_etp_server_on_open_func_t    on_open;
     sg_etp_server_on_data_func_t    on_data;
     sg_etp_server_on_close_func_t   on_close;
-    void * data;
-	
-	/* 统计速率相关 */
+    void              * data;
+
+    /* 统计速率相关 */
     uint64_t            last_time; /* 上一次统计时间 */
     int                 last_send_byte;
     int                 max_speed_limit;
@@ -74,28 +112,53 @@ typedef struct sg_etp_client_real
 
 typedef struct sg_etp_server_real
 {
-    uv_loop_t         * loop;
-    uv_udp_t            udp;
-    uv_timer_t          timer;
-    uv_idle_t           idle;
-    struct sockaddr     addr;
-    int                 backlog;
-    int                 max_conn;
-    int                 interval;
-    sg_etp_server_on_open_func_t    on_open;
-    sg_etp_server_on_data_func_t    on_data;
-    sg_etp_server_on_close_func_t   on_close;
-    DBLL_List_T         clients;
-    void * data;
+    uv_loop_t                           loop_kcp;       /*< uv loop handler, for kcp running in, should not use this directly */
+    uv_loop_t                         * loop;           /*< uv loop handler, for kcp running in */
+    uv_udp_t                            udp;            /*< libuv udp handler, for kcp bearing protocol */
+    uv_timer_t                          timer;          /*< libuv timer handler, for update kcp */
+    uv_idle_t                           idle;           /*< libuv idle handler, for receive data */
+    struct sockaddr                     addr;           /*< address of server bind to */
+    int                                 backlog;        /*< backlog flag */
+    int                                 max_conn;       /*< maxium number of accepted client */
+    int                                 interval;       /*< update kcp interval time */
+    sg_etp_server_on_open_func_t        on_open;        /*< callback */
+    sg_etp_server_on_data_func_t        on_data;        /*< callback */
+    sg_etp_server_on_close_func_t       on_close;       /*< callback */
+    struct lh_table*                    clients;        /*< clients list container */
+    /*void                              * recv_data;*/      /*< for receive data callback */
+    /*size_t                              recv_data_len;*/  /*< for receive data callback */
+
+    void                              * data;
 }sg_etp_server_t;
 
 typedef struct send_req_s
 {
-	uv_udp_send_t req;
-	uv_buf_t buf;
+    uv_udp_send_t   req;
+    uv_buf_t        buf;
     sg_etp_client_t* client;
 }send_req_t;
 
+/* TODO: merge c/s */
+/* for libuv uv_queue_work, to process the received data via callback. */
+typedef struct recv_data_s
+{
+    uv_work_t req;
+    sg_etp_client_t *    client;
+    size_t    data_len;
+    char      data[1];  /* keep this field the last one for dynamic length */
+}recv_data_t;
+
+/*===========================================================================*\
+ * Exported Const Object Definitions
+\*===========================================================================*/
+
+/*===========================================================================*\
+ * Local Object Definitions
+\*===========================================================================*/
+
+/*===========================================================================*\
+ * Local Function Prototypes
+\*===========================================================================*/
 
 static void on_uv_alloc_buffer(uv_handle_t* handle, size_t size, uv_buf_t* buf);
 static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *user);
@@ -108,51 +171,64 @@ static void on_server_recv_udp(uv_udp_t* handle,
 static void on_uv_timer_cb(uv_timer_t* handle);
 static void on_uv_idle_cb(uv_idle_t* handle);
 static void on_uv_close_done(uv_handle_t* handle);
-static void sg_kcp_client_update_speed(sg_kcp_client_t* client, uint64_t now);
+static void sg_etp_client_update_speed(sg_etp_client_t* client, uint64_t now);
+
+static void recv_data_check(sg_etp_client_t * client);
+static void recv_data_proc(uv_work_t *req);
+static void recv_data_proc_cleanup(uv_work_t *req, int status);
+
+
+
+/*===========================================================================*\
+ * Local Inline Function Definitions and Function-Like Macros
+\*===========================================================================*/
+
+/*===========================================================================*\
+ * Function Definitions
+\*===========================================================================*/
 
 /* for libuv */
 static void on_uv_alloc_buffer(uv_handle_t* handle, size_t size, uv_buf_t* buf)
 {
-	buf->len = (unsigned long)size;
-	buf->base = malloc(sizeof(char) * size);
+    buf->len = (unsigned long)size;
+    buf->base = malloc(sizeof(char) * size);
 }
 
 /* for kcp callback */
 static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *user)
 {
-	sg_etp_client_t * client = (sg_etp_client_t *)user;
+    sg_etp_client_t * client = (sg_etp_client_t *)user;
     int ret = -1;
     send_req_t * req = NULL;
 
-    /*printf("udp send: %d\n", len);*/
+    /*LOG_D("udp send: %d\n", len);*/
 
     do
     {
         // 限速
         if (client->max_speed_limit > 0 && client->current_speed > client->max_speed_limit)
             return ret;
-			
-    	req = (send_req_t *)malloc(sizeof(send_req_t));
+        req = (send_req_t *)malloc(sizeof(send_req_t));
         SG_ASSERT_BRK(NULL != req, "create send_req_t failed");
 
         memset(req, 0, sizeof(send_req_t));
 
         req->client = client;
-    	req->buf.base = malloc(sizeof(char) * len);
+        req->buf.base = malloc(sizeof(char) * len);
         SG_ASSERT_BRK(NULL != req->buf.base, "create buf failed");
-    	req->buf.len = len;
+        req->buf.len = len;
 
-    	memcpy(req->buf.base, buf, len);
+        memcpy(req->buf.base, buf, len);
 
-    	ret = uv_udp_send((uv_udp_send_t*)req, client->udp, &req->buf, 1, &client->addr, on_udp_send_done);
-    	if (ret < 0)
+        ret = uv_udp_send((uv_udp_send_t*)req, client->udp, &req->buf, 1, &client->addr, on_udp_send_done);
+        if (ret < 0)
         {
-    		free(req->buf.base); /* TODO: ensure free */
-    		free(req); /* TODO: ensure free ? */
-    		return -1;
-    	}
+            free(req->buf.base); /* TODO: ensure free */
+            free(req); /* TODO: ensure free ? */
+            return -1;
+        }
 
-    	return ret;
+        return ret;
     } while (0);
 
     if (NULL != req)
@@ -162,20 +238,20 @@ static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *use
             free(req->buf.base);
             req->buf.base = NULL;
         }
-        
+
         free(req);
         req = NULL;
     }
 
-	return ret;
+    return ret;
 }
 
 static void on_udp_send_done(uv_udp_send_t* req, int status)
 {
-	send_req_t * send_req = (send_req_t *)req;
+    send_req_t * send_req = (send_req_t *)req;
     send_req->client->last_send_byte += send_req->buf.len; /* 统计网速 */
-	free(send_req->buf.base); /* TODO: ensure free*/
-	free(send_req);	/** TODO: ensure free */
+    free(send_req->buf.base); /* TODO: ensure free*/
+    free(send_req); /** TODO: ensure free */
 }
 
 static void on_server_recv_udp(uv_udp_t* handle,
@@ -185,11 +261,11 @@ static void on_server_recv_udp(uv_udp_t* handle,
     unsigned flags)
 {
     IUINT32 conv = 0;
-	int ret = 0;
+    int ret = 0;
     sg_etp_server_t * server = handle->data;
     sg_etp_client_t * client = NULL;
 
-    /*printf("recv udp %d\n", nread);*/
+    /*LOG_D("recv udp %d\n", nread);*/
 
     do
     {
@@ -200,19 +276,19 @@ static void on_server_recv_udp(uv_udp_t* handle,
         SG_ASSERT_BRK(1 == ret, "get conv by ikcp failed");
 
         /* TODO: find client */
-        client = DBLL_Find(&(server->clients), conv);
+        client = lh_table_lookup(server->clients, (const void *)conv);
         if (NULL == client)
         {
-            if (DBLL_Get_Count(&(server->clients)) >= server->max_conn)
+            if (server->clients->count >= server->max_conn)
             {
-                printf("meet max connection, ignore\n");
+                LOG_I("meet max connection %d, ignore", server->max_conn);
                 break;
             }
-        
+
             client = (sg_etp_client_t *)malloc(sizeof(sg_etp_client_t));
             SG_ASSERT_BRK(NULL != client, "create client failed");
             /* link client */
-            DBLL_Add_Entry(&(server->clients), (DBLL_Entry_T *)client);
+            lh_table_insert(server->clients, (void *)conv, client);
             client->conv        = conv;
             client->loop        = server->loop;
             client->udp         = &(server->udp);
@@ -225,16 +301,16 @@ static void on_server_recv_udp(uv_udp_t* handle,
             client->kcp = ikcp_create(conv, (void*)client);
             SG_ASSERT_BRK(client->kcp != NULL, "create ikcp failed");
 
-        	client->kcp->output = on_kcp_output;
+            client->kcp->output = on_kcp_output;
 
-        	ret = ikcp_nodelay(client->kcp, 1, server->interval, 2, 1);
+            ret = ikcp_nodelay(client->kcp, 1, server->interval, 2, 1);
 
-        	printf("conn from %u\n", (unsigned int)client->conv);
+            LOG_I("conn from %lu\n", client->conv);
 
-        	client->on_open(client);
+            client->on_open(client);
         }
 
-        client->next_update = 0; /* clear next update */
+        client->kcp_update_time = 0; /* clear next update */
         ikcp_input(client->kcp, rcvbuf->base, nread);
     }
     while (0);
@@ -246,71 +322,126 @@ static void on_uv_timer_cb(uv_timer_t* handle)
 {
     sg_etp_server_t * server = handle->data;
     sg_etp_client_t * client = NULL;
-    sg_etp_client_t * prev = NULL;
+    sg_etp_client_t * to_del = NULL;
+    struct lh_entry * entry  = NULL;
     IUINT32 now = (IUINT32)uv_now(server->loop);
 
-    /*printf("update %d\n", DBLL_Get_Count(&(server->clients)));*/
+    /*LOG_D("update %d\n", DBLL_Get_Count(&(server->clients)));*/
 
     /* traverse client list */
-    client = DBLL_Get_First(&(server->clients));
-    while (NULL != client)
+    entry = server->clients->head;
+    while (NULL != entry)
     {
+        client = entry->v;
+
         /*printf("update %d\n", client->conv);*/
-		/* 更新网速 */
-        sg_kcp_client_update_speed(client, now);
-		
-        if (now >= client->next_update)
+        /* 更新网速 */
+        sg_etp_client_update_speed(client, now);
+
+        if (now >= client->kcp_update_time)
         {
             ikcp_update(client->kcp, now);
-            client->next_update = ikcp_check(client->kcp, now);
+            client->kcp_update_time = ikcp_check(client->kcp, now);
         }
 
-        prev = client;
-        client = DBLL_Get_Next((DBLL_Entry_T const *)client);
+        recv_data_check(client);
 
-        if (prev->to_close)
+        /* must get next before delete */
+        entry = entry->next;
+
+        if (client->to_close)
         {
-            sg_etp_server_close_client(prev);
+            sg_etp_server_close_client(client);
         }
     }
 }
 
-
+#if 0
 static void on_uv_idle_cb(uv_idle_t* handle)
 {
     int ret = 0;
     int len = 0;
-    char * data = NULL;
     sg_etp_server_t * server = handle->data;
     sg_etp_client_t * client = NULL;
+    struct lh_entry * entry = NULL;
 
     /* traverse client list */
-    client = DBLL_Get_First(&(server->clients));
-    while (NULL != client)
+    entry = server->clients->head;
+    while (NULL != entry)
     {
+        client = entry->v;
+
+        /* check available data */
         len = ikcp_peeksize(client->kcp);
-    	if (len < 0)
+        if (len > 0)
         {
-    		return;
-    	}
+            /* prepare memory */
+            if (server->recv_data_len < len)
+            {
+                server->recv_data = realloc(server->recv_data, len);
+                SG_ASSERT(NULL != server->recv_data, "realloc failed");
+                server->recv_data_len = len;
+            }
 
-    	data = (char *)malloc(len);
-    	ret = ikcp_recv(client->kcp, data, len);
-    	if (ret < 0)
-        {
-    		free(data);
-    		return;
-    	}
+            /* receive data and call on_message callback */
+            ret = ikcp_recv(client->kcp, server->recv_data, len);
+            if (ret >= 0)
+            {
+                client->on_data(client, server->recv_data, ret);
+            }
+        }
 
-        client->on_data(client, data, len);
-
-        free(data);
-        data = NULL;
-
-        client = DBLL_Get_Next((DBLL_Entry_T const *)client);
+        entry = entry->next;
     }
 }
 
+#endif
+
+/* @TODO: merge c/s */
+static void recv_data_check(sg_etp_client_t * client)
+{
+    int len = 0;
+    recv_data_t * req = NULL;
+
+    len = ikcp_peeksize(client->kcp);
+    if (len > 0)
+    {
+        req = malloc(sizeof(recv_data_t) + len);
+        if (NULL != req)
+        {
+            len = ikcp_recv(client->kcp, req->data, len);
+            if (len >= 0)
+            {
+                req->data_len = len;
+                req->client = client;
+                uv_queue_work(client->loop, &req->req, recv_data_proc, recv_data_proc_cleanup);
+            }
+            else
+            {
+                free(req);
+            }
+        }
+        else
+        {
+            LOG_E("recv_data malloc failed");
+        }
+    }
+}
+
+/* @TODO: merge c/s */
+static void recv_data_proc(uv_work_t * req)
+{
+    recv_data_t * recv = (recv_data_t *)req;
+    recv->client->on_data(recv->client, recv->data, recv->data_len);
+}
+
+/* @TODO: merge c/s */
+static void recv_data_proc_cleanup(uv_work_t *req, int status)
+{
+    free(req);
+}
+
+/* callback after udp closed */
 static void on_uv_close_done(uv_handle_t* handle)
 {
 
@@ -324,10 +455,11 @@ int sg_etp_server_init(void)
 
 sg_etp_server_t *sg_etp_server_open(
     const char *server_addr, int server_port,
-    int                             backlog,
-    int                             max_conn_count,
+    int                             max_backlog,
     sg_etp_server_on_open_func_t    on_open,
     sg_etp_server_on_data_func_t    on_data,
+    sg_etp_server_on_sent_func_t    on_sent,
+    sg_etp_server_on_error_func_t   on_error,
     sg_etp_server_on_close_func_t   on_close
 )
 {
@@ -341,20 +473,22 @@ sg_etp_server_t *sg_etp_server_open(
         server = (sg_etp_server_t *)malloc(sizeof(sg_etp_server_t));
         SG_ASSERT_BRK(NULL != server, "create sg_etp_server_t");
 
-        server->backlog  = backlog;
-        server->max_conn = max_conn_count;
-        server->on_open  = on_open;
-        server->on_data  = on_data;
-        server->on_close = on_close;
+        memset(server, 0, sizeof(sg_etp_server_t));
+        server->backlog     = 0;
+        server->max_conn    = max_backlog;
+        server->on_open     = on_open;
+        server->on_data     = on_data;
+        server->on_close    = on_close;
 
-        DBLL_Init(&(server->clients));
+        server->clients = lh_kptr_table_new(server->max_conn, "etp server", NULL);
 
-    	/* get address */
-    	ret = uv_ip4_addr(server_addr, server_port, &addr);
-      	SG_ASSERT_BRK(ret >= 0, "get address failed");
+        /* get address */
+        ret = uv_ip4_addr(server_addr, server_port, &addr);
+        SG_ASSERT_BRK(ret >= 0, "get address failed");
         memcpy(&(server->addr), &addr, sizeof(struct sockaddr));
 
-    	server->loop = uv_default_loop();
+        server->loop = &(server->loop_kcp);
+        uv_loop_init(server->loop); /* initiate a new loop instead default loop */
 
         return server;
     }
@@ -371,7 +505,7 @@ sg_etp_server_t *sg_etp_server_open(
 
 int sg_etp_server_send_data(sg_etp_client_t * client, void *data, size_t size)
 {
-    client->next_update = 0; /* clear next update */
+    client->kcp_update_time = 0; /* clear next update */
     return ikcp_send(client->kcp, data, size);
 }
 
@@ -386,9 +520,9 @@ void sg_etp_server_close_client(sg_etp_client_t * client)
     }
 
     client->on_close(client, OK, "");
-    
+
+    lh_table_delete(server->clients, (void *)client->conv);
     ikcp_release(client->kcp);
-    DBLL_Remove_Entry(&(server->clients), (DBLL_Entry_T *)client);
     free(client);
 }
 
@@ -407,16 +541,18 @@ void sg_etp_server_run(sg_etp_server_t * server, int interval_ms)
 {
     int ret = 0;
 
+    SG_ASSERT(NULL != server, "server pointer is NULL");
+
     server->interval = interval_ms;
 
     /* init udp */
-	ret = uv_udp_init(server->loop, &(server->udp));
+    ret = uv_udp_init(server->loop, &(server->udp));
     SG_ASSERT(ret >= 0, "init udp failed");
     server->udp.data = server;
     ret = uv_udp_bind(&(server->udp), &(server->addr), 0);
-	SG_ASSERT(ret >= 0, "bind udp failed");
-	ret = uv_udp_recv_start(&(server->udp), on_uv_alloc_buffer, on_server_recv_udp);
-	SG_ASSERT(ret >= 0, "start udp recv failed");
+    SG_ASSERT(ret >= 0, "bind udp failed");
+    ret = uv_udp_recv_start(&(server->udp), on_uv_alloc_buffer, on_server_recv_udp);
+    SG_ASSERT(ret >= 0, "start udp recv failed");
 
     /* start a timer for kcp update and receiving */
     ret = uv_timer_init(server->loop, &(server->timer));
@@ -426,11 +562,13 @@ void sg_etp_server_run(sg_etp_server_t * server, int interval_ms)
     SG_ASSERT(ret >= 0, "start timer failed");
 
     /* reg idle for data process */
+    #if 0
     ret = uv_idle_init(server->loop, &(server->idle));
     SG_ASSERT(ret >= 0, "init idle failed");
     server->idle.data = server;
     ret = uv_idle_start(&(server->idle), on_uv_idle_cb);
     SG_ASSERT(ret >= 0, "start idle failed");
+    #endif
 
     /* network run */
     uv_run(server->loop, UV_RUN_DEFAULT);
@@ -439,22 +577,28 @@ void sg_etp_server_run(sg_etp_server_t * server, int interval_ms)
 void sg_etp_server_close(sg_etp_server_t * server)
 {
     sg_etp_client_t * client = NULL;
-    sg_etp_client_t * to_del = NULL;
+    struct lh_entry * to_del = NULL;
+    struct lh_entry * entry = NULL;
 
     /* traverse client list */
-    client = DBLL_Get_First(&(server->clients));
-    while (NULL != client)
+    entry = server->clients->head;
+    while (NULL != entry)
     {
-        to_del = client;
-        client = DBLL_Get_Next((DBLL_Entry_T *)client);
+        to_del = entry;
+        entry = entry->next;
 
-        sg_etp_server_close_client(to_del);
+        sg_etp_server_close_client((sg_etp_client_t *)to_del->v);
     }
+
+    /* FIXME: should wait all client connection been closed. */
 
     uv_close((uv_handle_t*)&(server->udp), on_uv_close_done);
 
-    DBLL_Destroy(&(server->clients));
+    uv_loop_close(server->loop);
 
+    lh_table_free(server->clients);
+
+    /*free(server->recv_data);*/
     free(server);
 }
 
@@ -514,170 +658,6 @@ void sg_etp_server_free(void)
 }
 
 
-void DBLL_Init(DBLL_List_T * pLL)
-{
-    SG_ASSERT(pLL != NULL, "DBLL_Init cannot be called with a NULL pLL pointer");
-
-    memset(pLL, 0, sizeof(*pLL));
-}
-
-void DBLL_Destroy(DBLL_List_T * pLL)
-{
-    SG_ASSERT(pLL != NULL, "DBLL_Destroy cannot be called with a NULL pLL pointer");
-
-    memset(pLL, 0, sizeof(*pLL));
-}
-
-void DBLL_Add_Entry(DBLL_List_T * pLL, DBLL_Entry_T * pEntry)
-{
-   SG_ASSERT(pLL != NULL, "DBLL_Add_Entry cannot be called with a NULL pLL pointer");
-   SG_ASSERT(pEntry != NULL, "DBLL_Add_Entry cannot be called with a NULL pEntry pointer");
-   SG_ASSERT((NULL == pLL->first) || (NULL == pLL->first->prev), "DBLL_Add_Entry cannot be called with a NULL first or prev pointer");
-   SG_ASSERT((NULL == pLL->last) || (NULL == pLL->last->next), "DBLL_Add_Entry cannot be called with a NULL last or next pointer");
-
-   /* insert at the end of the list */
-   DBLL_Insert_After(pLL, pEntry, NULL);
-}
-
-void DBLL_Insert_After(DBLL_List_T * pLL, DBLL_Entry_T * pEntry, DBLL_Entry_T * pNeighbor)
-{
-   bool only_one = false;
-
-   SG_ASSERT(pLL != NULL, "DBLL_Insert_After cannot be called with a NULL pLL pointer");
-   SG_ASSERT(pEntry != NULL, "DBLL_Insert_After cannot be called with a NULL pEntry pointer");
-   SG_ASSERT((NULL == pLL->first) || (NULL == pLL->first->prev),"DBLL_Insert_After cannot be called with a NULL first or prev pointer");
-   SG_ASSERT((NULL == pLL->last) || (NULL == pLL->last->next), "DBLL_Insert_After cannot be called with a NULL last or next pointer");
-
-   if (NULL == pNeighbor)       /* place entry at end of list */
-   {
-      pNeighbor = pLL->last;
-
-      if (NULL == pNeighbor)    /* list is currently empty! */
-      {
-         pLL->first = pLL->last = pEntry;
-         pLL->count++;
-         pEntry->next = pEntry->prev = NULL;
-         SG_ASSERT(NULL == pLL->first->prev, "DBLL_Insert_After cannot have a null prev pointer");
-         SG_ASSERT(NULL == pLL->last->next, "DBLL_Insert_After cannot have a null next pointer");
-
-         only_one = true;       /* all done (bypass extra logic below) */
-      }
-   }
-
-   if (!only_one)
-   {
-      DBLL_Entry_T *oldNext;
-
-      oldNext = pNeighbor->next;
-      pNeighbor->next = pEntry;
-      pEntry->prev = pNeighbor;
-      pEntry->next = oldNext;
-
-      if (oldNext != NULL)      /* not last in list */
-      {
-         oldNext->prev = pEntry;
-      }
-      else                      /* is the last in the list */
-      {
-            pLL->last = pEntry;
-            SG_ASSERT(NULL == pLL->last->next, "DBLL_Insert_After next pointer is not valid");
-      }
-      pLL->count++;
-
-      SG_ASSERT((NULL == pLL->first) || (NULL == pLL->first->prev), "DBLL_Insert_After first or prev pointer is not valid");
-      SG_ASSERT((NULL == pLL->last) || (NULL == pLL->last->next), "DBLL_Insert_After first or prev pointer is not valid");
-   }                            /* if (!only_one) */
-}
-
-void *DBLL_Remove_Entry(DBLL_List_T * pLL, DBLL_Entry_T * pEntry)
-{
-    DBLL_Entry_T *next;
-    DBLL_Entry_T *prev;
-
-    SG_ASSERT_RET(pLL != NULL, "DBLL_Remove_Entry cannot be called with a NULL bdb pointer", NULL);
-    SG_ASSERT_RET(pEntry != NULL, "DBLL_Remove_Entry cannot be called with a NULL bdb pointer", NULL);
-    SG_ASSERT_RET((NULL == pLL->first) || (NULL == pLL->first->prev), "DBLL_Remove_Entry cannot be called with a NULL first or prev pointer", NULL);
-    SG_ASSERT_RET((NULL == pLL->last) || (NULL == pLL->last->next), "DBLL_Remove_Entry cannot be called with a NULL last or next pointer", NULL);
-
-    prev = pEntry->prev;
-    next = pEntry->next;
-    pEntry->next = pEntry->prev = NULL;  /* disassociate entry from list */
-
-    if (NULL == prev)            /* removing 1st one from list */
-    {
-        pLL->first = next;
-    }
-    else
-    {
-        prev->next = next;
-    }
-
-    if (next != NULL)            /* an entry follows the one being removed */
-    {
-        next->prev = prev;
-    }
-    else                         /* the last entry was just removed */
-    {
-        pLL->last = prev;
-    }
-    pLL->count--;
-
-    SG_ASSERT_RET((NULL == pLL->first) || (NULL == pLL->first->prev), "DBLL_Remove_Entry cannot have a null first or prev pointer", NULL);
-    SG_ASSERT_RET((NULL == pLL->last) || (NULL == pLL->last->next), "DBLL_Remove_Entry cannot have a null last or next pointer", NULL);
-
-    return next;
-}
-
-
-uint32_t DBLL_Get_Count(DBLL_List_T const *pLL)
-{
-    uint32_t count;
-
-    SG_ASSERT_RET(pLL != NULL, "DBLL_Get_Count cannot be called with a NULL pLL pointer", 0);
-
-    count = pLL->count;
-
-    return count;
-}
-
-void *DBLL_Get_First(DBLL_List_T const *pLL)
-{
-    SG_ASSERT_RET(pLL != NULL, "DBLL_Get_First cannot be called with a NULL pLL pointer", NULL);
-    SG_ASSERT_RET((NULL == pLL->first) || (NULL == pLL->first->prev), "DBLL_Get_First cannot be called with a NULL first and prev pointer", NULL);
-    SG_ASSERT_RET((NULL == pLL->last) || (NULL == pLL->last->next), "DBLL_Get_First cannot be called with a NULL last and next pointer", NULL);
-
-    return pLL->first;
-}
-
-void *DBLL_Get_Next(DBLL_Entry_T const *pEntry)
-{
-    SG_ASSERT_RET(pEntry != NULL, "DBLL_Get_Next cannot be called with a NULL pEntry pointer", NULL);
-
-    return pEntry->next;
-}
-
-
-
-void * DBLL_Find(DBLL_List_T * pLL, uint32_t conv)
-{
-    SG_ASSERT_RET(pLL != NULL, "DBLL_Find cannot be called with a NULL pLL pointer", NULL);
-
-    /* TODO: find */
-    sg_etp_client_t * client;
-
-    client = DBLL_Get_First(pLL);
-    while (NULL != client)
-    {
-        if (client->conv == conv)
-        {
-            return client;
-        }
-
-        client = DBLL_Get_Next((DBLL_Entry_T const *)client);
-    }
-
-    return NULL;
-}
-
+/*============================================================================*/
 
 
