@@ -102,12 +102,12 @@ English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/Co
 
 ## Contact
 
-email: metalwood@foxmail.com                   QQ group: 556925561
+email: metalwood@foxmail.com                   QQ群: 556925561
 
 ## Contributors
 
-[metalwood](metalwood@foxmail.com)
+metalwood (metalwood@foxmail.com)
 
-[canmor](476010464@qq.com)
+canmor (476010464@qq.com)
 
-[vincent](vin@misday.com)
+vincent (vin@misday.com)
