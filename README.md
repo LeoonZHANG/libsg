@@ -36,7 +36,9 @@ Key modules are optimized, you can create high performance application with libs
 
 Linux ／ Windows ／ OS X
 
-## Download > Build > Use
+## Download
+
+https://github.com/metalwood/libsg/releases
 
 ## Build Instructions
 
@@ -56,97 +58,25 @@ Windows
         $ cmake ..
         open .sln with Visual Studio and compile the project
 
-## API document
-
-## Demo
+## API doc & demo
 
 ## Modules
 
-####sys
-atom
+**sys** atom mutex rwlock spin_lock memory module os proc time fs flag shell sleep thread ntp
 
-mutex
+**str** charset regex sprintf vlstr(variable length string)
 
-rwlock
-
-spin_lock
-
-memory
-
-module
-
-os
-
-proc
-
-time
-
-file
-
-flag
-
-shell
-
-sleep
-
-thread
-
-ntp
-
-####str
-
-charset
-
-regex
-
-sprintf
-
-vlstr(variable length string)
-
-####net
-
-tcp/tcp_server: async tcp client and server based on LIBUV.
-
-udp/udp_server: async udp client and server based on LIBUV.
+**net** tcp/tcp_server udp/udp_server http/http_server websocket ftp
 
 etp/etp_server: a extreme transfer protocol based on KCP / LIBUV(UDP) and FEC, it's fast and reliable.
 
-http/http_server: http client and server based on libcurl and libwebsocket.
+**db** sqlite ejdb berkeleydb
 
-websocket: websocket client based on libwebsocket.
+**container** bip_buf list queue xml msgpack json
 
-ftp: ftp client based on libcurl.
+**compress** zip gzip
 
-####db
-
-sqlite
-
-ejdb
-
-berkeleydb
-
-####container
-
-bip_buf
-
-list
-
-queue
-
-xml
-
-msgpack
-
-json
-
-
-####compress
-
-zip
-
-gzip
-
-####crypto
+**crypto**
 
 md: message digest algorithm pack including MD2/MD4/MD5/SHA1/SHA224/SHA256/SHA512.
 
@@ -154,39 +84,15 @@ mac: message authentication code algorithm pack including HmacMD5...
 
 sym: symmetric encryption algorithm pack including DES/3DES/AES.
 
-####hash
+**hash** uuid murmur
 
-uuid
+**media** capture_v capture_a rtsp player
 
-murmur
+**math** c_int c_float big_int big_float
 
-####media
+**platform** windows/dial...
 
-capture_v
-
-capture_a
-
-####math
-
-c_int
-
-c_float
-
-big_int
-
-big_float
-
-####platform
-
-windows/dial...
-
-####util
-
-assert
-
-dump
-
-log
+**util** assert dump log
 
 ## Code specification
 
