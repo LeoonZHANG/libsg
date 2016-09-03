@@ -38,9 +38,9 @@ Linux ／ Windows ／ OS X
 
 ## Download
 
-https://github.com/metalwood/libsg/releases
+https://github.com/metalwood/libsg/archive/master.zip
 
-## Build Instructions
+## Build & install
 
 Before building, make sure CMake and C compiler(gcc/clang/msvc) has been installed correctly.
 
@@ -59,6 +59,8 @@ Windows
         open .sln with Visual Studio and compile the project
 
 ## API doc & demo
+
+coming soon
 
 ## Modules
 
@@ -108,8 +110,6 @@ QQ group: 556925561
 
 ## Contributors
 metalwood (metalwood@foxmail.com)
-
-cole_yang (2973778938@qq.com)
 
 canmor (476010464@qq.com)
 
