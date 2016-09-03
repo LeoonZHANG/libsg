@@ -98,15 +98,11 @@ sym: symmetric encryption algorithm pack including DES/3DES/AES.
 
 ## Code specification
 
-English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle)
-
-简体中文: [Linux内核编码风格](http://www.cnblogs.com/baochuan/archive/2013/04/08/3006615.html)
+English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle)            简体中文: [Linux内核编码风格](http://www.cnblogs.com/baochuan/archive/2013/04/08/3006615.html)
 
 ## Contact
 
-email: metalwood@foxmail.com
-
-QQ group: 556925561
+email: metalwood@foxmail.com                   QQ group: 556925561
 
 ## Contributors
 metalwood (metalwood@foxmail.com)
