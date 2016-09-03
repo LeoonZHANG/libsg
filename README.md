@@ -105,8 +105,9 @@ English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/Co
 email: metalwood@foxmail.com                   QQ group: 556925561
 
 ## Contributors
-metalwood (metalwood@foxmail.com)
 
-canmor (476010464@qq.com)
+[metalwood](metalwood@foxmail.com)
 
-vincent (vin@misday.com)
+[canmor](476010464@qq.com)
+
+[vincent](vin@misday.com)
