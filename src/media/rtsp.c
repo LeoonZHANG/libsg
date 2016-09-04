@@ -25,11 +25,22 @@ struct sg_rtsp_real {
     void *context; /* user data for callbacks */
 };
 
-/* receive rtsp multimedia data after play */
+/* receive RTP packet */
+size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
+{
+    struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
+    r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context);
+
+    /* continue to receive RTP packet */
+    curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
+    my_curl_easy_perform(curl);
+    return size * nmemb;
+}
+
+/* receive rtp text info after rtsp play request */
 size_t play_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
-    struct sg_rtsp_real *r = (struct sg_rtsp_real *) userdata;
-    r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context);
+    struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
     return size * nmemb;
 }
 
@@ -98,6 +109,8 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
 
     /* RTSP CMD: OPTIONS */
     curl_easy_setopt(r->curl, CURLOPT_RTSP_STREAM_URI, r->uri);
+    curl_easy_setopt(r->curl, CURLOPT_INTERLEAVEFUNCTION, interleave_callback);
+    curl_easy_setopt(r->curl, CURLOPT_INTERLEAVEDATA, (void *)r);
     curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_OPTIONS);
     res = curl_easy_perform(r->curl);
     if (res != CURLE_OK)
@@ -157,8 +170,15 @@ int sg_rtsp_play(sg_rtsp_t *r)
     res = curl_easy_perform(rp->curl);
     if (res == CURLE_OK)
         printf(stdout, "RTSP play now!\n");
-    else
+    else {
         printf(stderr, "RTSP play error!\n");
+        return -1;
+    }
+
+    /* RTSP CMD: RECEIVE */
+    curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
+    res = curl_easy_perform(curl);
+
     return (res == CURLE_OK) ? 0 : -1;
 }
 
