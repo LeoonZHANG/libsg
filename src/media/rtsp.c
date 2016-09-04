@@ -66,12 +66,12 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
                         sg_rtsp_on_recv_func_t on_recv, sg_rtsp_on_close_func_t on_close,
                         void *context)
 {
-    sg_rtsp_t *r;
+    struct sg_rtsp_real *r;
     CURLcode res = CURLE_OK;
     size_t new_uri_len;
     char transport[1024] = {0};
 
-    r = (sg_rtsp_t *)malloc(sizeof(struct sg_rtsp_real));
+    r = (struct sg_rtsp_real *)malloc(sizeof(struct sg_rtsp_real));
     if (!r)
         return NULL;
     memset(r, 0, sizeof(struct sg_rtsp_real));
@@ -136,7 +136,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
         goto err_exit;
 
 success:
-    return r;
+    return (sg_rtsp_t *)r;
 
 err_exit:
     sg_rtsp_close(r);
@@ -146,14 +146,15 @@ err_exit:
 int sg_rtsp_play(sg_rtsp_t *r)
 {
     CURLcode res;
+    struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
 
     /* RTSP CMD: PLAY */
-    curl_easy_setopt(rtsp->curl, CURLOPT_RTSP_STREAM_URI, rtsp->uri);
-    curl_easy_setopt(rtsp->curl, CURLOPT_RANGE, "0.000-");
-    curl_easy_setopt(rtsp->curl, CURLOPT_WRITEFUNCTION, play_callback);
-    curl_easy_setopt(rtsp->curl, CURLOPT_WRITEDATA, (void)r);
-    curl_easy_setopt(rtsp->curl, CURLOPT_RTSP_REQUEST, (long) CURL_RTSPREQ_PLAY);
-    res = curl_easy_perform(rtsp->curl);
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rtsp->uri);
+    curl_easy_setopt(rp->curl, CURLOPT_RANGE, "0.000-");
+    curl_easy_setopt(rp->curl, CURLOPT_WRITEFUNCTION, play_callback);
+    curl_easy_setopt(rp->curl, CURLOPT_WRITEDATA, (void)r);
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_PLAY);
+    res = curl_easy_perform(rp->curl);
     if (res == CURLE_OK)
         printf(stdout, "RTSP play now!\n");
     else
@@ -164,12 +165,13 @@ int sg_rtsp_play(sg_rtsp_t *r)
 int sg_rtsp_pause(sg_rtsp_t *r)
 {
     CURLcode res;
+    struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
 
     /* RTSP CMD: PAUSE */
-    curl_easy_setopt(rtsp->curl, CURLOPT_RTSP_STREAM_URI, rtsp->uri);
-    curl_easy_setopt(rtsp->curl, CURLOPT_RANGE, "0.000-");
-    curl_easy_setopt(rtsp->curl, CURLOPT_RTSP_REQUEST, (long) CURL_RTSPREQ_PAUSE);
-    res = curl_easy_perform(rtsp->curl);
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rtsp->uri);
+    curl_easy_setopt(rp->curl, CURLOPT_RANGE, "0.000-");
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_PAUSE);
+    res = curl_easy_perform(rp->curl);
     if (res == CURLE_OK)
         printf(stdout, "RTSP pause now!\n");
     else
@@ -179,23 +181,25 @@ int sg_rtsp_pause(sg_rtsp_t *r)
 
 void sg_rtsp_close(sg_rtsp_t *r)
 {
-    if (!r)
+    struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
+
+    if (!rp)
         return;
 
     /* RTSP CMD: TEARDOWN */
     if (r->curl) {
-        curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, (long) CURL_RTSPREQ_TEARDOWN);
-        curl_easy_perform(r->curl);
-        curl_easy_cleanup(r->curl);
+        curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_TEARDOWN);
+        curl_easy_perform(rp->curl);
+        curl_easy_cleanup(rp->curl);
     }
 
-    if (r->url)
-        free(r->url);
-    if (r->ctrl_attr)
-        free(r->ctrl_attr);
-    if (r->uri)
-        free(r->uri);
-    free(r);
+    if (rp->url)
+        free(rp->url);
+    if (rp->ctrl_attr)
+        free(rp->ctrl_attr);
+    if (rp->uri)
+        free(rp->uri);
+    free(rp);
 }
 
 void sg_rtsp_cleanup(void)
