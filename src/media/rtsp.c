@@ -29,11 +29,14 @@ struct sg_rtsp_real {
 size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
     struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
+
+    /* return RTP packet to user */
     r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context);
 
     /* continue to receive RTP packet */
     curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
-    my_curl_easy_perform(curl);
+    my_curl_easy_perform(r->curl);
+
     return size * nmemb;
 }
 
@@ -176,8 +179,8 @@ int sg_rtsp_play(sg_rtsp_t *r)
     }
 
     /* RTSP CMD: RECEIVE */
-    curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
-    res = curl_easy_perform(curl);
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
+    res = curl_easy_perform(rp->curl);
 
     return (res == CURLE_OK) ? 0 : -1;
 }
