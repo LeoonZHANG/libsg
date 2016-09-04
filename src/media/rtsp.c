@@ -126,7 +126,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
         r->uri = (char *)malloc(new_uri_len);
         if (!r->uri)
             goto err_exit;
-        snprintf(r->uri, new_uri_len, "%s/%s", rtsp->url, r->ctrl_attr);
+        snprintf(r->uri, new_uri_len, "%s/%s", r->url, r->ctrl_attr);
     }
     curl_easy_setopt(r->curl, CURLOPT_RTSP_TRANSPORT, transport);
     curl_easy_setopt(r->curl, CURLOPT_RTSP_STREAM_URI, r->uri);
@@ -149,10 +149,10 @@ int sg_rtsp_play(sg_rtsp_t *r)
     struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
 
     /* RTSP CMD: PLAY */
-    curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rtsp->uri);
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rp->uri);
     curl_easy_setopt(rp->curl, CURLOPT_RANGE, "0.000-");
     curl_easy_setopt(rp->curl, CURLOPT_WRITEFUNCTION, play_callback);
-    curl_easy_setopt(rp->curl, CURLOPT_WRITEDATA, (void)r);
+    curl_easy_setopt(rp->curl, CURLOPT_WRITEDATA, (void *)rp);
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_PLAY);
     res = curl_easy_perform(rp->curl);
     if (res == CURLE_OK)
@@ -168,7 +168,7 @@ int sg_rtsp_pause(sg_rtsp_t *r)
     struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
 
     /* RTSP CMD: PAUSE */
-    curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rtsp->uri);
+    curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rp->uri);
     curl_easy_setopt(rp->curl, CURLOPT_RANGE, "0.000-");
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_PAUSE);
     res = curl_easy_perform(rp->curl);
@@ -187,7 +187,7 @@ void sg_rtsp_close(sg_rtsp_t *r)
         return;
 
     /* RTSP CMD: TEARDOWN */
-    if (r->curl) {
+    if (rp->curl) {
         curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_TEARDOWN);
         curl_easy_perform(rp->curl);
         curl_easy_cleanup(rp->curl);
