@@ -24,6 +24,8 @@ static void etp_on_message(sg_etp_t *client, char *data, size_t size)
 	if (ret != size)
 		printf("player put buffer error\n");
 
+    printf
+
     /* save video data */
     if (!fp_save)
         fp_save = fopen("video.mp4", "wb");

@@ -2,8 +2,16 @@
 #include<stdio.h>
 #include<string.h>
 #include<pthread.h>
-#include"../../../include/sg/media/rtsp.h"
+#include"../../../include/sg/media/player.h"
 #include"../../../include/sg/net/etp_server.h"
+
+#define PLAY_INSIDE
+
+#ifdef PLAY_INSIDE
+#include"../../../include/sg/media/rtsp.h"
+
+static sg_player_t *player = NULL;
+#endif
 
 static int etp_server_port;
 static char rtsp_server_url[1024];
@@ -97,6 +105,13 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
         sg_etp_server_send(client, data, size);
         printf("send %lu data to client\n", size);
     }
+
+#ifdef PLAY_INSIDE
+    if (!player)
+        player = sg_player_create();
+    sg_player_load_buf(player);
+    sg_player_put_buf(player, data, size);
+#endif
 }
 
 static void *rtsp_thread(void *p)
