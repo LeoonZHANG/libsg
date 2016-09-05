@@ -131,14 +131,17 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
 
 static void *player_thread(void *p)
 {
+    FILE *fp = NULL;
+    char read_buf[512] = {0};
+
+    fp = fopen("mask.mov", "rb");
+
 #ifdef PLAY_INSIDE
     player = sg_player_create();
     sg_player_load_buf(player);
     sg_player_play(player);
     while (1) {
         usleep(1000);
-        FILE *fp = fopen("mask.mov", "rb");
-        char read_buf[512] = {0};
         size_t s = fread(read_buf, 1, 512, fp);
         sg_player_put_buf(player, read_buf, s);
     }
