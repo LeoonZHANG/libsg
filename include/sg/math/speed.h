@@ -6,6 +6,8 @@
 #ifndef LIBSG_SPEED_H
 #define LIBSG_SPEED_H
 
+#include <stdlib.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -19,15 +21,18 @@ enum sg_speed_unit {
     SGSPEEDUNIT_MIN  = 0,
     /* bit mode */
     SGSPEEDUNIT_bps  = 0,
-    SGSPEEDUNIT_Kbps = 1,
-    SGSPEEDUNIT_Mbps = 2,
-    SGSPEEDUNIT_Gbps = 3,
+    SGSPEEDUNIT_Kbps,
+    SGSPEEDUNIT_Mbps,
+    SGSPEEDUNIT_Gbps,
+    SGSPEEDUNIT_Tbps,
+    /* 0~127 is reserved for bit mode */
     /* byte mode */
-    SGSPEEDUNIT_Bps  = 4,
-    SGSPEEDUNIT_KBps = 5,
-    SGSPEEDUNIT_MBps = 6,
-    SGSPEEDUNIT_GBps = 7,
-    SGSPEEDUNIT_MAX  = 7
+    SGSPEEDUNIT_Bps  = 128,
+    SGSPEEDUNIT_KBps,
+    SGSPEEDUNIT_MBps,
+    SGSPEEDUNIT_GBps,
+    SGSPEEDUNIT_TBps,
+    SGSPEEDUNIT_MAX
 };
 
 struct sg_speed_val {
@@ -47,8 +52,8 @@ void sg_speed_set(struct sg_speed_val *, double speed, enum sg_speed_unit);
 
 int sg_speed_conv(struct sg_speed_val *, enum sg_speed_unit new_unit);
 
-/* 以最合适的速度单位转换速度数值, 确保速度单位前的数值在［1，1024］之间，比如1.1Kbps而不是1300bps. */
-int sg_speed_conv_auto(struct sg_speed_val *);
+/* 以最合适的速度单位转换速度数值, 确保速度单位前的数值在［1，1024) 之间，比如1.1Kbps而不是1300bps. */
+int sg_speed_conv_auto(struct sg_speed_val *speed);
 
 /* 格式化输出 */
 int sg_speed_fmt_str(struct sg_speed_val *, const char *per_sec_str,
