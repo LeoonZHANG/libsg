@@ -135,6 +135,10 @@ static void *player_thread(void *p)
     char read_buf[512] = {0};
 
     fp = fopen("mask.mov", "rb");
+    if (!fp) {
+        printf("mask.mov open error\n");
+        exit(-1);
+    }
 
 #ifdef PLAY_INSIDE
     player = sg_player_create();
