@@ -3,7 +3,7 @@
  * ETP (extreme transfer protocol) is a transfer protocol based on LIBUV / UDP / KCP and FEC.
  * This is etp client.
  */
- 
+
 #ifndef LIBSG_ETP_H
 #define LIBSG_ETP_H
 
@@ -15,8 +15,9 @@ typedef struct sg_etp_real sg_etp_t;
 
 typedef void (*sg_etp_on_open_func_t)(sg_etp_t *);
 typedef void (*sg_etp_on_data_func_t)(sg_etp_t *, char *data, size_t size);
-typedef void (*sg_etp_on_sent_func_t)(sg_etp_t *, int status/*0:OK*/);
+typedef void (*sg_etp_on_sent_func_t)(sg_etp_t *, int status/*0:OK*/, void *data, size_t len);
 typedef void (*sg_etp_on_close_func_t)(sg_etp_t *, int code, const char *reason);
+typedef void (*sg_etp_on_error_func_t)(sg_etp_t *, const char *msg);
 
 int sg_etp_init();
 
@@ -40,6 +41,8 @@ int sg_etp_get_speed(sg_etp_t *, size_t * send_kbps, size_t * recv_kbps);
 void sg_etp_close(sg_etp_t *);
 
 void sg_etp_free(void);
+
+
 
 #ifdef __cplusplus
 }
