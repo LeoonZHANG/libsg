@@ -75,7 +75,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
         }
         pl->media = libvlc_media_new_fd(pl->inst, pl->fd[0]);
         if (!pl->media) {
-            printf("create media from pipe error\n", (FILE *)load_src);
+            printf("create media from pipe error\n");
             goto error;
         }
         printf("play load buf sucess\n");
@@ -136,7 +136,7 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
 
-    if (write((char *)data, pl->fd[1], size) == 0) {
+    if (write(pl->fd[1], (char *)data, size) == 0) {
         close(pl->fd[1]);
         printf("pipe in vlc write error\n");
         return -1;
