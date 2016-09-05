@@ -146,9 +146,11 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
 int sg_player_play(sg_player_t *p)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
+    int ret;
 
-    libvlc_media_player_play(pl->player);
-    return 0;
+    ret = libvlc_media_player_play(pl->player);
+    printf("------vlc player play %s", ret == 0 ? "success" : "error");
+    return ret;
 }
 
 int sg_player_get_volume(sg_player_t *p)
