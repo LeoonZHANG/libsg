@@ -46,6 +46,7 @@ int sg_player_put_buf(sg_player_t *, void *data, size_t size);
  */
 /* size_t sg_player_unplay_buf_size(sg_player_t *); */
 
+/* async, it will return right now */
 int sg_player_play(sg_player_t *);
 
 /**
