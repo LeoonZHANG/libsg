@@ -78,6 +78,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
             printf("create media from pipe error\n", (FILE *)load_src);
             goto error;
         }
+        printf("play load buf sucess\n");
     }
 
     pl->player = libvlc_media_player_new_from_media(pl->media);
