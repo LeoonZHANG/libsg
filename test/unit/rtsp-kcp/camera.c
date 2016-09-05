@@ -19,6 +19,7 @@ static int rtsp_thread_count = 0;
 FILE *fp_save_rtp = NULL;
 
 static void *rtsp_thread(void *);
+static void *player_thread(void *);
 
 static void start_rtsp_thread(void)
 {
@@ -41,6 +42,24 @@ static void start_rtsp_thread(void)
 		printf("\n\ncreate thread error, and listen @ %d\n\n", etp_server_port);
 		exit(-1);
 	}
+}
+
+static void start_player_thread(void)
+{
+#ifdef PLAY_INSIDE
+    int ret;
+    pthread_t id;
+
+    /* open rtsp client to fetch data */
+    ret = pthread_create(&id, NULL, player_thread, NULL);
+    if(ret == 0) {
+        printf("\n\ncreate player thread seccess, and listen @ %d\n\n", etp_server_port);
+        rtsp_thread_count++;
+    } else {
+        printf("\n\ncreate player thread error, and listen @ %d\n\n", etp_server_port);
+        exit(-1);
+    }
+#endif
 }
 
 static void etp_server_on_open(sg_etp_client_t *client)
@@ -107,10 +126,17 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
     }
 
 #ifdef PLAY_INSIDE
+    if (player)
+        sg_player_put_buf(player, data, size);
+#endif
+}
+
+static void *player_thread(void *p)
+{
+#ifdef PLAY_INSIDE
     if (!player)
         player = sg_player_create();
     sg_player_load_buf(player);
-    sg_player_put_buf(player, data, size);
 #endif
 }
 
@@ -139,6 +165,8 @@ int main(int argc,char**argv)
 		printf("输入有误!");
 		return -1;
 	}
+
+    start_player_thread();
 
 	/* open etp server to ack data */
 	server = sg_etp_server_open("0.0.0.0", etp_server_port, 10,
