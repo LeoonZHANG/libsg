@@ -3,14 +3,14 @@
  */
 
 #ifndef LIBSG_ETP_SERVER_H
-#define	LIBSG_ETP_SERVER_H
+#define LIBSG_ETP_SERVER_H
 
-#ifdef	__cplusplus
+#ifdef  __cplusplus
 extern "C"
 {
 #endif
 
-typedef struct sg_etp_client_real sg_etp_client_t;
+typedef struct sg_etp_real sg_etp_client_t;
 typedef struct sg_etp_server_real sg_etp_server_t;
 
 typedef void (*sg_etp_server_on_iter_client_func_t)(sg_etp_server_t *, sg_etp_client_t *, void *ctx);
@@ -24,7 +24,7 @@ typedef void (*sg_etp_server_on_close_func_t)(sg_etp_client_t *, int code, const
 
 int sg_etp_server_init(void);
 sg_etp_server_t *sg_etp_server_open(
-    const char                     *server_addr, 
+    const char                     *server_addr,
     int                             server_port,
     int                             max_backlog,
     sg_etp_server_on_open_func_t,
@@ -45,8 +45,8 @@ void sg_etp_server_close_client(sg_etp_client_t *);
 void sg_etp_server_close(sg_etp_server_t *);
 void sg_etp_server_free(void);
 
-#ifdef	__cplusplus
+#ifdef  __cplusplus
 }
 #endif
 
-#endif	/* LIBSG_ETP_SERVER_H */
+#endif  /* LIBSG_ETP_SERVER_H */
