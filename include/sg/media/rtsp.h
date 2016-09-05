@@ -16,11 +16,17 @@ typedef struct sg_rtsp_real sg_rtsp_t;
 typedef void (*sg_rtsp_on_recv_func_t)(sg_rtsp_t *, char *data, size_t size, void *context);
 typedef void (*sg_rtsp_on_close_func_t)(sg_rtsp_t *, int code, const char *reason, void *context);
 
+enum sg_rtsp_data_protocol {
+    SGRTSPDATAPROTOCOL_TCP = 0,
+    SGRTSPDATAPROTOCOL_UDP = 1
+};
+
 /* sync */
 int sg_rtsp_init(void);
 
 /* sync */
-sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_tcp,
+sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port,
+                        enum sg_rtsp_data_protocol p,
                         sg_rtsp_on_recv_func_t, sg_rtsp_on_close_func_t, void *context);
 
 /* sync */

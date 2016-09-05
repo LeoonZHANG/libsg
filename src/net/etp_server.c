@@ -15,7 +15,7 @@
 #include "uv.h"
 #include "ikcp.h"
 #include "linkhash.h"
-#include "etp_server.h"
+#include <sg/net/etp_server.h>
 
 /*===========================================================================*\
  * #define MACROS
@@ -503,7 +503,7 @@ sg_etp_server_t *sg_etp_server_open(
     return server;
 }
 
-int sg_etp_server_send_data(sg_etp_client_t * client, void *data, size_t size)
+int sg_etp_server_send(sg_etp_client_t * client, void *data, size_t size)
 {
     client->kcp_update_time = 0; /* clear next update */
     return ikcp_send(client->kcp, data, size);

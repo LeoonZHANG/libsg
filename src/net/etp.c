@@ -11,7 +11,7 @@
 \*===========================================================================*/
 #include "uv.h"
 #include "ikcp.h"
-#include "etp.h"
+#include <sg/net/etp.h>
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #   ifndef PLATFORM_LINUX

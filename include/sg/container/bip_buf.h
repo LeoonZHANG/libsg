@@ -28,7 +28,7 @@ typedef struct sg_bip_buf sg_bip_buf_t;
  * @param[in] size The size of the buffer
  * @param[in] auto_inc Auto increment if put data size is bigger than init size
  */
-sg_bip_buf_t *sg_bip_buf_create(size_t size, bool auto_inc);
+sg_bip_buf_t *sg_bip_buf_create(size_t size);
 
 /**
  * Look at data. Don't move cursor
@@ -43,13 +43,13 @@ unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *me, const unsigned int len);
  *
  * @param[in] len The length of the data to be polled
  * @return pointer to data, NULL if we can't poll this much data */
-unsigned char *sg_bip_buf_get(sg_bip_buf_t *me, const unsigned int size);
+unsigned char *sg_bip_buf_get(const sg_bip_buf_t *me, const unsigned int size);
 
 /**
  * @param[in] data The data to be offered to the buffer
  * @param[in] size The size of the data to be offered
  * @return number of bytes offered, return -1 if error such like put size is too big */
-int sg_bip_buf_put(sg_bip_buf_t *me, const unsigned char *data, const int size);
+int sg_bip_buf_put(const sg_bip_buf_t *me, const unsigned char *data, const int size);
 
 /**
  * @return how much space we have assigned */

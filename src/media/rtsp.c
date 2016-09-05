@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <curl/curl.h>
-#include <sg/media/rtsp.h>
+#include "../../include/sg/media/rtsp.h"
 
 static const char *rtsp_transport_tcp = "RTP/AVP/TCP;unicast;interleaved=0-1";
 static const char *rtsp_transport_udp = "RTP/AVP;unicast;client_port=%d-%d";
@@ -18,15 +18,14 @@ struct sg_rtsp_real {
     char *uri;       /* uri = url + "/" + ctrl_attr */
     CURL *curl;
     unsigned int udp_client_port;
-    bool use_tcp;
-    sg_rtsp_on_open_func_t on_open;
+    enum sg_rtsp_data_protocol prot; /* tcp / udp */
     sg_rtsp_on_recv_func_t on_recv;
     sg_rtsp_on_close_func_t on_close;
     void *context; /* user data for callbacks */
 };
 
 /* receive RTP packet */
-size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
+static size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
     struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
 
@@ -35,20 +34,20 @@ size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 
     /* continue to receive RTP packet */
     curl_easy_setopt(r->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
-    my_curl_easy_perform(r->curl);
+    curl_easy_perform(r->curl);
 
     return size * nmemb;
 }
 
 /* receive rtp text info after rtsp play request */
-size_t play_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
+static size_t play_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
     struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
     return size * nmemb;
 }
 
 /* find out its control attribute */
-size_t describe_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
+static size_t describe_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
     char *line = strtok((char *)ptr, "\r\n");
     struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
@@ -65,18 +64,13 @@ size_t describe_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
     return size * nmemb;
 }
 
-
-
 int sg_rtsp_init(void)
 {
     CURLcode res = curl_global_init(CURL_GLOBAL_ALL);
-    if (res == CURLE_OK)
-        return 0;
-    else
-        return -1;
+    return (res == CURLE_OK) ? 0 : -1;
 }
 
-sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_tcp,
+sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_rtsp_data_protocol prot,
                         sg_rtsp_on_recv_func_t on_recv, sg_rtsp_on_close_func_t on_close,
                         void *context)
 {
@@ -90,15 +84,15 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
         return NULL;
     memset(r, 0, sizeof(struct sg_rtsp_real));
 
-    r->udp_client_port = udp_client_port;
-    r->use_tcp         = use_tcp;
-    r->on_recv         = on_recv;
-    r->on_close        = on_close;
-    r->context         = context;
-    r->curl            = curl_easy_init();
-    r->url             = strdup(url);
-    r->uri      = strdup(url);
-    if(!r->curl || !r->url || !r->uri)
+    r->udp_client_port  = udp_client_port;
+    r->prot             = prot;
+    r->on_recv          = on_recv;
+    r->on_close         = on_close;
+    r->context          = context;
+    r->curl             = curl_easy_init();
+    r->url              = strdup(url);
+    r->uri              = strdup(url);
+    if(!r->curl || !r->url || !r->uri || prot < SGRTSPDATAPROTOCOL_TCP || prot > SGRTSPDATAPROTOCOL_UDP)
         goto err_exit;
 
     /* init curl session */
@@ -110,7 +104,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
     if (res != CURLE_OK)
         goto err_exit;
 
-    /* RTSP CMD: OPTIONS */
+    /* RTSP REQ: OPTIONS */
     curl_easy_setopt(r->curl, CURLOPT_RTSP_STREAM_URI, r->uri);
     curl_easy_setopt(r->curl, CURLOPT_INTERLEAVEFUNCTION, interleave_callback);
     curl_easy_setopt(r->curl, CURLOPT_INTERLEAVEDATA, (void *)r);
@@ -119,7 +113,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
     if (res != CURLE_OK)
         goto err_exit;
 
-    /* RTSP CMD: DESCRIBE */
+    /* RTSP REQ: DESCRIBE */
     curl_easy_setopt(r->curl, CURLOPT_WRITEFUNCTION, describe_callback);
     curl_easy_setopt(r->curl, CURLOPT_WRITEDATA, (void *)r);
     curl_easy_setopt(r->curl, CURLOPT_RTSP_STREAM_URI, r->uri);
@@ -130,8 +124,8 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
     curl_easy_setopt(r->curl, CURLOPT_WRITEFUNCTION, NULL);
     curl_easy_setopt(r->curl, CURLOPT_WRITEDATA, NULL);
 
-    /* RTSP CMD: SETUP */
-    if (r->use_tcp)
+    /* RTSP REQ: SETUP */
+    if (r->prot == SGRTSPDATAPROTOCOL_TCP)
         snprintf(transport, 1024, "%s", rtsp_transport_tcp);
     else
         snprintf(transport, 1024, rtsp_transport_udp, r->udp_client_port, r->udp_client_port + 1);
@@ -151,7 +145,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, bool use_
     if (res != CURLE_OK)
         goto err_exit;
 
-success:
+success_exit:
     return (sg_rtsp_t *)r;
 
 err_exit:
@@ -164,7 +158,7 @@ int sg_rtsp_play(sg_rtsp_t *r)
     CURLcode res;
     struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
 
-    /* RTSP CMD: PLAY */
+    /* RTSP REQ: PLAY */
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rp->uri);
     curl_easy_setopt(rp->curl, CURLOPT_RANGE, "0.000-");
     curl_easy_setopt(rp->curl, CURLOPT_WRITEFUNCTION, play_callback);
@@ -178,7 +172,7 @@ int sg_rtsp_play(sg_rtsp_t *r)
         return -1;
     }
 
-    /* RTSP CMD: RECEIVE */
+    /* RTSP REQ: RECEIVE */
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_RECEIVE);
     res = curl_easy_perform(rp->curl);
 
@@ -190,7 +184,7 @@ int sg_rtsp_pause(sg_rtsp_t *r)
     CURLcode res;
     struct sg_rtsp_real *rp = (struct sg_rtsp_real *)r;
 
-    /* RTSP CMD: PAUSE */
+    /* RTSP REQ: PAUSE */
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_STREAM_URI, rp->uri);
     curl_easy_setopt(rp->curl, CURLOPT_RANGE, "0.000-");
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_PAUSE);
@@ -209,7 +203,7 @@ void sg_rtsp_close(sg_rtsp_t *r)
     if (!rp)
         return;
 
-    /* RTSP CMD: TEARDOWN */
+    /* RTSP REQ: TEARDOWN */
     if (rp->curl) {
         curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, (long)CURL_RTSPREQ_TEARDOWN);
         curl_easy_perform(rp->curl);
