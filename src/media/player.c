@@ -47,7 +47,7 @@ int libvlc_media_close_cb(void*opaque)
 static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_load_type load_type)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
-    libvlc_media_file_t *media_file = NULL;
+    libvlc_media_t *media_file = NULL;
 
     if (load_type < SGPLAYERLOADTYPE_MIN || load_type > SGPLAYERLOADTYPE_MAX)
         goto error;
