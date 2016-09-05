@@ -236,6 +236,8 @@ void on_uv_close_done(uv_handle_t* handle)
 
 void sg_etp_update_speed(sg_etp_t * client, uint64_t now)
 {
+    int i = 0;
+
     if (client->max_speed_limit <=0 )
         return;
 
@@ -259,7 +261,7 @@ void sg_etp_update_speed(sg_etp_t * client, uint64_t now)
                 client->head = (client->head + 1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
 
             speed = 0;
-            for (int i = client->head; i != client->tail; i=(i+1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1)) {
+            for (i = client->head; i != client->tail; i=(i+1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1)) {
                 speed += client->last_speed[i];
                 count += 1;
             }

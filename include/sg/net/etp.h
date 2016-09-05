@@ -7,6 +7,8 @@
 #ifndef LIBSG_ETP_H
 #define LIBSG_ETP_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

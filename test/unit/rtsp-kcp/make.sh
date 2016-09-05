@@ -1,3 +1,3 @@
-gcc camera.c ../../../src/net/etp_server.c ../../..//src/media/rtsp.c ../../../3rdparty/kcp/ikcp.c ../../../3rdparty/linkhash/linkhash.c  -I../../../3rdparty/kcp/ -I../../../3rdparty/linkhash/ -I../../../include  -lpthread -lcurl -luv -o camera
+gcc camera.c ../../../src/net/etp.c ../../../src/net/etp_server.c ../../..//src/media/rtsp.c ../../../3rdparty/kcp/ikcp.c ../../../3rdparty/linkhash/linkhash.c  -I../../../3rdparty/kcp/ -I../../../3rdparty/linkhash/ -I../../../include  -lpthread -lcurl -luv -o camera
 
 gcc watch.c ../../../src/net/etp.c ../../..//src/media/player.c ../../../3rdparty/kcp/ikcp.c  -I../../../3rdparty/kcp/ -I../../../include  -lpthread -lcurl -luv -lvlc -o watch

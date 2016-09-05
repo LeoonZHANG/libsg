@@ -10,8 +10,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include <stdio.h>
-
 typedef struct sg_player_real sg_player_t;
 
 sg_player_t *sg_player_create(void);
@@ -31,23 +29,16 @@ int sg_player_load_file(sg_player_t *, const char *filename);
 int sg_player_load_url(sg_player_t *, const char *url);
 
 /**
- * @brief Play FILE pointer such like pipe
- * @param fd File descriptor
- * @return 0:OK, other:Error
- */
-int sg_player_load_fd(sg_player_t *, FILE *fd);
-
-/**
  * @brief 从bip buffer缓冲区播放，无须用户手动创建bip buffer，player内部创建的
  * @return 0:OK, other:Error
  */
-/* int sg_player_load_buf(sg_player_t *); */
+int sg_player_load_buf(sg_player_t *);
 
 /**
  * @brief 向内部的bip buffer缓冲区添加数据
  * @return 0:OK, other:Error
  */
-/* int sg_player_put_buf(sg_player_t *, void *data, size_t size); */
+int sg_player_put_buf(sg_player_t *, void *data, size_t size);
 
 /**
  * @brief 获取内部bip buffer缓冲区的未播放数据大小

@@ -4,29 +4,41 @@
 #include <sg/media/player.h>
 
 static sg_player_t *player;
+static char save_path[1024] = {0};
+FILE *fp_save = NULL;
 
 static void etp_on_open(sg_etp_t *client)
 {
 	player = sg_player_create();
+    if (!player) {
+        printf("player create error\n");
+        return;
+    }
 	sg_player_load_buf(player);
 	sg_player_play(player);
 }
 
-
 static void etp_on_message(sg_etp_t *client, char *data, size_t size)
 {
-	int ret = player_put_buf(player, data, size);
+	int ret = sg_player_put_buf(player, data, size);
 	if (ret != size)
 		printf("player put buffer error\n");
+
+    /* save video data */
+    if (!fp_save)
+        fp_save = fopen("video.mp4", "wb");
+    if (fp_save)
+        fwrite(data + 12, size - 12, 1, fp_save);
 }
 
-void etp_on_sent(sg_etp_t *client, int status/*0:OK*/)
+void etp_on_sent(sg_etp_t *client, int status/*0:OK*/, void *data, size_t len)
 {
 }
 
 static void etp_on_close(sg_etp_t *client, int code, const char *reason)
 {
-	player_destroy(player);
+    sg_player_stop(player);
+	sg_player_destroy(player);
     printf("conn closed\n");
 }
 
@@ -34,7 +46,6 @@ int main(int argc, char const *argv[])
 {
 	char server_ip[256]={0};
 	int server_port;
-	char save_path[256]={0};
 	sg_etp_t *client;
 
 	if(argc < 4) {

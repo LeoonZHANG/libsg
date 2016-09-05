@@ -43,7 +43,7 @@ static void etp_server_on_open(sg_etp_client_t *client)
 	addr = sg_etp_server_get_client_addr(client);
 	printf("conn from %s\n", addr);
 	free(addr);
-#if 1
+#if 0
 	/* check rtsp thread */
 	if (rtsp_thread_count > 0) {
 		printf("rtsp thread running\n");
@@ -87,10 +87,10 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
 	sg_etp_client_t *client = (sg_etp_client_t *)context;
 
 	/* save rtp data */
-	/*if (!fp_save_rtp)
+	if (!fp_save_rtp)
 		fp_save_rtp = fopen("rtp.mp4", "wb");
 	if (fp_save_rtp)
-		fwrite(data, size, 1, fp_save_rtp);*/
+		fwrite(data + 12, size - 12, 1, fp_save_rtp);
 
 	/* send rtp data */
 	if (client)
@@ -131,6 +131,6 @@ int main(int argc,char**argv)
 		printf("etp server open sucess\n");
 	else
 		printf("etp server open error\n");
-	//start_rtsp_thread();
+	start_rtsp_thread();
 	sg_etp_server_run(server, 10);
 }

@@ -1,5 +1,8 @@
+#include <stdio.h>
 #include <sg/media/player.h>
+#include <vlc/vlc.h>
 #include <vlc/libvlc.h>
+#include <vlc/libvlc_media_player.h>
 
 #define PLAY_BUFFER_SIZE 4096
 
@@ -13,7 +16,7 @@ enum sg_player_load_type {
     SGPLAYERLOADTYPE_MIN      = 0,
     SGPLAYERLOADTYPE_FILENAME = 0,
     SGPLAYERLOADTYPE_URL      = 1,
-    SGPLAYERLOADTYPE_FD       = 2,
+    SGPLAYERLOADTYPE_BUF      = 2,
     SGPLAYERLOADTYPE_MAX      = 2
 };
 
@@ -57,7 +60,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
         media_file = libvlc_media_new_path(pl->inst, (const char *)load_src);
         if (!media_file) {
             printf("file %s open error\n", (const char *)load_src);
-            goto error_exit;
+            goto error;
         }
     } else if (load_type == SGPLAYERLOADTYPE_URL) {
         media_file = libvlc_media_new_location(pl->inst, (const char *)load_src);
@@ -66,7 +69,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
             goto error;
         }
     } else {
-        media_file = libvlc_media_new_fd(pl->inst, fileno((FILE *)load_src));
+        media_file = libvlc_media_new_fd(pl->inst, fileno((FILE *)pl->pipefd[0]));
         if (!media_file) {
             printf("FILE pointer %p open error\n", (FILE *)load_src);
             goto error;
@@ -80,7 +83,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
     }
 
     succeed:
-    libvlc_media_release(sg_player->media_file);
+    libvlc_media_release(pl->media_file);
     return 0;
 
     error:
@@ -89,7 +92,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
     if (pl->inst)
         libvlc_release(pl->inst);
     if (media_file)
-        libvlc_media_release(sg_player->media_file);
+        libvlc_media_release(pl->media_file);
     return -1;
 }
 
@@ -101,7 +104,6 @@ sg_player_t *sg_player_create(void)
 
     memset(p, 0, sizeof(struct sg_player_real));
 
-    pipe(p->pipefd);
     p->inst = libvlc_new(0,NULL);
 
     if (!p->inst)
@@ -120,17 +122,18 @@ int sg_player_load_url(sg_player_t *p, const char *url)
     return sg_player_load(p, (const void *)url, SGPLAYERLOADTYPE_URL);
 }
 
-int sg_player_load_fd(sg_player_t *p, FILE *fd)
+int sg_player_load_buf(sg_player_t *p)
 {
-    return sg_player_load(p, (const void *)fd, SGPLAYERLOADTYPE_FD);
+    return sg_player_load(p, (const void *)NULL, SGPLAYERLOADTYPE_FD);
 }
 
 int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
 
-    if (write(pl->pipefd[1],(char *)data, size) == 0) {
+    if (write(pl->pipefd[1], (char *)data, size) == 0) {
         close(pl->pipefd[1]);
+        printf("pipe in vlc write error\n")
         return -1;
     } else
         return 0;
@@ -184,5 +187,6 @@ void sg_player_destroy(sg_player_t *p)
         libvlc_media_player_release(pl->player);
     if (pl->inst)
         libvlc_release(pl->inst);
+    if (pl->p)
     free(pl);
 }
