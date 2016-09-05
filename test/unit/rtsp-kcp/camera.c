@@ -144,6 +144,7 @@ static void *player_thread(void *p)
         usleep(1000);
         size_t s = fread(read_buf, 1, 512, fp);
         sg_player_put_buf(player, read_buf, s);
+        printf("---------put data %lu\n", s);
     }
 #endif
 }

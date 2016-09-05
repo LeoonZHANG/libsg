@@ -10,7 +10,7 @@ struct sg_player_real {
     libvlc_instance_t       *inst;
     libvlc_media_t          *media;
     libvlc_media_player_t   *player;
-    int                     pipefd[2];
+    int                     fd[2];
 };
 
 enum sg_player_load_type {
@@ -69,11 +69,11 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
             goto error;
         }
     } else {
-        if (pipe(pl->pipefd) != 0) {
+        if (pipe(pl->fd) != 0) {
             printf("pipe create error\n", (FILE *)load_src);
             goto error;
         }
-        pl->media = libvlc_media_new_fd(pl->inst, pl->pipefd[0]);
+        pl->media = libvlc_media_new_fd(pl->inst, pl->fd[0]);
         if (!pl->media) {
             printf("create media from pipe error\n", (FILE *)load_src);
             goto error;
@@ -96,6 +96,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
         libvlc_release(pl->inst);
     if (pl->media)
         libvlc_media_release(pl->media);
+    exit(-1);
     return -1;
 }
 
@@ -134,8 +135,8 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
 
-    if (write((char *)data, pl->pipefd[1], size) == 0) {
-        close(pl->pipefd[1]);
+    if (write((char *)data, pl->fd[1], size) == 0) {
+        close(pl->fd[1]);
         printf("pipe in vlc write error\n");
         return -1;
     } else
@@ -192,9 +193,9 @@ void sg_player_destroy(sg_player_t *p)
         libvlc_media_player_release(pl->player);
     if (pl->inst)
         libvlc_release(pl->inst);
-    if (pl->pipefd[0])
-        close(pl->pipefd[0]);
-    if (pl->pipefd[1])
-        close(pl->pipefd[1]);
+    if (pl->fd[0])
+        close(pl->fd[0]);
+    if (pl->fd[1])
+        close(pl->fd[1]);
     free(pl);
 }
