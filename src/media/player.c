@@ -8,6 +8,7 @@
 
 struct sg_player_real {
     libvlc_instance_t       *inst;
+    libvlc_media_t          *media;
     libvlc_media_player_t   *player;
     int                     pipefd[2];
 };
@@ -47,7 +48,6 @@ int libvlc_media_close_cb(void*opaque)
 static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_load_type load_type)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
-    libvlc_media_t *media = NULL;
 
     if (load_type < SGPLAYERLOADTYPE_MIN || load_type > SGPLAYERLOADTYPE_MAX)
         goto error;
@@ -57,14 +57,14 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
     }
 
     if (load_type == SGPLAYERLOADTYPE_FILENAME) {
-        media = libvlc_media_new_path(pl->inst, (const char *)load_src);
-        if (!media) {
+        pl->media = libvlc_media_new_path(pl->inst, (const char *)load_src);
+        if (!pl->media) {
             printf("file %s open error\n", (const char *)load_src);
             goto error;
         }
     } else if (load_type == SGPLAYERLOADTYPE_URL) {
-        media = libvlc_media_new_location(pl->inst, (const char *)load_src);
-        if (!media) {
+        pl->media = libvlc_media_new_location(pl->inst, (const char *)load_src);
+        if (!pl->media) {
             printf("url %s open error\n", (const char *)load_src);
             goto error;
         }
@@ -73,21 +73,20 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
             printf("pipe create error\n", (FILE *)load_src);
             goto error;
         }
-        media = libvlc_media_new_fd(pl->inst, pl->pipefd[0]);
-        if (!media) {
+        pl->media = libvlc_media_new_fd(pl->inst, pl->pipefd[0]);
+        if (!pl->media) {
             printf("create media from pipe error\n", (FILE *)load_src);
             goto error;
         }
     }
 
-    pl->player = libvlc_media_player_new_from_media(media);
+    pl->player = libvlc_media_player_new_from_media(pl->media);
     if(!pl->player) {
         printf("vlc player create error\n");
         goto error;
     }
 
     succeed:
-    libvlc_media_release(media);
     return 0;
 
     error:
@@ -95,8 +94,8 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
         libvlc_media_player_release(pl->player);
     if (pl->inst)
         libvlc_release(pl->inst);
-    if (media)
-        libvlc_media_release(media);
+    if (pl->media)
+        libvlc_media_release(pl->media);
     return -1;
 }
 
@@ -187,6 +186,8 @@ void sg_player_destroy(sg_player_t *p)
     if (!pl)
         return;
 
+    if (pl->media)
+        libvlc_media_release(pl->media);
     if (pl->player)
         libvlc_media_player_release(pl->player);
     if (pl->inst)

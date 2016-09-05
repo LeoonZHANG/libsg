@@ -2,14 +2,13 @@
 #include<stdio.h>
 #include<string.h>
 #include<pthread.h>
-#include"../../../include/sg/media/player.h"
+#include"../../../include/sg/media/rtsp.h"
 #include"../../../include/sg/net/etp_server.h"
 
 #define PLAY_INSIDE
 
 #ifdef PLAY_INSIDE
-#include"../../../include/sg/media/rtsp.h"
-
+#include"../../../include/sg/media/player.h"
 static sg_player_t *player = NULL;
 #endif
 
@@ -53,10 +52,9 @@ static void start_player_thread(void)
     /* open rtsp client to fetch data */
     ret = pthread_create(&id, NULL, player_thread, NULL);
     if(ret == 0) {
-        printf("\n\ncreate player thread seccess, and listen @ %d\n\n", etp_server_port);
-        rtsp_thread_count++;
+        printf("create player thread seccess\n");
     } else {
-        printf("\n\ncreate player thread error, and listen @ %d\n\n", etp_server_port);
+        printf("create player thread error\n");
         exit(-1);
     }
 #endif
@@ -137,6 +135,7 @@ static void *player_thread(void *p)
     if (!player)
         player = sg_player_create();
     sg_player_load_buf(player);
+    sg_player_play(player);
 #endif
 }
 
