@@ -124,10 +124,19 @@ static int counter_slots_is_full(sg_speed_counter_t* counter)
 
 static void counter_slots_advance(sg_speed_counter_t* counter, size_t** pointer)
 {
-    if ((*pointer) < (counter->byte_slots + counter_slots_capacities(counter)))
-        ++(*pointer);
-    else
+    ++(*pointer);
+    if ((*pointer) >= (counter->byte_slots + counter_slots_capacities(counter)))
         (*pointer) = counter->byte_slots;
+}
+
+static void counter_forward(sg_speed_counter_t* counter)
+{
+    counter_slots_advance(counter, &counter->tail);
+    *counter->tail = 0;
+    /* The tail hit head, slots must be full, 'cause it's definitely not empty.
+       Then advance head. */
+    if (counter->tail == counter->head)
+        counter_slots_advance(counter, &counter->head);
 }
 
 static void try_fast_forward(sg_speed_counter_t * counter)
@@ -137,13 +146,8 @@ static void try_fast_forward(sg_speed_counter_t * counter)
     unsigned long elapsed_grains = new_grains_count - counter->grains_count;
     
     /* handle fast-forward, try to set empty slots */
-    while (elapsed_grains > 0) {
-        counter_slots_advance(counter, &counter->tail);
-        *counter->tail = 0;
-        if (counter_slots_is_full(counter))
-            counter_slots_advance(counter, &counter->head);
-        --elapsed_grains;
-    }
+    while (elapsed_grains-- > 0)
+        counter_forward(counter);
 
     counter->grains_count = new_grains_count;
 }
