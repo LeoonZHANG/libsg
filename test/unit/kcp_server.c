@@ -21,7 +21,7 @@ typedef struct
     char data[1024];
 }ftp_t;
 
-static void s_kcp_on_open(sg_etp_client_t *client)
+static void s_kcp_on_open(sg_etp_client_t * client)
 {
     char * addr = NULL;
     /*printf("s_kcp_on_open\n");*/
@@ -62,7 +62,9 @@ static void s_kcp_on_data(sg_etp_client_t *client, char *data, size_t size)
             sg_etp_server_close_client(client);
 
             fclose(fp);
+            printf("send over, bye\n");
             break;
+
         case PT_BYE:
             /*sg_etp_server_close_client(client);*/
             break;

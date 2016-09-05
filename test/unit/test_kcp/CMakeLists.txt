@@ -21,6 +21,7 @@ INCLUDE_DIRECTORIES(
 SET(SRC_SERVER
     ${KCP_DIR}/ikcp.c
     ${LINKHASH_DIR}/linkhash.c
+    ${NET_DIR}/etp.c
     ${NET_DIR}/etp_server.c
     ../kcp_server.c
 )

@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include "uv.h"
 #include "ikcp.h"
 #include "etp.h"
@@ -61,7 +62,7 @@ static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
             break;
         case PT_BYE:
             printf("transfer finished\n");
-            printf("end @ %u, used %u ms, speed: %u kB/s\n", sg_etp_now(client), sg_etp_now(client) - now, data_size / (sg_etp_now(client) - now));
+            printf("end @ %u, used %u ms, speed: %ld kB/s\n", sg_etp_now(client), sg_etp_now(client) - now, data_size / (sg_etp_now(client) - now));
             output.payload = PT_BYE;
             output.len = 0;
             sg_etp_send(client, &output, output.len + 2*sizeof(int));
@@ -71,7 +72,7 @@ static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
     }
 }
 
-static void s_etp_on_sent(sg_etp_t * client, int status/*0:OK*/)
+static void s_etp_on_sent(sg_etp_t * client, int status/*0:OK*/, void * buf, size_t len)
 {}
 
 static void s_kcp_on_close(sg_etp_t *client, int code, const char *reason)
