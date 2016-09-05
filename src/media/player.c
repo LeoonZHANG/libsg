@@ -83,7 +83,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
     }
 
     succeed:
-    libvlc_media_release(pl->media_file);
+    libvlc_media_release(media_file);
     return 0;
 
     error:
@@ -92,7 +92,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
     if (pl->inst)
         libvlc_release(pl->inst);
     if (media_file)
-        libvlc_media_release(pl->media_file);
+        libvlc_media_release(media_file);
     return -1;
 }
 
@@ -124,7 +124,7 @@ int sg_player_load_url(sg_player_t *p, const char *url)
 
 int sg_player_load_buf(sg_player_t *p)
 {
-    return sg_player_load(p, (const void *)NULL, SGPLAYERLOADTYPE_FD);
+    return sg_player_load(p, (const void *)NULL, SGPLAYERLOADTYPE_BUF);
 }
 
 int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
@@ -133,7 +133,7 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
 
     if (write(pl->pipefd[1], (char *)data, size) == 0) {
         close(pl->pipefd[1]);
-        printf("pipe in vlc write error\n")
+        printf("pipe in vlc write error\n");
         return -1;
     } else
         return 0;
@@ -187,6 +187,5 @@ void sg_player_destroy(sg_player_t *p)
         libvlc_media_player_release(pl->player);
     if (pl->inst)
         libvlc_release(pl->inst);
-    if (pl->p)
     free(pl);
 }
