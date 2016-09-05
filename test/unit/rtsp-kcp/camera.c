@@ -132,8 +132,7 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
 static void *player_thread(void *p)
 {
 #ifdef PLAY_INSIDE
-    if (!player)
-        player = sg_player_create();
+    player = sg_player_create();
     sg_player_load_buf(player);
     sg_player_play(player);
 #endif

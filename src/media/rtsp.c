@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <curl/curl.h>
+#include <unistd.h> /* usleep */
 #include "../../include/sg/media/rtsp.h"
 
 static const char *rtsp_transport_tcp = "RTP/AVP/TCP;interleaved=0-1";
@@ -207,7 +208,7 @@ int sg_rtsp_play(sg_rtsp_t *r)
             printf("RTSP receive error\n");
             break;
         }
-        sleep(1);
+        usleep(1000); /* sleep 1 ms */
     }
 
     return 0;
