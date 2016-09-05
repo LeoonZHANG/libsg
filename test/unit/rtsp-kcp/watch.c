@@ -58,6 +58,9 @@ int main(int argc, char const *argv[])
     if (argc > 3) sprintf(save_path, "%s", argv[3]);
 
     client = sg_etp_open(server_ip, server_port, etp_on_open, etp_on_message, etp_on_sent, etp_on_close);
-    sg_etp_run(client, 10);
+    while (1) {
+        sg_etp_run(client, 10);
+        sleep(1);
+    }
     return 0;
 }
