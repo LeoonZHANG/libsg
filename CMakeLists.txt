@@ -48,6 +48,7 @@ file(GLOB src_platform_windows src/platform/windows/*.c)
 file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
 file(GLOB src_crypto src/crypto/*.c)
+file(GLOB src_hash src/hash/*.c)
 
 set(src_lib
     ${src_b64}
@@ -62,6 +63,7 @@ set(src_lib
     ${src_sys}
     ${src_util}
     ${src_crypto}
+    ${src_hash}
     )
 
 ## 有些文件是 Windwos 专用的。
