@@ -14,7 +14,7 @@
 #include"../../../include/sg/media/player.h"
 #endif
 
-//int stream_fd[2] = {0, 0};
+int stream_fd[2] = {0, 0};
 
 #ifdef PLAY_INSIDE
 static sg_player_t *player = NULL;
