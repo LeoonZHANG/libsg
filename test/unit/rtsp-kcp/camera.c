@@ -272,7 +272,7 @@ static void *pipe_thread(void *p)
     ssize_t _size;
     while(1)
     {
-        _size = read(stream_fd[0], buf, 4095);
+        _size = read(stdin, buf, 4095);
         if(_size > 0)
         {
             printf("pipe read %d data\n", _size);
