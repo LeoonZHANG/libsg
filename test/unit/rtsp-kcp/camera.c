@@ -103,8 +103,10 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
         printf("send %lu data to client\n", size);
     }
 
-    if (mode == 2 && player)
+    if (mode == 2 && player) {
         sg_player_put_buf(player, data, size);
+        printf("put %lu data to player\n", size);
+    }
 }
 
 static void *player_thread(void *p)
