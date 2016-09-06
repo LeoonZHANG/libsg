@@ -33,7 +33,7 @@ static void start_player_thread(void)
     pthread_join(id, NULL);
 }
 
-static void start_rtsp_thread(void)
+static void start_rtsp_thread(void *param)
 {
     int ret;
     pthread_t id;
@@ -46,7 +46,7 @@ static void start_rtsp_thread(void)
         printf("start to open rtsp\n");
 
     /* open rtsp client to fetch data */
-    ret = pthread_create(&id, NULL, rtsp_thread, NULL);
+    ret = pthread_create(&id, NULL, rtsp_thread, param);
     if(ret == 0) {
         printf("create rtsp thread seccess\n");
         rtsp_thread_count++;
@@ -65,7 +65,7 @@ static void etp_server_on_open(sg_etp_client_t *client)
 	addr = sg_etp_server_get_client_addr(client);
 	printf("conn from %s\n", addr);
 	free(addr);
-    start_rtsp_thread();
+    start_rtsp_thread((void *)client);
 }
 
 static void etp_server_on_message(sg_etp_client_t *client, char *data, size_t size)
@@ -142,7 +142,7 @@ static void *rtsp_thread(void *p)
 	sg_rtsp_t *r;
 
 	sg_rtsp_init();
-	r = sg_rtsp_open(rtsp_server_url, 10000, SGRTSPDATAPROTOCOL_TCP, rtsp_on_recv, NULL, NULL);
+	r = sg_rtsp_open(rtsp_server_url, 10000, SGRTSPDATAPROTOCOL_TCP, rtsp_on_recv, NULL, p);
 	if (r)
 		printf("RTSP connect OK\n");
 	else
@@ -188,7 +188,7 @@ int main(int argc,char**argv)
         start_player_thread();
         return 0;
     } else if (mode  == 1) {
-        start_rtsp_thread();
+        start_rtsp_thread(NULL);
         start_player_thread();
         return 0;
     } else {

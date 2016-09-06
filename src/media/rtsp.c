@@ -127,7 +127,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_r
     curl_easy_setopt(r->curl, CURLOPT_URL, r->url);
     res = curl_easy_perform(r->curl);
     if (res != CURLE_OK) {
-        printf("RTSP session init error\n");
+        printf("RTSP session init error, error num %d, url %s\n", res, r->url);
         goto err_exit;
     }
 
