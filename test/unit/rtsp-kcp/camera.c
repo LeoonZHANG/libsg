@@ -216,19 +216,20 @@ static void *udp_thread(void *p)
         }
         if(res == NULL)
         {
+            fprintf(stderr, "res is null\n");
             return -1;
         }
 
         sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
         if(sock < 0)
         {
-            perror("socket");
+            perror("socket\n");
             return 1;
         }
 
         if(bind(sock, res->ai_addr, res->ai_addrlen) < 0)
         {
-            perror("bind");
+            perror("bind\n");
             return 1;
         }
 
@@ -236,6 +237,7 @@ static void *udp_thread(void *p)
 
         addrlen = sizeof(addr);
 
+    printf("start to wait data\n");
         while(1) {
             if(len = recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addrlen) > 0)
             {
