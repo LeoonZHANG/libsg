@@ -17,7 +17,8 @@ enum
 typedef struct
 {
     int payload;
-    int len;
+    size_t offset;
+    size_t len;
     char data[1024];
 }ftp_t;
 
@@ -28,7 +29,7 @@ static void s_kcp_on_open(sg_etp_client_t * client)
 
     addr = sg_etp_server_get_client_addr(client);
 
-    printf("conn from %s\n", addr);
+    printf("conn from %s, %lu\n", addr, sg_etp_session_get_conv(client));
 
     free(addr);
 }
@@ -53,11 +54,13 @@ static void s_kcp_on_data(sg_etp_client_t *client, char *data, size_t size)
             output.payload = PT_CHK;
             while ((output.len = fread(output.data, 1, 1024, fp)) > 0)
             {
-                sg_etp_server_send_data(client, &output, output.len + 2*sizeof(int));
+                output.offset = ftell(fp);
+                printf("%d ", output.offset);
+                sg_etp_server_send_data(client, &output, sizeof(ftp_t));
             }
             output.payload = PT_BYE;
             output.len = 0;
-            sg_etp_server_send_data(client, &output, output.len + 2*sizeof(int));
+            sg_etp_server_send_data(client, &output, sizeof(ftp_t));
 
             sg_etp_server_close_client(client);
 
@@ -70,6 +73,12 @@ static void s_kcp_on_data(sg_etp_client_t *client, char *data, size_t size)
             break;
     }
 }
+
+void s_kcp_on_sent(sg_etp_client_t *client, int status/*0:OK*/, void *data, size_t len)
+{
+
+}
+
 
 static void s_kcp_on_close(sg_etp_client_t *client, int code, const char *reason)
 {
@@ -99,7 +108,7 @@ int main(int argc, char * argv[])
 
     printf("listen @ %d\n", port);
 
-    sg_etp_server_t * server = sg_etp_server_open("0.0.0.0", port, 100, s_kcp_on_open, s_kcp_on_data, NULL, NULL, s_kcp_on_close);
+    sg_etp_server_t * server = sg_etp_server_open("0.0.0.0", port, 100, s_kcp_on_open, s_kcp_on_data, s_kcp_on_sent, NULL, s_kcp_on_close);
 
     sg_etp_server_run(server, 10);
 

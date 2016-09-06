@@ -65,33 +65,37 @@ typedef unsigned char bool_t;
 #define OK      0
 #define ERROR (-1)
 
+#define LOG_LVL_E 'E'
+#define LOG_LVL_W 'W'
+#define LOG_LVL_I 'I'
+#define LOG_LVL_D 0
 #if defined(PLATFORM_WINDOWS)
 /* FIXME: change variable argument macros definition if needed. */
-#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
-#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
-#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
-#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #elif defined(PLATFORM_LINUX)
-#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
-#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
-#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
-#define LOG_D(prmpt, ...) {} /*LOG("D: " prmpt, ##__VA_ARGS__)*/
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #elif defined(PLATFORM_MACOS) || defined(PLATFORM_BSD)
 /* FIXME: change variable argument macros definition if needed. */
-#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
-#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
-#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
-#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #else
 /* FIXME: change variable argument macros definition if needed. */
-#define LOG(fmt, ...)  printf("%s:%d " fmt "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define LOG_E(prmpt, ...) LOG("E: " prmpt, ##__VA_ARGS__)
-#define LOG_W(prmpt, ...) LOG("W: " prmpt, ##__VA_ARGS__)
-#define LOG_I(prmpt, ...) LOG("I: " prmpt, ##__VA_ARGS__)
-#define LOG_D(prmpt, ...) LOG("D: " prmpt, ##__VA_ARGS__)
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
+#define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
+#define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
+#define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #endif
 
 #define SG_ASSERT(exp, prmpt)          if (exp) {} else { LOG_W(prmpt); return; }
@@ -127,7 +131,7 @@ int sg_etp_session_recv(sg_etp_session_t * session, void * data, size_t size);
 void * sg_etp_session_get_data(sg_etp_session_t * session);
 char * sg_etp_session_get_client_addr(sg_etp_session_t * session);
 IUINT32 sg_etp_session_get_conv(sg_etp_session_t * session);
-
+void sg_etp_session_set_timeout(sg_etp_session_t * session, uint64_t timeout);
 
 
 #ifdef __cplusplus
