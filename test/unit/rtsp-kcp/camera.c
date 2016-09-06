@@ -161,26 +161,26 @@ int main(int argc,char**argv)
     }
 
     if (strstr(argv[1], "local_player")) {
-        if (argc != 2) {
-            printf("输入%d个参数, 错误, 需要2个参数\n", argc);
+        if (argc != 3) {
+            printf("输入%d个参数, 错误, 需要3个参数\n", argc);
             return -1;
         }
         sprintf(play_filename, "%s", argv[2]);
         mode = 0;
     } else if (strstr(argv[1], "rtsp_player")) {
-        if (argc != 2) {
-            printf("输入%d个参数, 错误, 需要2个参数\n", argc);
-            return -1;
-        }
-        snprintf(rtsp_server_url, 1024, "%s", argv[1]);
-        mode = 1;
-    } else if (strstr(argv[1], "rtsp")) {
         if (argc != 3) {
             printf("输入%d个参数, 错误, 需要3个参数\n", argc);
             return -1;
         }
         snprintf(rtsp_server_url, 1024, "%s", argv[1]);
-        etp_server_port = atoi(argv[2]);
+        mode = 1;
+    } else if (strstr(argv[1], "rtsp")) {
+        if (argc != 4) {
+            printf("输入%d个参数, 错误, 需要4个参数\n", argc);
+            return -1;
+        }
+        snprintf(rtsp_server_url, 1024, "%s", argv[2]);
+        etp_server_port = atoi(argv[3]);
         mode = 2;
     }
 
