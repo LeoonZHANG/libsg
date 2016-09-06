@@ -119,8 +119,8 @@ static void etp_server_on_open(sg_etp_client_t *client)
     //ret = pipe(stream_fd);
     //printf("pipe create %s, read %d, write %d\n", ret == 0 ? "success" : "error", stream_fd[0], stream_fd[1]);
     //start_rtsp_thread((void *)client);
-    //start_udp_thread((void *)client);
-    start_pipe_thread((void *)client);
+    start_udp_thread((void *)client);
+    //start_pipe_thread((void *)client);
 }
 
 static void etp_server_on_message(sg_etp_client_t *client, char *data, size_t size)
@@ -150,7 +150,7 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
 	/*if (!fp_save_rtp)
 		fp_save_rtp = fopen("rtp.mp4", "wb");
 	if (fp_save_rtp)
-		fwrite(data + 12, size - 12, 1, fp_save_rtp);*/
+		fwrite(data, size, 1, fp_save_rtp);*/
 
 	/* send rtp data */
 	if (mode == 2 && client) {
