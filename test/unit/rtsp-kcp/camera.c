@@ -222,20 +222,21 @@ static void *udp_thread(void *p)
     {
         ssize_t _size = recvfrom(sock,buf,sizeof(buf) - 1,0,\
 					(struct sockaddr*)&client,&len);
-        if(_size < 0)
-        {
-            perror("recvfrom error\n");
-            continue;
-        }
-        else if(_size > 0)
+        if(_size > 0)
         {
             printf("recv %d data\n", _size);
             if (etp_c) {
                 sg_etp_server_send(etp_c, buf, _size);
                 printf("send client %d data\n", _size);
             }
+        } else {
+            if(_size < 0)
+            {
+                perror("recvfrom error\n");
+                continue;
+            }
         }
-        usleep(1);
+        //usleep(1);
     }
 }
 
