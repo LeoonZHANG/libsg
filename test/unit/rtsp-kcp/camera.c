@@ -185,6 +185,8 @@ int main(int argc,char**argv)
     start_player_thread();
 #endif
 
+    return 0;
+
 	/* open etp server to ack data */
 	server = sg_etp_server_open("0.0.0.0", etp_server_port, 10,
 								etp_server_on_open, etp_server_on_message,
@@ -195,4 +197,6 @@ int main(int argc,char**argv)
 		printf("etp server open error\n");
 	start_rtsp_thread();
 	sg_etp_server_run(server, 10);
+
+    return 0;
 }
