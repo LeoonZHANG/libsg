@@ -98,12 +98,12 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
 		fwrite(data + 12, size - 12, 1, fp_save_rtp);*/
 
 	/* send rtp data */
-	if (mode == 3 && client) {
+	if (mode == 2 && client) {
         sg_etp_server_send(client, data, size);
         printf("send %lu data to client\n", size);
     }
 
-    if (mode == 2 && player) {
+    if (mode == 1 && player) {
         sg_player_put_buf(player, data, size);
         printf("put %lu data to player\n", size);
     }
