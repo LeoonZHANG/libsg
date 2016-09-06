@@ -273,6 +273,10 @@ static void *pipe_thread(void *p)
     ssize_t _size;
     if (!fp)
         fp = fopen("tmp.ts", "rb");
+    if (!fp) {
+        printf("file open error\n");
+        return;
+    }
     while(1)
     {
         //_size = read(0, buf, 4095);
