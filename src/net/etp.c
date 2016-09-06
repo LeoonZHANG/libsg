@@ -48,7 +48,7 @@ void sg_etp_set_max_send_speed(sg_etp_t * client, size_t kbps);
 /*===========================================================================*\
  * Local Type Declarations
 \*===========================================================================*/
-typedef struct sg_etp_real
+struct sg_etp_real
 {
     IUINT32             conv;           /*< conversation id, for kcp */
 
@@ -81,7 +81,7 @@ typedef struct sg_etp_real
     int                 head, tail;
     int                 last_speed[SG_ETP_SPEED_STAT_SAMPLE_COUNT];
     double              current_speed;
-}sg_etp_t;
+};
 
 
 
@@ -145,7 +145,7 @@ sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
     sg_etp_on_sent_func_t on_sent,
     sg_etp_on_close_func_t on_close)
 {
-    sg_etp_t * client = NULL;
+    struct sg_etp_real * client = NULL;
     IUINT32 conv;
     struct timeval tv;
     struct sockaddr_in addr;
@@ -188,13 +188,14 @@ sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
 int sg_etp_run(sg_etp_t *client, int interval_ms)
 {
     int ret = ERROR;
+    struct sg_etp_real *c = (struct sg_etp_real *)client;
 
-    SG_ASSERT_RET(NULL != client, "client pointer is NULL", ret);
+    SG_ASSERT_RET(NULL != c, "client pointer is NULL", ret);
 
-    sg_etp_session_start(client, interval_ms, NULL);
+    sg_etp_session_start(c, interval_ms, NULL);
 
     /* enter loop */
-    uv_run(client->loop, UV_RUN_DEFAULT);
+    uv_run(c->loop, UV_RUN_DEFAULT);
 
     return OK;
 }
@@ -237,39 +238,40 @@ void on_uv_close_done(uv_handle_t* handle)
 void sg_etp_update_speed(sg_etp_t * client, uint64_t now)
 {
     int i = 0;
+    struct sg_etp_real *c = (struct sg_etp_real *)client;
 
-    if (client->max_speed_limit <=0 )
+    if (c->max_speed_limit <=0 )
         return;
 
-    if (!client->last_time) {
+    if (!c->last_time) {
         // start to record
-        client->last_time = now;
+        c->last_time = now;
         return;
     }
     else {
         // update the last_speed, every tow second
-        uint64_t msecond = now - client->last_time;
+        uint64_t msecond = now - c->last_time;
         if (msecond > SG_ETP_CALC_SPEED_INTERVAL_MS) {
             // 平滑处理
             int count = 0;
-            double speed = client->last_send_byte * 1.0 / msecond * 1000;
+            double speed = c->last_send_byte * 1.0 / msecond * 1000;
 
             // 加入队列
-            client->last_speed[client->tail++] = speed;
-            client->tail &= (SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
-            if (client->tail == client->head)
-                client->head = (client->head + 1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
+            c->last_speed[c->tail++] = speed;
+            c->tail &= (SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
+            if (c->tail == c->head)
+                c->head = (c->head + 1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1);
 
             speed = 0;
-            for (i = client->head; i != client->tail; i=(i+1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1)) {
-                speed += client->last_speed[i];
+            for (i = c->head; i != c->tail; i=(i+1)&(SG_ETP_SPEED_STAT_SAMPLE_COUNT-1)) {
+                speed += c->last_speed[i];
                 count += 1;
             }
             speed /= count;
-            client->current_speed = speed;
+            c->current_speed = speed;
             printf("send %lf kib/s %d\n", speed/1024, count);
-            client->last_time = now;
-            client->last_send_byte = 0;
+            c->last_time = now;
+            c->last_send_byte = 0;
         }
 
     }
@@ -277,13 +279,15 @@ void sg_etp_update_speed(sg_etp_t * client, uint64_t now)
 
 void sg_etp_set_max_send_speed(sg_etp_t * client, size_t kbps)
 {
-    client->max_speed_limit = kbps*1024;
-    client->last_send_byte = 0;
-    client->last_time = 0;
+    struct sg_etp_real *c = (struct sg_etp_real *)client;
+
+    c->max_speed_limit = kbps*1024;
+    c->last_send_byte = 0;
+    c->last_time = 0;
     if (!kbps){
-        client->tail = client->head = 0;
-        memset(client->last_speed, 0, sizeof(client->last_speed));
-        client->current_speed = 0;
+        c->tail = c->head = 0;
+        memset(c->last_speed, 0, sizeof(c->last_speed));
+        c->current_speed = 0;
     }
 }
 

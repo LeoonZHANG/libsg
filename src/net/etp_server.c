@@ -43,8 +43,7 @@
 \*===========================================================================*/
 
 
-typedef struct sg_etp_server_real
-{
+struct sg_etp_server_real {
     uv_loop_t                           loop;           /*< uv loop handler, for kcp running in */
     uv_udp_t                            udp;            /*< libuv udp handler, for kcp bearing protocol */
 
@@ -64,7 +63,7 @@ typedef struct sg_etp_server_real
     bool_t                              to_close;       /*< flag for delay close */
 
     void                              * data;
-}sg_etp_server_t;
+};
 
 /*===========================================================================*\
  * Exported Const Object Definitions
@@ -107,7 +106,7 @@ static void on_server_recv_udp(uv_udp_t* handle,
 {
     IUINT32 conv = 0;
     int ret = 0;
-    sg_etp_server_t * server = handle->data;
+    struct sg_etp_server_real * server = handle->data;
     sg_etp_session_t * session = NULL;
 
     /*LOG_D("recv udp %d\n", nread);*/
@@ -169,17 +168,17 @@ sg_etp_server_t *sg_etp_server_open(
     sg_etp_server_on_close_func_t   on_close
 )
 {
-    sg_etp_server_t * server = NULL;
+    struct sg_etp_server_real * server = NULL;
     struct sockaddr_in addr;
     int ret = 0;
 
     do
     {
         /* create the client object */
-        server = (sg_etp_server_t *)malloc(sizeof(sg_etp_server_t));
-        SG_ASSERT_BRK(NULL != server, "create sg_etp_server_t");
+        server = (struct sg_etp_server_real *)malloc(sizeof(struct sg_etp_server_real));
+        SG_ASSERT_BRK(NULL != server, "create struct sg_etp_server_real");
 
-        memset(server, 0, sizeof(sg_etp_server_t));
+        memset(server, 0, sizeof(struct sg_etp_server_real));
 
         server->backlog     = 0;
         server->max_conn    = max_backlog;
@@ -228,34 +227,36 @@ char * sg_etp_server_get_client_addr(sg_etp_client_t * client)
     return sg_etp_session_get_client_addr(client);
 }
 
-void sg_etp_server_run(sg_etp_server_t * server, int interval_ms)
+void sg_etp_server_run(sg_etp_server_t *server, int interval_ms)
 {
     int ret = 0;
+    struct sg_etp_server_real *s = (struct sg_etp_server_real *)server;
 
-    SG_ASSERT(NULL != server, "server pointer is NULL");
+    SG_ASSERT(NULL != s, "server pointer is NULL");
 
-    server->interval = interval_ms;
+    s->interval = interval_ms;
 
     /* init udp */
-    ret = uv_udp_init(&(server->loop), &(server->udp));
+    ret = uv_udp_init(&(s->loop), &(s->udp));
     SG_ASSERT(ret >= 0, "init udp failed");
-    server->udp.data = server;
-    ret = uv_udp_bind(&(server->udp), &(server->addr), 0);
+    s->udp.data = s;
+    ret = uv_udp_bind(&(s->udp), &(s->addr), 0);
     SG_ASSERT(ret >= 0, "bind udp failed");
-    ret = uv_udp_recv_start(&(server->udp), on_uv_alloc_buffer, on_server_recv_udp);
+    ret = uv_udp_recv_start(&(s->udp), on_uv_alloc_buffer, on_server_recv_udp);
     SG_ASSERT(ret >= 0, "start udp recv failed");
 
     /* network run */
-    uv_run(&(server->loop), UV_RUN_DEFAULT);
+    uv_run(&(s->loop), UV_RUN_DEFAULT);
 }
 
 void sg_etp_server_close(sg_etp_server_t * server)
 {
     struct lh_entry * to_del = NULL;
     struct lh_entry * entry = NULL;
+    struct sg_etp_server_real *s = (struct sg_etp_server_real *)server;
 
     /* traverse session list to close all sessions connected */
-    entry = server->sessions->head;
+    entry = s->sessions->head;
     while (NULL != entry)
     {
         to_del = entry;
@@ -263,20 +264,20 @@ void sg_etp_server_close(sg_etp_server_t * server)
 
         sg_etp_server_close_client((sg_etp_client_t *)to_del->v);
 
-        server->to_close = true;
+        s->to_close = true;
     }
 
     /* there is no session to close */
-    if (!server->to_close)
+    if (!s->to_close)
     {
-        uv_close((uv_handle_t*)&(server->udp), on_uv_close_done);
+        uv_close((uv_handle_t*)&(s->udp), on_uv_close_done);
 
-        uv_loop_close(&(server->loop));
+        uv_loop_close(&(s->loop));
 
-        lh_table_free(server->sessions);
+        lh_table_free(s->sessions);
 
-        /*free(server->recv_data);*/
-        free(server);
+        /*free(s->recv_data);*/
+        free(s);
     }
 }
 
@@ -287,7 +288,7 @@ void sg_etp_server_free(void)
 /* these callbacks are for session */
 static void s_on_open(sg_etp_t * client)
 {
-    sg_etp_server_t * server = sg_etp_session_get_data(client);
+    struct sg_etp_server_real * server = sg_etp_session_get_data(client);
 
     SG_CALLBACK(server->on_open, client);
 
@@ -296,7 +297,7 @@ static void s_on_open(sg_etp_t * client)
 
 static void s_on_data(sg_etp_t * client, char *data, size_t size)
 {
-    sg_etp_server_t * server = sg_etp_session_get_data(client);
+    struct sg_etp_server_real * server = sg_etp_session_get_data(client);
 
     SG_CALLBACK(server->on_data, client, data, size);
 
@@ -305,7 +306,7 @@ static void s_on_data(sg_etp_t * client, char *data, size_t size)
 
 static void s_on_sent(sg_etp_t * client, int status/*0:OK*/, void * data, size_t len)
 {
-    sg_etp_server_t * server = sg_etp_session_get_data(client);
+    struct sg_etp_server_real * server = sg_etp_session_get_data(client);
 
     SG_CALLBACK(server->on_sent, client, status, data, len);
 
