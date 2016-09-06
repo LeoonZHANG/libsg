@@ -280,7 +280,7 @@ static void *pipe_thread(void *p)
     while(1)
     {printf("a\n");
         //_size = read(0, buf, 4095);
-        _size = fread(buf, 1, 1024, fp);printf("b\n");
+        _size = fread(buf, 1, 1020, fp);printf("b\n");
         if(_size > 0)
         {
             printf("file read %d data\n", _size);
