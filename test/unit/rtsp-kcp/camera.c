@@ -224,10 +224,10 @@ static void *udp_thread(void *p)
 					(struct sockaddr*)&client,&len);
         if(_size > 0)
         {
-            printf("recv %d data\n", _size);
+            //printf("recv %d data\n", _size);
             if (etp_c) {
                 sg_etp_server_send(etp_c, buf, _size);
-                printf("send client %d data\n", _size);
+                //printf("send client %d data\n", _size);
             }
         } else {
             if(_size < 0)
