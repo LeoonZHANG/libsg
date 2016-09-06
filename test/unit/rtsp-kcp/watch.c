@@ -31,7 +31,7 @@ static void etp_on_message(sg_etp_t *client, char *data, size_t size)
     if (!fp_save)
         fp_save = fopen("video.mp4", "wb");
     if (fp_save)
-        fwrite(data + 12, size - 12, 1, fp_save);
+        fwrite(data, size, 1, fp_save);
 }
 
 void etp_on_sent(sg_etp_t *client, int status/*0:OK*/, void *data, size_t len)
