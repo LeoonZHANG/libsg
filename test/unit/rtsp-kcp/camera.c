@@ -189,7 +189,7 @@ static void *rtsp_thread(void *p)
 
 static void *udp_thread(void *p)
 {
-#define _PORT_ "8071"
+#define _PORT_ 8071
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
 
