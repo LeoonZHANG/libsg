@@ -66,7 +66,7 @@ static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
             data_size += input->len;
             break;
         case PT_BYE:
-            printf("transfer finished\n");
+            printf("transmit finished\n");
             printf("end @ %u, used %u ms, speed: %ld kB/s\n", sg_etp_now(client), sg_etp_now(client) - now, data_size / (sg_etp_now(client) - now));
             output.payload = PT_BYE;
             output.len = 0;

@@ -71,27 +71,27 @@ typedef unsigned char bool_t;
 #define LOG_LVL_D 0
 #if defined(PLATFORM_WINDOWS)
 /* FIXME: change variable argument macros definition if needed. */
-#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s():%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
 #define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
 #define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
 #define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
 #define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #elif defined(PLATFORM_LINUX)
-#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s():%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
 #define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
 #define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
 #define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
 #define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #elif defined(PLATFORM_MACOS) || defined(PLATFORM_BSD)
 /* FIXME: change variable argument macros definition if needed. */
-#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s():%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
 #define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
 #define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
 #define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
 #define LOG_D(prmpt, ...) LOG(LOG_LVL_D, prmpt, ##__VA_ARGS__)
 #else
 /* FIXME: change variable argument macros definition if needed. */
-#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s:%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
+#define LOG(lvl, fmt, ...) if (lvl) { printf("%c: %s():%d " fmt "\n", lvl, __FUNCTION__, __LINE__, ##__VA_ARGS__); } else {}
 #define LOG_E(prmpt, ...) LOG(LOG_LVL_E, prmpt, ##__VA_ARGS__)
 #define LOG_W(prmpt, ...) LOG(LOG_LVL_W, prmpt, ##__VA_ARGS__)
 #define LOG_I(prmpt, ...) LOG(LOG_LVL_I, prmpt, ##__VA_ARGS__)
