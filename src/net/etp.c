@@ -173,8 +173,6 @@ sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
             on_sent,
             on_close);
 
-        SG_CALLBACK(client->on_open, client);
-
         LOG_I("open client %lu", conv);
 
         return client;
@@ -613,6 +611,8 @@ int sg_etp_session_start(sg_etp_session_t * session, int interval_ms, uv_udp_t *
     session->timer.data = session; /* link client pointer to timer */
     ret = uv_timer_start(&(session->timer), on_uv_timer_cb, session->interval, session->interval);
     SG_ASSERT_RET(ret >= 0, "start timer failed", ERROR);
+
+    SG_CALLBACK(session->on_open, session);
 
     return OK;
 }

@@ -141,8 +141,6 @@ static void on_server_recv_udp(uv_udp_t* handle,
 
             sg_etp_session_start(session, server->interval, &(server->udp));
 
-            s_on_open(session);
-
             LOG_I("client %lu connected", conv);
         }
 

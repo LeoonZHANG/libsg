@@ -55,7 +55,7 @@ static void s_kcp_on_data(sg_etp_client_t *client, char *data, size_t size)
             while ((output.len = fread(output.data, 1, 1024, fp)) > 0)
             {
                 output.offset = ftell(fp);
-                printf("%d ", output.offset);
+                //printf("%d ", output.offset);
                 sg_etp_server_send_data(client, &output, sizeof(ftp_t));
             }
             output.payload = PT_BYE;

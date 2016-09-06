@@ -59,7 +59,7 @@ static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
                 printf("open %s failed\n", s_path);
                 return;
             }
-            printf("%d ", input->offset);
+            //printf("%d ", input->offset);
             fseek(fp, input->offset, SEEK_SET);
             fwrite(input->data, 1, input->len, fp);
             fclose(fp);
