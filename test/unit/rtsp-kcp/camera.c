@@ -268,7 +268,7 @@ static void *pipe_thread(void *p)
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
     FILE *fp = NULL;
-    char buf[1024];
+    char buf[2048];
     memset(buf,'\0',sizeof(buf));
     size_t _size;
     if (!fp)
@@ -280,7 +280,7 @@ static void *pipe_thread(void *p)
     while(1)
     {printf("a\n");
         //_size = read(0, buf, 4095);
-        _size = fread(buf, 1, 1020, fp);printf("b\n");
+        _size = fread(buf, 1, 2047, fp);printf("b\n");
         if(_size > 0)
         {
             printf("file read %d data\n", _size);
