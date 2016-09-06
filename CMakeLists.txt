@@ -38,6 +38,8 @@ file(GLOB src_vtd-xml 3rdparty/vtd-xml/*.c)
 list(REMOVE_ITEM src_vtd-xml
     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy (2).c"
     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy_old.c")
+file(GLOB src_dablooms 3rdparty/dablooms/src/*.c)
+list(REMOVE_ITEM src_dablooms "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/src/test_dablooms.c")
 file(GLOB src_str src/str/*.c)
 file(GLOB src_compress src/compress/*.c)
 file(GLOB src_container src/container/*.c)
@@ -97,6 +99,9 @@ include_directories(3rdparty/pcre)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre)
 include_directories(3rdparty/libxml2/include)
 include_directories(3rdparty/openssl/include)
+include_directories(3rdparty/dablooms/src)
+include_directories(3rdparty/tbox/build)
+include_directories(3rdparty/tbox/src)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
@@ -158,9 +163,11 @@ elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
         )
-    add_dependencies(${target_shared} libmpir openssl)
-    add_dependencies(${target_static} libmpir openssl)
+    add_dependencies(${target_shared} libmpir openssl dablooms tbox)
+    add_dependencies(${target_static} libmpir openssl dablooms tbox)
 elseif(UNIX)
     set(link_libs
         rt
@@ -172,9 +179,11 @@ elseif(UNIX)
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libiconv-1.14/local/lib/libiconv.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
          )
-    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir openssl)
-    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir openssl)
+    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir openssl dablooms tbox)
+    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir openssl dablooms tbox)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})

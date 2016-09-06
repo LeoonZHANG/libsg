@@ -52,6 +52,28 @@ if(UNIX)
         INSTALL_COMMAND ""
         BUILD_IN_SOURCE 1 # seems openssl does not support build in directory out of source
         )
+    ExternalProject_Add(
+        dablooms
+        PREFIX ${3RDPARTY_DIR}/dablooms
+        SOURCE_DIR ${3RDPARTY_DIR}/dablooms
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ${MAKE}
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1
+        )
+    set(tbox_xmake_configs)
+    if("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
+        set(tbox_xmake_configs ${tbox_xmake_configs} -m debug)
+    endif()
+    ExternalProject_Add(
+        tbox
+        PREFIX ${3RDPARTY_DIR}/tbox
+        SOURCE_DIR ${3RDPARTY_DIR}/tbox
+        CONFIGURE_COMMAND xmake f ${tbox_xmake_configs}
+        BUILD_COMMAND xmake
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1
+        )
 endif()
 
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
