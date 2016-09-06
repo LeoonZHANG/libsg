@@ -10,6 +10,10 @@
 #include <unistd.h> /* usleep */
 #include "../../include/sg/media/rtsp.h"
 
+typedef int bool;
+#define true 1
+#define false 0
+
 static const char *rtsp_transport_tcp = "RTP/AVP/TCP;interleaved=0-1";
 static const char *rtsp_transport_udp = "RTP/AVP;unicast;client_port=%d-%d";
 
@@ -80,9 +84,10 @@ static size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *us
     printf("recv interleave data %ld. first char 0x%02x.\n", size * nmemb, ((unsigned char *)ptr)[0]);
 
     /* return RTP packet to user */
-    /* r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context); */
+    r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context);
+return size * nmemb;
     rtp_unpack_h264(ptr, size * nmemb, &h264_hd, &h264_len);
-    r->on_recv((sg_rtsp_t *)r, h264_hd, h264_len, r->context);
+    r->on_recv((sg_rtsp_t *)r, h264_hd, size * nmemb - (h264_hd - ptr), r->context);
 
     return size * nmemb;
 }
@@ -282,9 +287,9 @@ int sg_rtsp_pause(sg_rtsp_t *r)
     curl_easy_setopt(rp->curl, CURLOPT_RTSP_REQUEST, CURL_RTSPREQ_PAUSE);
     res = curl_easy_perform(rp->curl);
     if (res == CURLE_OK)
-        printf(stdout, "RTSP pause now!\n");
+        printf("RTSP pause now!\n");
     else
-        printf(stderr, "RTSP pause error!\n");
+        printf("RTSP pause error!\n");
     return (res == CURLE_OK) ? 0 : -1;
 }
 

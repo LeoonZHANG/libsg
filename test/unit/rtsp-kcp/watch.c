@@ -16,6 +16,7 @@ static void etp_on_open(sg_etp_t *client)
     }
 	sg_player_load_buf(player);
 	sg_player_play(player);
+	sg_etp_send(client, "abc", 3);
 }
 
 static void etp_on_message(sg_etp_t *client, char *data, size_t size)

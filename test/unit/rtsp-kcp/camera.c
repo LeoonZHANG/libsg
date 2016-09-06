@@ -104,7 +104,7 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
     }
 
     if (mode == 1 && player) {
-        sg_player_put_buf(player, data, size);
+        sg_player_put_buf(player, (char *)data, size);
         printf("put %lu data to player\n", size);
     }
 }
