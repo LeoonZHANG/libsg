@@ -283,10 +283,10 @@ static void *pipe_thread(void *p)
         _size = fread(buf, 1, 2047, fp);printf("b\n");
         if(_size > 0)
         {
-            printf("file read %d data\n", _size);
+            //printf("file read %d data\n", _size);
             if (etp_c) {
                 sg_etp_server_send(etp_c, buf, _size);
-                printf("send client %d data\n", _size);
+                //printf("send client %d data\n", _size);
             }
         } else {
             if(_size <= 0)
