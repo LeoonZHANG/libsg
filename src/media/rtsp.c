@@ -132,8 +132,8 @@ static size_t describe_callback(void *ptr, size_t size, size_t nmemb, void *user
     if (ctrl_attr_hd && ctrl_attr_tail) {
         strncpy(tmp, ctrl_attr_hd, ctrl_attr_tail - ctrl_attr_hd);
         tmp[ctrl_attr_tail - ctrl_attr_hd] = 0;
-        r->ctrl_attr = strdup(tmp);
-        printf("control attr found:%s.\n", r->ctrl_attr);
+        //r->ctrl_attr = strdup(tmp);
+        //printf("control attr found:%s.\n", r->ctrl_attr);
     }
 
     return size * nmemb;
