@@ -268,9 +268,9 @@ static void *pipe_thread(void *p)
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
     FILE *fp;
-    char buf[4096];
+    char buf[2048];
     memset(buf,'\0',sizeof(buf));
-    ssize_t _size;
+    size_t _size;
     if (!fp)
         fp = fopen("tmp.ts", "rb");
     if (!fp) {
