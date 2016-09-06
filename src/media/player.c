@@ -140,6 +140,8 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
 
     while (write_len_all < size) {
         write_len_once = write(pl->fd[1], (char *)data, size);
+        if (write_len_once < size)
+            printf("write once small than total\n");
         if (write_len_once == 0 || write_len_once == -1) {
             printf("pipe in vlc write error\n");
             return -1;
@@ -155,7 +157,7 @@ int sg_player_play(sg_player_t *p)
     int ret;
 
     ret = libvlc_media_player_play(pl->player);
-    printf("------vlc player play %s", ret == 0 ? "success" : "error");
+    printf("---------vlc player play %s\n", ret == 0 ? "success" : "error");
     return ret;
 }
 

@@ -11,6 +11,7 @@
 #include"../../../include/sg/media/player.h"
 static sg_player_t *player = NULL;
 static void *player_thread(void *);
+static char play_filename[1024];
 #endif
 
 static int etp_server_port;
@@ -136,9 +137,9 @@ static void *player_thread(void *p)
     FILE *fp = NULL;
     char read_buf[512] = {0};
 
-    fp = fopen("mask.mov", "rb");
+    fp = fopen(play_filename, "rb");
     if (!fp) {
-        printf("mask.mov open error\n");
+        printf("%s open error\n", play_filename);
         exit(-1);
     }
 
@@ -174,10 +175,11 @@ int main(int argc,char**argv)
 {
 	sg_etp_server_t *server;
 
-	if(argc == 3){
+	if (argc == 3) {
 		snprintf(rtsp_server_url, 1024, "%s", argv[1]);
+        sprintf(play_filename, "%s", argv[1]);
 		etp_server_port = atoi(argv[2]);
-	} else{
+	} else {
 		printf("输入有误!");
 		return -1;
 	}
