@@ -14,7 +14,7 @@
 #include"../../../include/sg/media/player.h"
 #endif
 
-int stream_fd[2] = {0, 0};
+//int stream_fd[2] = {0, 0};
 
 #ifdef PLAY_INSIDE
 static sg_player_t *player = NULL;
@@ -116,8 +116,8 @@ static void etp_server_on_open(sg_etp_client_t *client)
 	printf("conn from %s\n", addr);
 	free(addr);
 
-    ret = pipe(stream_fd);
-    printf("pipe create %s, read %d, write %d\n", ret == 0 ? "success" : "error", stream_fd[0], stream_fd[1]);
+    //ret = pipe(stream_fd);
+    //printf("pipe create %s, read %d, write %d\n", ret == 0 ? "success" : "error", stream_fd[0], stream_fd[1]);
     //start_rtsp_thread((void *)client);
     //start_udp_thread((void *)client);
     start_pipe_thread((void *)client);
@@ -267,7 +267,7 @@ static void *pipe_thread(void *p)
 {
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
-    FILE *fp;
+    FILE *fp = NULL;
     char buf[1024];
     memset(buf,'\0',sizeof(buf));
     size_t _size;
