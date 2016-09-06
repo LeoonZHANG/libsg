@@ -4,16 +4,12 @@
 #include<pthread.h>
 #include"../../../include/sg/media/rtsp.h"
 #include"../../../include/sg/net/etp_server.h"
-
-#define PLAY_INSIDE
-
-#ifdef PLAY_INSIDE
 #include"../../../include/sg/media/player.h"
+
 static sg_player_t *player = NULL;
 static void *player_thread(void *);
 static char play_filename[1024];
-#endif
-
+static int mode = 0; /* 0: local_player, 1: rtsp_player, 2: rtsp */
 static int etp_server_port;
 static char rtsp_server_url[1024];
 static int rtsp_thread_count = 0;
@@ -21,30 +17,6 @@ FILE *fp_save_rtp = NULL;
 
 static void *rtsp_thread(void *);
 
-static void start_rtsp_thread(void)
-{
-	int ret;
-	pthread_t id;
-
-	/* check rtsp thread */
-	if (rtsp_thread_count > 0) {
-		printf("rtsp thread running\n");
-		return;
-	} else
-		printf("start to open rtsp\n");
-
-	/* open rtsp client to fetch data */
-	ret = pthread_create(&id, NULL, rtsp_thread, NULL);
-	if(ret == 0) {
-		printf("\n\ncreate thread seccess, and listen @ %d\n\n", etp_server_port);
-		rtsp_thread_count++;
-	} else {
-		printf("\n\ncreate thread error, and listen @ %d\n\n", etp_server_port);
-		exit(-1);
-	}
-}
-
-#ifdef PLAY_INSIDE
 static void start_player_thread(void)
 {
     int ret;
@@ -60,34 +32,40 @@ static void start_player_thread(void)
     }
     pthread_join(id, NULL);
 }
-#endif
+
+static void start_rtsp_thread(void)
+{
+    int ret;
+    pthread_t id;
+
+    /* check rtsp thread */
+    if (rtsp_thread_count > 0) {
+        printf("rtsp thread already running\n");
+        return;
+    } else
+        printf("start to open rtsp\n");
+
+    /* open rtsp client to fetch data */
+    ret = pthread_create(&id, NULL, rtsp_thread, NULL);
+    if(ret == 0) {
+        printf("create rtsp thread seccess\n");
+        rtsp_thread_count++;
+    } else {
+        printf("create rtsp thread error\n");
+        exit(-1);
+    }
+}
 
 static void etp_server_on_open(sg_etp_client_t *client)
 {
 	int ret;
 	pthread_t id;
 	char * addr = NULL;
+
 	addr = sg_etp_server_get_client_addr(client);
 	printf("conn from %s\n", addr);
 	free(addr);
-#if 0
-	/* check rtsp thread */
-	if (rtsp_thread_count > 0) {
-		printf("rtsp thread running\n");
-		return;
-	} else
-		printf("start to open rtsp\n");
-
-	/* open rtsp client to fetch data */
-	ret = pthread_create(&id, NULL, rtsp_thread, client);
-	if(ret == 0) {
-		printf("\n\ncreate thread success, and listen @ %d\n\n", etp_server_port);
-		rtsp_thread_count++;
-	} else {
-		printf("\n\ncreate thread error, and listen @ %d\n\n", etp_server_port);
-		exit(-1);
-	}
-#endif
+    start_rtsp_thread();
 }
 
 static void etp_server_on_message(sg_etp_client_t *client, char *data, size_t size)
@@ -120,42 +98,44 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
 		fwrite(data + 12, size - 12, 1, fp_save_rtp);*/
 
 	/* send rtp data */
-	if (client) {
+	if (mode == 3 && client) {
         sg_etp_server_send(client, data, size);
         printf("send %lu data to client\n", size);
     }
 
-#ifdef PLAY_INSIDE
-    //if (player)
-    //    sg_player_put_buf(player, data, size);
-#endif
+    if (mode == 2 && player)
+        sg_player_put_buf(player, data, size);
 }
 
-#ifdef PLAY_INSIDE
 static void *player_thread(void *p)
 {
     FILE *fp = NULL;
     char read_buf[2048] = {0};
 
-    fp = fopen(play_filename, "rb");
-    if (!fp) {
-        printf("%s open error\n", play_filename);
-        exit(-1);
-    }
-
     player = sg_player_create();
     sg_player_load_buf(player);
     sg_player_play(player);
-    while (1) {
-        usleep(1000);
-        size_t s = fread((void *)read_buf, 1, 2048, fp);
-        if (s > 0) {
-            sg_player_put_buf(player, read_buf, s);
-            printf("---------put data %lu\n", s);
+
+    if (mode == 0) {
+        fp = fopen(play_filename, "rb");
+        if (!fp) {
+            printf("%s open error\n", play_filename);
+            exit(-1);
+        }
+
+        while (1) {
+            usleep(100);
+            size_t s = fread((void *)read_buf, 1, 2048, fp);
+            if (s > 0) {
+                sg_player_put_buf(player, read_buf, s);
+                printf("---------put data %lu\n", s);
+            }
         }
     }
+
+    while (1)
+        usleep(100);
 }
-#endif
 
 static void *rtsp_thread(void *p)
 {
@@ -175,31 +155,52 @@ int main(int argc,char**argv)
 {
 	sg_etp_server_t *server;
 
-	if (argc == 3) {
-		snprintf(rtsp_server_url, 1024, "%s", argv[1]);
-        sprintf(play_filename, "%s", argv[1]);
-		etp_server_port = atoi(argv[2]);
-	} else {
-		printf("输入有误!");
-		return -1;
-	}
+    if (argc <= 1) {
+        printf("输入%d个参数, 错误\n", argc);
+        return -1;
+    }
 
-#ifdef PLAY_INSIDE
-    start_player_thread();
-#endif
+    if (strstr(argv[1], "local_player")) {
+        if (argc != 2) {
+            printf("输入%d个参数, 错误, 需要2个参数\n", argc);
+            return -1;
+        }
+        sprintf(play_filename, "%s", argv[2]);
+        mode = 0;
+    } else if (strstr(argv[1], "rtsp_player")) {
+        if (argc != 2) {
+            printf("输入%d个参数, 错误, 需要2个参数\n", argc);
+            return -1;
+        }
+        snprintf(rtsp_server_url, 1024, "%s", argv[1]);
+        mode = 1;
+    } else if (strstr(argv[1], "rtsp")) {
+        if (argc != 3) {
+            printf("输入%d个参数, 错误, 需要3个参数\n", argc);
+            return -1;
+        }
+        snprintf(rtsp_server_url, 1024, "%s", argv[1]);
+        etp_server_port = atoi(argv[2]);
+        mode = 2;
+    }
 
-    return 0;
-
-	/* open etp server to ack data */
-	server = sg_etp_server_open("0.0.0.0", etp_server_port, 10,
-								etp_server_on_open, etp_server_on_message,
-								etp_server_on_sent, etp_server_on_error, etp_server_on_close);
-	if (server)
-		printf("etp server open sucess\n");
-	else
-		printf("etp server open error\n");
-	start_rtsp_thread();
-	sg_etp_server_run(server, 10);
-
-    return 0;
+    if (mode == 0) {
+        start_player_thread();
+        return 0;
+    } else if (mode  == 1) {
+        start_rtsp_thread();
+        start_player_thread();
+        return 0;
+    } else {
+        /* open etp server to ack data */
+        server = sg_etp_server_open("0.0.0.0", etp_server_port, 10,
+                                    etp_server_on_open, etp_server_on_message,
+                                    etp_server_on_sent, etp_server_on_error, etp_server_on_close);
+        if (server)
+            printf("etp server open sucess\n");
+        else
+            printf("etp server open error\n");
+        sg_etp_server_run(server, 10);
+        return 0;
+    }
 }
