@@ -7,6 +7,7 @@
 #ifndef LIBSG_MD_H
 #define LIBSG_MD_H
 
+#include <stdlib.h> /* size_t */
 #include <stdint.h> /* uint8_t */
 
 #ifdef __cplusplus
@@ -33,16 +34,16 @@ enum sg_md_type {
    If all characters are zero, that means error returned. */
 struct sg_md_sum {
     size_t  raw_bin_used_len;
-    uint8_t raw_bin[SGENCHASHRAWBIN_MAXLEN]; /* Output hash as a raw binary format data. */
-    char    hex_str[SGENCHASHHEXSTR_MAXLEN]; /* Output hash as a hexadecimal number. */
+    uint8_t raw_bin[SGMDRAWBIN_MAXLEN]; /* Output hash as a raw binary format data. */
+    char    hex_str[SGMDHEXSTR_MAXLEN]; /* Output hash as a hexadecimal number. */
 };
 
 /* Message digest handle opened by sg_md_start. */
-typedef void sg_md_ctx;
+typedef struct sg_md_ctx sg_md_t;
 
 /* Message digest hash for a binary buffer.
    Length must > 0. */
-int sg_md_buf(void *buf, size_t len, enum sg_md_type type, struct sg_md_sum *rst);
+int sg_md_buf(const void *buf, size_t len, enum sg_md_type type, struct sg_md_sum *rst);
 
 /* Message digest hash for a c plain string.
    String length must > 0. */
@@ -53,14 +54,14 @@ int sg_md_str(const char *str, enum sg_md_type type, struct sg_md_sum *rst);
 int sg_md_file(const char *path, enum sg_md_type type, struct sg_md_sum *rst);
 
 /* Open a message digest context. */
-sg_md_ctx *sg_md_start(enum sg_md_type type);
+sg_md_t *sg_md_start(enum sg_md_type type);
 
 /* Update data to hash it.
    Length must > 0. 填入数据大小不限制,如果算法接口限制了每次接口调用时传入数据的大小,请在此模块内部解决这个差异。 */
-int sg_md_update(sg_md_ctx *ctx, void *input, size_t input_len);
+int sg_md_update(sg_md_t *ctx, const void *buf, size_t len);
 
 /* Close the message digest context and get the result. */
-int sg_md_finish(sg_md_ctx *ctx, struct sg_md_sum *rst);
+int sg_md_finish(sg_md_t *ctx, struct sg_md_sum *rst);
 
 #ifdef __cplusplus
 }

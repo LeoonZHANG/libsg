@@ -43,6 +43,15 @@ if(UNIX)
         CONFIGURE_COMMAND ${3RDPARTY_DIR}/mpir/configure --prefix=${3RDPARTY_DIR}/mpir --with-pic
         BUILD_COMMAND ${MAKE}
         )
+    ExternalProject_Add(
+        openssl
+        PREFIX ${3RDPARTY_DIR}/openssl
+        SOURCE_DIR ${3RDPARTY_DIR}/openssl
+        CONFIGURE_COMMAND ${3RDPARTY_DIR}/openssl/config --prefix=${3RDPARTY_DIR}/openssl enable-md2
+        BUILD_COMMAND ${MAKE}
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1 # seems openssl does not support build in directory out of source
+        )
 endif()
 
 if("${CMAKE_SYSTEM}" MATCHES "Linux")

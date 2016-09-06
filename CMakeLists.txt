@@ -47,6 +47,7 @@ file(GLOB src_net src/net/*.c)
 file(GLOB src_platform_windows src/platform/windows/*.c)
 file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
+file(GLOB src_crypto src/crypto/*.c)
 
 set(src_lib
     ${src_b64}
@@ -60,6 +61,7 @@ set(src_lib
     ${src_math}
     ${src_sys}
     ${src_util}
+    ${src_crypto}
     )
 
 ## 有些文件是 Windwos 专用的。
@@ -92,6 +94,7 @@ include_directories(include)
 include_directories(3rdparty/pcre)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre)
 include_directories(3rdparty/libxml2/include)
+include_directories(3rdparty/openssl/include)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
@@ -152,9 +155,10 @@ if(WIN32)
 elseif(APPLE)
     set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
         )
-    add_dependencies(${target_shared} libmpir)
-    add_dependencies(${target_static} libmpir)
+    add_dependencies(${target_shared} libmpir openssl)
+    add_dependencies(${target_static} libmpir openssl)
 elseif(UNIX)
     set(link_libs
         rt
@@ -165,9 +169,10 @@ elseif(UNIX)
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libiconv-1.14/local/lib/libiconv.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
          )
-    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir)
-    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir)
+    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir openssl)
+    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir openssl)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
