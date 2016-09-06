@@ -2,6 +2,9 @@
 #include<stdio.h>
 #include<string.h>
 #include<pthread.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
 //#define PLAY_INSIDE
 
@@ -23,6 +26,7 @@ static int rtsp_thread_count = 0;
 FILE *fp_save_rtp = NULL;
 
 static void *rtsp_thread(void *);
+static void *udp_thread(void *);
 
 #ifdef PLAY_INSIDE
 static void start_player_thread(void)
@@ -41,6 +45,22 @@ static void start_player_thread(void)
     pthread_join(id, NULL);
 }
 #endif
+
+static void start_udp_thread(void *p)
+{
+    int ret;
+    pthread_t id;
+
+    /* open udp server to wait data */
+    ret = pthread_create(&id, NULL, udp_thread, p);
+    if(ret == 0) {
+        printf("create udp server thread seccess\n");
+    } else {
+        printf("create udp server thread error\n");
+        exit(-1);
+    }
+    pthread_join(id, NULL);
+}
 
 static void start_rtsp_thread(void *param)
 {
@@ -74,7 +94,8 @@ static void etp_server_on_open(sg_etp_client_t *client)
 	addr = sg_etp_server_get_client_addr(client);
 	printf("conn from %s\n", addr);
 	free(addr);
-    start_rtsp_thread((void *)client);
+    //start_rtsp_thread((void *)client);
+    start_udp_thread((void *)client);
 }
 
 static void etp_server_on_message(sg_etp_client_t *client, char *data, size_t size)
@@ -164,6 +185,71 @@ static void *rtsp_thread(void *p)
 		printf("RTSP connect error\n");
 
 	sg_rtsp_play(r);
+}
+
+static void *udp_thread(void *p)
+{
+#define PORT "8071"
+
+        struct addrinfo hints;
+        struct addrinfo* res;
+        int err;
+        struct sockaddr_in addr;
+        socklen_t addrlen;
+        char ips[NI_MAXHOST];
+        char servs[NI_MAXSERV];
+        int sock;
+        char buf[256];
+        int len;
+    sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
+
+        memset(&hints, 0, sizeof(hints));
+        hints.ai_flags = AI_PASSIVE;
+        hints.ai_family = AF_INET;
+        hints.ai_socktype = SOCK_DGRAM;
+
+        err = getaddrinfo(NULL, PORT, &hints, &res);
+        if(err != 0)
+        {
+            fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(err));
+            return -1;
+        }
+        if(res == NULL)
+        {
+            return -1;
+        }
+
+        sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+        if(sock < 0)
+        {
+            perror("socket");
+            return 1;
+        }
+
+        if(bind(sock, res->ai_addr, res->ai_addrlen) < 0)
+        {
+            perror("bind");
+            return 1;
+        }
+
+        freeaddrinfo(res);
+
+        addrlen = sizeof(addr);
+
+        while(1) {
+            if(len = recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addrlen) > 0)
+            {
+                if (etp_c)
+                    sg_etp_server_send(etp_c, buf, len);
+            }//if
+            else
+                printf("uh oh - something went wrong!\n");
+            usleep(10);
+        }//while
+
+        close(sock);
+
+        return 0;
 }
 
 int main(int argc,char**argv)
