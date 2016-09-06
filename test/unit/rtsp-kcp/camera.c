@@ -46,20 +46,19 @@ static void start_player_thread(void)
 }
 #endif
 
-static void start_udp_thread(void *p)
+static void start_udp_thread(void *param)
 {
     int ret;
     pthread_t id;
 
     /* open udp server to wait data */
-    ret = pthread_create(&id, NULL, udp_thread, p);
+    ret = pthread_create(&id, NULL, udp_thread, param);
     if(ret == 0) {
         printf("create udp server thread seccess\n");
     } else {
         printf("create udp server thread error\n");
         exit(-1);
     }
-    pthread_join(id, NULL);
 }
 
 static void start_rtsp_thread(void *param)
@@ -90,6 +89,9 @@ static void etp_server_on_open(sg_etp_client_t *client)
 	int ret;
 	pthread_t id;
 	char * addr = NULL;
+
+    if (!client)
+        return;
 
 	addr = sg_etp_server_get_client_addr(client);
 	printf("conn from %s\n", addr);
