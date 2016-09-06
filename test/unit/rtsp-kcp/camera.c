@@ -14,7 +14,7 @@
 #include"../../../include/sg/media/player.h"
 #endif
 
-int stream_fd[2] = {0, 0};
+//int stream_fd[2] = {0, 0};
 
 #ifdef PLAY_INSIDE
 static sg_player_t *player = NULL;
@@ -272,7 +272,7 @@ static void *pipe_thread(void *p)
     ssize_t _size;
     while(1)
     {
-        _size = read(stdin, buf, 4095);
+        _size = read(0, buf, 4095);
         if(_size > 0)
         {
             printf("pipe read %d data\n", _size);
