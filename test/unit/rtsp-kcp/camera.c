@@ -276,11 +276,11 @@ static void *pipe_thread(void *p)
     if (!fp) {
         printf("file open error\n");
         return;
-    }
+    }printf("file open success\n");
     while(1)
-    {
+    {printf("a\n");
         //_size = read(0, buf, 4095);
-        _size = fread(buf, 1, 1024, fp);
+        _size = fread(buf, 1, 1024, fp);printf("b\n");
         if(_size > 0)
         {
             printf("file read %d data\n", _size);
@@ -289,13 +289,13 @@ static void *pipe_thread(void *p)
                 printf("send client %d data\n", _size);
             }
         } else {
-            if(_size < 0)
+            if(_size <= 0)
             {
-                perror("pipe read error\n");
+                perror("file read error\n");
                 continue;
             }
         }
-        //usleep(1);
+        usleep(1);
     }
 }
 
