@@ -14,12 +14,15 @@
 #include"../../../include/sg/media/player.h"
 #endif
 
+int stream_fd[2] = {0, 0};
+
 #ifdef PLAY_INSIDE
 static sg_player_t *player = NULL;
 static void *player_thread(void *);
 #endif
 static char play_filename[1024];
-static int mode = 0; /* 0: local_player, 1: rtsp_player, 2: rtsp */
+static char read_filename[1024];
+static int mode = 0; /* 0: local_player, 1: rtsp_player, 2: rtsp 3: file_etp*/
 static int etp_server_port;
 static char rtsp_server_url[1024];
 static int rtsp_thread_count = 0;
@@ -27,6 +30,7 @@ FILE *fp_save_rtp = NULL;
 
 static void *rtsp_thread(void *);
 static void *udp_thread(void *);
+static void *pipe_thread(void *);
 
 #ifdef PLAY_INSIDE
 static void start_player_thread(void)
@@ -57,6 +61,21 @@ static void start_udp_thread(void *param)
         printf("create udp server thread seccess\n");
     } else {
         printf("create udp server thread error\n");
+        exit(-1);
+    }
+}
+
+static void start_pipe_thread(void *param)
+{
+    int ret;
+    pthread_t id;
+
+    /* open udp server to wait data */
+    ret = pthread_create(&id, NULL, pipe_thread, param);
+    if(ret == 0) {
+        printf("create pipe thread seccess\n");
+    } else {
+        printf("create pipe thread error\n");
         exit(-1);
     }
 }
@@ -96,8 +115,12 @@ static void etp_server_on_open(sg_etp_client_t *client)
 	addr = sg_etp_server_get_client_addr(client);
 	printf("conn from %s\n", addr);
 	free(addr);
+
+    ret = pipe(stream_fd);
+    printf("pipe create %s, read %d, write %d\n", ret == 0 ? "success" : "error", stream_fd[0], stream_fd[1]);
     //start_rtsp_thread((void *)client);
-    start_udp_thread((void *)client);
+    //start_udp_thread((void *)client);
+    start_pipe_thread((void *)client);
 }
 
 static void etp_server_on_message(sg_etp_client_t *client, char *data, size_t size)
@@ -240,6 +263,34 @@ static void *udp_thread(void *p)
     }
 }
 
+static void *pipe_thread(void *p)
+{
+    sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
+
+    char buf[4096];
+    memset(buf,'\0',sizeof(buf));
+    ssize_t _size;
+    while(1)
+    {
+        _size = read(stream_fd[0], buf, 4095);
+        if(_size > 0)
+        {
+            printf("pipe read %d data\n", _size);
+            if (etp_c) {
+                sg_etp_server_send(etp_c, buf, _size);
+                printf("send client %d data\n", _size);
+            }
+        } else {
+            if(_size < 0)
+            {
+                perror("pipe read error\n");
+                continue;
+            }
+        }
+        //usleep(1);
+    }
+}
+
 int main(int argc,char**argv)
 {
 	sg_etp_server_t *server;
@@ -271,6 +322,14 @@ int main(int argc,char**argv)
         snprintf(rtsp_server_url, 1024, "%s", argv[2]);
         etp_server_port = atoi(argv[3]);
         mode = 2;
+    } else if (strstr(argv[1], "file_etp")) {
+        if (argc != 4) {
+            printf("输入%d个参数, 错误, 需要4个参数\n", argc);
+            return -1;
+        }
+        snprintf(read_filename, 1024, "%s", argv[2]);
+        etp_server_port = atoi(argv[3]);
+        mode = 3;
     }
 
     if (mode == 0) {
