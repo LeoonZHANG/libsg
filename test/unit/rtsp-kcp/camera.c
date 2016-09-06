@@ -241,6 +241,7 @@ static void *udp_thread(void *p)
         while(1) {
             if(len = recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addrlen) > 0)
             {
+                printf("recv %d data\n", len);
                 if (etp_c)
                     sg_etp_server_send(etp_c, buf, len);
             }//if
