@@ -25,15 +25,64 @@ struct sg_rtsp_real {
     void *context; /* user data for callbacks */
 };
 
+
+/* return：1:表示一帧结束  0:FU-A分片未结束或帧未结束 */
+static bool rtp_unpack_h264(void *rtp_buf, int rtp_buf_len, void **h264_buf, int *h264_buf_len)
+{
+    #define RTP_HEADLEN 12
+    unsigned char *src    = (unsigned char *)rtp_buf + RTP_HEADLEN;
+    unsigned char head1   = *src;         // 获取RTP head之后的第一个字节
+    unsigned char head2   = *(src + 1 );  // 获取RTP head之后的第二个字节
+    unsigned char nal     = head1 & 0x1f; // 获取FU indicator的类型域，
+    unsigned char flag    = head2 & 0xe0; // 获取FU header的前三位，判断当前是分包的开始、中间或结束
+    unsigned char nal_fua = (head1 & 0xe0) | (head2 & 0x1f); // FU_A nal
+    bool  b_finish_frame  = false;
+    unsigned char *tmp;
+
+    *h264_buf_len = 0;
+    if (rtp_buf_len < RTP_HEADLEN)
+        return false;
+    
+    if (nal == 0x1c) { // 判断NAL的类型为0x1c=28，说明是FU-A分片
+        if (flag == 0x80) { // 开始
+            *h264_buf = src - 3;
+            *((int *)(*h264_buf)) = 0x01000000; // zyf:大模式会有问题
+            *((char *)(*h264_buf) + 4) = nal_fua;
+            *h264_buf_len = rtp_buf_len - RTP_HEADLEN + 3;
+        } else if (flag == 0x40) { // 结束
+            *h264_buf = src + 2;
+            *h264_buf_len = rtp_buf_len - RTP_HEADLEN - 2;
+        } else { // 中间
+            *h264_buf = src + 2;
+            *h264_buf_len = rtp_buf_len - RTP_HEADLEN - 2;
+        }
+    } else { // 单包数据
+        *h264_buf = src - 4;
+        *((int *)(*h264_buf)) = 0x01000000; // zyf:大模式会有问题
+        *h264_buf_len = rtp_buf_len - RTP_HEADLEN + 4;
+    }
+
+    tmp = (unsigned char *)rtp_buf;
+    if (tmp[1] & 0x80 )
+        b_finish_frame = true; // rtp mark
+    else
+        b_finish_frame = false;
+    return b_finish_frame;
+}
+
 /* receive RTP packet */
 static size_t interleave_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
     struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
+    void *h264_hd = NULL;
+    int h264_len = 0;
 
     printf("recv interleave data %ld. first char 0x%02x.\n", size * nmemb, ((unsigned char *)ptr)[0]);
 
     /* return RTP packet to user */
-    r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context);
+    /* r->on_recv((sg_rtsp_t *)r, ptr, size * nmemb, r->context); */
+    rtp_unpack_h264(ptr, size * nmemb, &h264_hd, &h264_len);
+    r->on_recv((sg_rtsp_t *)r, h264_hd, h264_len, r->context);
 
     return size * nmemb;
 }
