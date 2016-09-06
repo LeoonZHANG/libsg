@@ -2,12 +2,19 @@
 #include<stdio.h>
 #include<string.h>
 #include<pthread.h>
+
+//#define PLAY_INSIDE
+
 #include"../../../include/sg/media/rtsp.h"
 #include"../../../include/sg/net/etp_server.h"
+#ifdef PLAY_INSIDE
 #include"../../../include/sg/media/player.h"
+#endif
 
+#ifdef PLAY_INSIDE
 static sg_player_t *player = NULL;
 static void *player_thread(void *);
+#endif
 static char play_filename[1024];
 static int mode = 0; /* 0: local_player, 1: rtsp_player, 2: rtsp */
 static int etp_server_port;
@@ -17,6 +24,7 @@ FILE *fp_save_rtp = NULL;
 
 static void *rtsp_thread(void *);
 
+#ifdef PLAY_INSIDE
 static void start_player_thread(void)
 {
     int ret;
@@ -32,6 +40,7 @@ static void start_player_thread(void)
     }
     pthread_join(id, NULL);
 }
+#endif
 
 static void start_rtsp_thread(void *param)
 {
@@ -103,12 +112,15 @@ static void rtsp_on_recv(sg_rtsp_t *rtsp, char *data, size_t size, void *context
         printf("send %lu data to client\n", size);
     }
 
+#ifdef PLAY_INSIDE
     if (mode == 1 && player) {
         sg_player_put_buf(player, (char *)data, size);
         printf("put %lu data to player\n", size);
     }
+#endif
 }
 
+#ifdef PLAY_INSIDE
 static void *player_thread(void *p)
 {
     FILE *fp = NULL;
@@ -138,6 +150,7 @@ static void *player_thread(void *p)
     while (1)
         usleep(100);
 }
+#endif
 
 static void *rtsp_thread(void *p)
 {
@@ -187,11 +200,15 @@ int main(int argc,char**argv)
     }
 
     if (mode == 0) {
+#ifdef PLAY_INSIDE
         start_player_thread();
+#endif
         return 0;
     } else if (mode  == 1) {
         start_rtsp_thread(NULL);
+#ifdef PLAY_INSIDE
         start_player_thread();
+#endif
         return 0;
     } else {
         /* open etp server to ack data */
