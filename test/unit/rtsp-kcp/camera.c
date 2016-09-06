@@ -216,7 +216,7 @@ static void *udp_thread(void *p)
 
     struct sockaddr_in client; //output val
     socklen_t len = sizeof(client); //output val
-    char buf[1024];
+    char buf[2048];
     memset(buf,'\0',sizeof(buf));
     while(1)
     {
@@ -235,7 +235,7 @@ static void *udp_thread(void *p)
                 printf("send client %d data\n", _size);
             }
         }
-        usleep(10);
+        usleep(1);
     }
 }
 
