@@ -175,7 +175,7 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_r
     }
 
     /* init curl session */
-    curl_easy_setopt(r->curl, CURLOPT_VERBOSE, 0L);
+    curl_easy_setopt(r->curl, CURLOPT_VERBOSE, 1L);
     curl_easy_setopt(r->curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(r->curl, CURLOPT_HEADERDATA, stdout);
     curl_easy_setopt(r->curl, CURLOPT_URL, r->url);
