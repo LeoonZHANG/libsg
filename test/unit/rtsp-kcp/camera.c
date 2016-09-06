@@ -172,7 +172,7 @@ int main(int argc,char**argv)
             printf("输入%d个参数, 错误, 需要3个参数\n", argc);
             return -1;
         }
-        snprintf(rtsp_server_url, 1024, "%s", argv[1]);
+        snprintf(rtsp_server_url, 1024, "%s", argv[2]);
         mode = 1;
     } else if (strstr(argv[1], "rtsp")) {
         if (argc != 4) {
