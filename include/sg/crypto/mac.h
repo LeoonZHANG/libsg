@@ -6,6 +6,7 @@
 #ifndef LIBSG_MAC_H
 #define LIBSG_MAC_H
 
+#include <stdlib.h> /* size_t */
 #include <stdint.h> /* uint8_t */
 
 #ifdef __cplusplus
@@ -17,9 +18,9 @@ enum sg_mac_type {
     SGMACTYPE_HMAC_MD4    = 1,
     SGMACTYPE_HMAC_MD5    = 2,
     SGMACTYPE_HMAC_SHA1   = 3,
-    SGMACTYPE_HAMC_SHA224 = 4,
-    SGMACTYPE_HAMC_SHA256 = 5,
-    SGMACTYPE_HAMC_SHA384 = 6,
+    SGMACTYPE_HMAC_SHA224 = 4,
+    SGMACTYPE_HMAC_SHA256 = 5,
+    SGMACTYPE_HMAC_SHA384 = 6,
     SGMACTYPE_HMAC_SHA512 = 7
 };
 
@@ -30,18 +31,17 @@ enum sg_mac_type {
 /* hash value.
    If all characters are zero, that means error returned. */
 struct sg_mac_sum {
-    size_t  raw_bin_used_len;
-    uint8_t raw_bin[SGENCHASHRAWBIN_MAXLEN]; /* Output hash as a raw binary format data. */
-    char    hex_str[SGENCHASHHEXSTR_MAXLEN]; /* Output hash as a hexadecimal number. */
+    uint8_t raw_bin[SGMACRAWBIN_MAXLEN]; /* Output hash as a raw binary format data. */
+    char    hex_str[SGMACHEXSTR_MAXLEN]; /* Output hash as a hexadecimal number. */
+    unsigned int raw_bin_used_len;
 };
 
 /* Mac handle opened by mac5_open. */
-typedef void sg_mac_ctx;
+typedef struct sg_mac sg_mac_ctx;
 
 /* Mac hash for a binary buffer.
    Length must > 0. */
-int sg_mac_buf(void *buf, size_t len, enum sg_mac_type type,
-               const char *key, struct sg_mac_sum *rst);
+int sg_mac_buf(const void *buf, size_t len, enum sg_mac_type type, const char *key, struct sg_mac_sum *rst);
 
 /* Mac for a c plain string.
    String length must > 0. */
@@ -58,7 +58,7 @@ sg_mac_ctx *sg_mac_start(enum sg_mac_type type, const char *key);
 
 /* Update data to hash it.
    Length must > 0. */
-int sg_mac_update(sg_mac_ctx *ctx, void *input, size_t input_len);
+int sg_mac_update(sg_mac_ctx *mac, const void *input, size_t input_len);
 
 /* Close the mac context and get the result. */
 int sg_mac_finish(sg_mac_ctx *ctx, struct sg_mac_sum *rst);
