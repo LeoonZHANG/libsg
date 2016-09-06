@@ -218,10 +218,10 @@ static void *udp_thread(void *p)
     socklen_t len = sizeof(client); //output val
     char buf[4096];
     memset(buf,'\0',sizeof(buf));
+    ssize_t _size;
     while(1)
     {
-        ssize_t _size = recvfrom(sock,buf,sizeof(buf) - 1,0,\
-					(struct sockaddr*)&client,&len);
+        _size = recvfrom(sock, buf, 4095,0, (struct sockaddr*)&client, &len);
         if(_size > 0)
         {
             //printf("recv %d data\n", _size);
