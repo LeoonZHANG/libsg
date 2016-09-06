@@ -278,9 +278,9 @@ static void *pipe_thread(void *p)
         return;
     }printf("file open success\n");
     while(1)
-    {printf("a\n");
+    {
         //_size = read(0, buf, 4095);
-        _size = fread(buf, 1, 2047, fp);printf("b\n");
+        _size = fread(buf, 1, 2047, fp);
         if(_size > 0)
         {
             //printf("file read %d data\n", _size);
