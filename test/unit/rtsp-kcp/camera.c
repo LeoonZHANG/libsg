@@ -189,70 +189,50 @@ static void *rtsp_thread(void *p)
 
 static void *udp_thread(void *p)
 {
-#define PORT "8071"
-
-        struct addrinfo hints;
-        struct addrinfo* res;
-        int err;
-        struct sockaddr_in addr;
-        socklen_t addrlen;
-        char ips[NI_MAXHOST];
-        char servs[NI_MAXSERV];
-        int sock;
-        char buf[256];
-        int len;
+#define _PORT_ "8071"
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
-        memset(&hints, 0, sizeof(hints));
-        hints.ai_flags = AI_PASSIVE;
-        hints.ai_family = AF_INET;
-        hints.ai_socktype = SOCK_DGRAM;
 
-        err = getaddrinfo(NULL, PORT, &hints, &res);
-        if(err != 0)
+
+
+    int sock = socket(AF_INET,SOCK_DGRAM,0);
+    if(sock < 0)
+    {
+        perror("socket");
+        exit(1);
+    }
+
+    struct sockaddr_in local;
+    local.sin_family = AF_INET;
+    local.sin_port = htons(_PORT_);
+    local.sin_addr.s_addr = htonl(INADDR_ANY);
+    if(bind(sock,(struct sockaddr*)&local,sizeof(local)) < 0)
+    {
+        perror("bind");
+        exit(1);
+    }
+
+    struct sockaddr_in client; //output val
+    socklen_t len = sizeof(client); //output val
+    char buf[1024];
+    memset(buf,'\0',sizeof(buf));
+    while(1)
+    {
+        ssize_t _size = recvfrom(sock,buf,sizeof(buf) - 1,0,\
+					(struct sockaddr*)&client,&len);
+        if(_size < 0)
         {
-            fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(err));
-            return -1;
+            perror("recvfrom error\n");
+            continue;
         }
-        if(res == NULL)
+        else if(_size > 0)
         {
-            fprintf(stderr, "res is null\n");
-            return -1;
+            printf("recv %d data\n", _size);
+            if (etp_c)
+                sg_etp_server_send(etp_c, buf, _size);
         }
-
-        sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-        if(sock < 0)
-        {
-            perror("socket\n");
-            return 1;
-        }
-
-        if(bind(sock, res->ai_addr, res->ai_addrlen) < 0)
-        {
-            perror("bind\n");
-            return 1;
-        }
-
-        freeaddrinfo(res);
-
-        addrlen = sizeof(addr);
-
-    printf("start to wait data\n");
-        while(1) {
-            if(len = recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addrlen) > 0)
-            {
-                printf("recv %d data\n", len);
-                if (etp_c)
-                    sg_etp_server_send(etp_c, buf, len);
-            }//if
-            else
-                printf("uh oh - something went wrong!\n");
-            usleep(10);
-        }//while
-
-        close(sock);
-
-        return 0;
+        usleep(10);
+    }
 }
 
 int main(int argc,char**argv)
