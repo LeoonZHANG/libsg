@@ -96,7 +96,7 @@ return size * nmemb;
 static size_t play_callback(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
     struct sg_rtsp_real *r = (struct sg_rtsp_real *)userdata;
-    /* printf("play_callback: %s\n", (const char *)ptr); */
+    printf("play_callback: %s\n", (const char *)ptr);
     return size * nmemb;
 }
 
