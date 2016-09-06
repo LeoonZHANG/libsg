@@ -57,6 +57,7 @@ static void start_player_thread(void)
         printf("create player thread error\n");
         exit(-1);
     }
+    pthread_join(id, NULL);
 }
 #endif
 
