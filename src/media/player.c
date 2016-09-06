@@ -139,7 +139,7 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
     int write_len_once = 0;
 
     while (write_len_all < size) {
-        write_len_once = write(pl->fd[1], (char *)data, size);
+        write_len_once = write(pl->fd[1], data, size);
         if (write_len_once < size)
             printf("write once small than total\n");
         if (write_len_once <= 0) {
