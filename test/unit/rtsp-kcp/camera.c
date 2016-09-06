@@ -267,15 +267,19 @@ static void *pipe_thread(void *p)
 {
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
+    FILE *fp;
     char buf[4096];
     memset(buf,'\0',sizeof(buf));
     ssize_t _size;
+    if (!fp)
+        fp = fopen("tmp.ts", "rb");
     while(1)
     {
-        _size = read(0, buf, 4095);
+        //_size = read(0, buf, 4095);
+        _size = fread(buf, 1, 1024, fp);
         if(_size > 0)
         {
-            printf("pipe read %d data\n", _size);
+            printf("file read %d data\n", _size);
             if (etp_c) {
                 sg_etp_server_send(etp_c, buf, _size);
                 printf("send client %d data\n", _size);
