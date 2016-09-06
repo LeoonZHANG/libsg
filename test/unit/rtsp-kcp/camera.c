@@ -268,7 +268,7 @@ static void *pipe_thread(void *p)
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
 
     FILE *fp;
-    char buf[2048];
+    char buf[1024];
     memset(buf,'\0',sizeof(buf));
     size_t _size;
     if (!fp)
