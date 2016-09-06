@@ -101,8 +101,10 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_r
     char transport[1024] = {0};
 
     r = (struct sg_rtsp_real *)malloc(sizeof(struct sg_rtsp_real));
-    if (!r)
+    if (!r) {
+        printf("malloc errpr\n");
         return NULL;
+    }
     memset(r, 0, sizeof(struct sg_rtsp_real));
 
     r->udp_client_port  = udp_client_port;
@@ -113,8 +115,10 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_r
     r->curl             = curl_easy_init();
     r->url              = strdup(url);
     r->uri              = strdup(url);
-    if(!r->curl || !r->url || !r->uri || prot < SGRTSPDATAPROTOCOL_TCP || prot > SGRTSPDATAPROTOCOL_UDP)
+    if(!r->curl || !r->url || !r->uri || prot < SGRTSPDATAPROTOCOL_TCP || prot > SGRTSPDATAPROTOCOL_UDP) {
+        printf("sg_rtsp_real member invalid\n");
         goto err_exit;
+    }
 
     /* init curl session */
     curl_easy_setopt(r->curl, CURLOPT_VERBOSE, 0L);
@@ -122,8 +126,10 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_r
     curl_easy_setopt(r->curl, CURLOPT_HEADERDATA, stdout);
     curl_easy_setopt(r->curl, CURLOPT_URL, r->url);
     res = curl_easy_perform(r->curl);
-    if (res != CURLE_OK)
+    if (res != CURLE_OK) {
+        printf("RTSP session init error\n");
         goto err_exit;
+    }
 
     /* RTSP REQ: OPTIONS */
     curl_easy_setopt(r->curl, CURLOPT_RTSP_STREAM_URI, r->uri);
@@ -159,8 +165,10 @@ sg_rtsp_t *sg_rtsp_open(const char *url, unsigned int udp_client_port, enum sg_r
         free(r->uri);
         r->uri = NULL;
         r->uri = (char *)malloc(new_uri_len);
-        if (!r->uri)
+        if (!r->uri) {
+            printf("malloc error\n");
             goto err_exit;
+        }
         snprintf(r->uri, new_uri_len, "%s/%s", r->url, r->ctrl_attr);
         printf("new uri:%s.\n", r->uri);
     }
