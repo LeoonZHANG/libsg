@@ -25,11 +25,14 @@ struct sg_net_card_info {
     bool is_static_ip;       /* static ip or dhcp */
     char lan_ipv4[16];       /* LAN ipv4, not WAN(internet) */
     char net_mask_ipv4[16];  /* subnet mask ipv4 */
-    char gateway_ipv4[16];   /* gateway server ipv4 */
+    char broadcast_ipv4[16]; /* broadcast address ipv4 */
     char lan_ipv6[46];       /* LAN ipv6 */
     char net_mask_ipv6[46];  /* subnet mask ipv6 */
-    char gateway_ipv6[46];   /* gateway server ipv6 */
+    char broadcast_ipv6[46]; /* broadcast address ipv6 */
     int  mtu;                /* max transfer unit, 1400 default in common */
+};
+
+struct sg_net_dns {
     int  dns_server_size;    /* valid dns_server size */
     struct name_server {
         char dns_server[16];
@@ -38,7 +41,7 @@ struct sg_net_card_info {
 
 typedef void (*sg_net_card_on_read_func_t)(struct sg_net_card_info* inf, void *ctx);
 
-int sg_net_card_scan(sg_net_card_on_read_func_t, void *ctx);
+int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_interfaces);
 
 #ifdef __cplusplus
 }
