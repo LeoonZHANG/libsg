@@ -47,7 +47,7 @@ if(UNIX)
         openssl
         PREFIX ${3RDPARTY_DIR}/openssl
         SOURCE_DIR ${3RDPARTY_DIR}/openssl
-        CONFIGURE_COMMAND ${3RDPARTY_DIR}/openssl/config --prefix=${3RDPARTY_DIR}/openssl enable-md2
+        CONFIGURE_COMMAND ${3RDPARTY_DIR}/openssl/config --prefix=${3RDPARTY_DIR}/openssl enable-md2 enable-rc5
         BUILD_COMMAND ${MAKE}
         INSTALL_COMMAND ""
         BUILD_IN_SOURCE 1 # seems openssl does not support build in directory out of source
