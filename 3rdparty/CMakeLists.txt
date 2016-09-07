@@ -61,9 +61,12 @@ if(UNIX)
         INSTALL_COMMAND ""
         BUILD_IN_SOURCE 1
         )
-    set(tbox_xmake_configs)
+    set(tbox_xmake_configs --zip=false --zlib=false --asio=false --openssl=false --pcre=false --network=false --demo=false --database=false --regex=false)
     if("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
         set(tbox_xmake_configs ${tbox_xmake_configs} -m debug)
+    endif()
+    if("${CMAKE_SYSTEM}" MATCHES "Linux")
+        set (tbox_xmake_configs ${tbox_xmake_configs} --cflags=-fPIC)
     endif()
     ExternalProject_Add(
         tbox
