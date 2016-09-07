@@ -44,6 +44,7 @@ set(tests
     crc
     bloom_filter
     sym
+    net_card
     ## 其它的测试程序完成后可以加到这里，比如： http_client http_server img_sdl kcp_client mysql mongodb redis rwlock nats_client
     )
 

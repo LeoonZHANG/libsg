@@ -66,6 +66,7 @@ set(src_lib
     ${src_util}
     ${src_crypto}
     ${src_hash}
+    src/net/net_card.c
     )
 
 ## 有些文件是 Windwos 专用的。
