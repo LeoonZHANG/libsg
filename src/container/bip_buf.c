@@ -8,7 +8,7 @@ struct sg_bip_buf_real
     unsigned int a_start, a_end; /* region A */
     unsigned int b_end; /* region B */
     int b_inuse; /* is B inuse? */
-    unsigned char data[];
+    unsigned char *data;
     size_t data_size;
 };
 
@@ -16,7 +16,7 @@ struct sg_bip_buf_real
  * ie. is the distance from A to buffer's end less than B to A? */
 static void __check_for_switch_to_b(sg_bip_buf_t *buf)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     if (me->data_size - me->a_end < me->a_start - me->b_end)
         me->b_inuse = 1;
@@ -39,13 +39,13 @@ sg_bip_buf_t *sg_bip_buf_create(size_t size)
 
 unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *buf, const unsigned int size)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     /* make sure we can actually peek at this data */
     if (me->data_size < me->a_start + size)
         return NULL;
 
-    if (bipbuf_is_empty(me))
+    if (sg_bip_buf_is_empty(me))
         return NULL;
 
     return (unsigned char*)me->data + me->a_start;
@@ -53,7 +53,7 @@ unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *buf, const unsigned int size)
 
 unsigned char *sg_bip_buf_get(const sg_bip_buf_t *buf, const unsigned int size)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     if (sg_bip_buf_is_empty(buf))
         return NULL;
@@ -103,7 +103,7 @@ int sg_bip_buf_put(const sg_bip_buf_t *buf, const unsigned char *data, const int
 
 int sg_bip_buf_unused_size(const sg_bip_buf_t *buf)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     if (1 == me->b_inuse)
         /* distance between region B and region A */
@@ -114,21 +114,21 @@ int sg_bip_buf_unused_size(const sg_bip_buf_t *buf)
 
 int sg_bip_buf_used_size(const sg_bip_buf_t *buf)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     return (me->a_end - me->a_start) + me->b_end;
 }
 
 int sg_bip_buf_size(const sg_bip_buf_t *buf)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     return me->data_size;
 }
 
 int sg_bip_buf_is_empty(const sg_bip_buf_t *buf)
 {
-    struct sg_bip_buf_real *me = (struct sg_bip_buf *)buf;
+    struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
     return (me->a_start == me->a_end) ? 1 : 0;
 }
