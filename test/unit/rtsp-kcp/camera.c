@@ -216,10 +216,7 @@ static void *udp_thread(void *p)
 {
 #define _PORT_ 8071
     sg_etp_client_t *etp_c = (sg_etp_client_t *)p;
-
-
-
-
+    
     int sock = socket(AF_INET,SOCK_DGRAM,0);
     if(sock < 0)
     {
