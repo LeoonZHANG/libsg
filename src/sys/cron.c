@@ -5,9 +5,6 @@
  */
 
 #include <stdint.h>
-#if defined(__linux__)
-# include <stdint-gcc.h>
-#endif
 #include <sg/sys/cron.h>
 #include <sg/util/assert.h>
 #include <sg/util/log.h>

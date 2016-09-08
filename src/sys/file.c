@@ -17,7 +17,6 @@
 # include <bits/errno.h>
 # include <dirent.h>
 # include <stdint.h>
-# include <stdint-gcc.h>
 #endif
 #if defined(OS_OSX)
 # include <dirent.h>

@@ -7,9 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#if defined(__linux__)
-# include <stdint-gcc.h>
-#endif
 #include "../util/assert.h"
 #include "../util/string.h"
 #include "color.h"

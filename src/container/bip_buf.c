@@ -34,7 +34,7 @@ sg_bip_buf_t *sg_bip_buf_create(size_t size)
 
     memset(me, 0, total_size);
     me->data_size = size;
-    return me;
+    return (sg_bip_buf_t *)me;
 }
 
 unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *buf, const unsigned int size)
@@ -48,7 +48,7 @@ unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *buf, const unsigned int size)
     if (sg_bip_buf_is_empty(me))
         return NULL;
 
-    return (unsigned char*)me->data + me->a_start;
+    return me->data + me->a_start;
 }
 
 unsigned char *sg_bip_buf_get(const sg_bip_buf_t *buf, const unsigned int size)
