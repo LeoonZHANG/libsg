@@ -156,7 +156,7 @@ static tb_void_t tb_database_mysql_library_exit(tb_handle_t handle, tb_cpointer_
 }
 static tb_handle_t tb_database_mysql_library_load()
 {
-    return tb_singleton_instance(TB_SINGLETON_TYPE_LIBRARY_MYSQL, tb_database_mysql_library_init, tb_database_mysql_library_exit, tb_null);
+    return tb_singleton_instance(TB_SINGLETON_TYPE_LIBRARY_MYSQL, tb_database_mysql_library_init, tb_database_mysql_library_exit, tb_null, tb_null);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -758,7 +758,7 @@ static tb_bool_t tb_database_mysql_open(tb_database_sql_impl_t* database)
                 if (!e) e = args + argn;
 
                 // save username
-                if (p < e) tb_strlcpy(username, p, tb_min(e - p, sizeof(username)));
+                if (p < e) tb_strlcpy(username, p, tb_min((e - p) + 1, sizeof(username)));
             }
     
             // the database password
@@ -773,7 +773,7 @@ static tb_bool_t tb_database_mysql_open(tb_database_sql_impl_t* database)
                 if (!e) e = args + argn;
 
                 // save password
-                if (p < e) tb_strlcpy(password, p, tb_min(e - p, sizeof(password)));
+                if (p < e) tb_strlcpy(password, p, tb_min((e - p) + 1, sizeof(password)));
             }
     
             // the database name
@@ -788,7 +788,7 @@ static tb_bool_t tb_database_mysql_open(tb_database_sql_impl_t* database)
                 if (!e) e = args + argn;
 
                 // save database name
-                if (p < e) tb_strlcpy(database_sql_name, p, tb_min(e - p, sizeof(database_sql_name)));
+                if (p < e) tb_strlcpy(database_sql_name, p, tb_min((e - p) + 1, sizeof(database_sql_name)));
             }
         }
 

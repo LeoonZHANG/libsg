@@ -7,6 +7,16 @@ include(ExternalProject)
 set(3RDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 ## 展开第三方依赖库直接编译进来，以简化安装和使用
+ExternalProject_Add(
+    tbox
+    PREFIX ${3RDPARTY_DIR}/tbox
+    SOURCE_DIR ${3RDPARTY_DIR}/tbox
+    CONFIGURE_COMMAND xmake f ${tbox_xmake_configs}
+    BUILD_COMMAND xmake
+    INSTALL_COMMAND ""
+    BUILD_IN_SOURCE 1
+    )
+
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     ExternalProject_Add(
         libxml2
@@ -68,15 +78,6 @@ if(UNIX)
     if("${CMAKE_SYSTEM}" MATCHES "Linux")
         set (tbox_xmake_configs ${tbox_xmake_configs} --cflags=-fPIC)
     endif()
-    ExternalProject_Add(
-        tbox
-        PREFIX ${3RDPARTY_DIR}/tbox
-        SOURCE_DIR ${3RDPARTY_DIR}/tbox
-        CONFIGURE_COMMAND xmake f ${tbox_xmake_configs}
-        BUILD_COMMAND xmake
-        INSTALL_COMMAND ""
-        BUILD_IN_SOURCE 1
-        )
 endif()
 
 if("${CMAKE_SYSTEM}" MATCHES "Linux")

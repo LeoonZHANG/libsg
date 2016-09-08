@@ -342,9 +342,10 @@ tb_process_ref_t tb_process_init_cmd(tb_char_t const* cmd, tb_process_attr_ref_t
     tb_assert_and_check_return_val(cmd, tb_null);
 
     // done
-    tb_process_ref_t process    = tb_null;
-    tb_char_t const* argv[256]  = {tb_null};
-    tb_char_t*       buffer     = tb_null;
+    tb_process_ref_t    process          = tb_null;
+    tb_char_t*          buffer           = tb_null;
+    tb_char_t const**   argv             = tb_null;
+    tb_char_t const*    argv_buffer[256] = {tb_null};
     do
     {
         // make buffer
@@ -356,6 +357,7 @@ tb_process_ref_t tb_process_init_cmd(tb_char_t const* cmd, tb_process_attr_ref_t
         tb_char_t   ch;
         tb_size_t   i = 0;
         tb_size_t   j = 0;
+        tb_size_t   argv_maxn = 16;
         for (i = 0; j <= maxn && (ch = cmd[i]); i++)
         {
             // not enough? grow it
@@ -372,16 +374,35 @@ tb_process_ref_t tb_process_init_cmd(tb_char_t const* cmd, tb_process_attr_ref_t
             if (ch == '\\' && (next == '\"' || next == '\'' || next == '\\')) /* skip it */ ;
             // copy it
             else buffer[j++] = ch;
+
+            // guess the argv max count
+            if (tb_isspace(ch)) argv_maxn++;
         }
         tb_assert_and_check_break(j < maxn);
         buffer[j] = '\0';
+
+        // ensure the argv buffer
+        if (argv_maxn <= tb_arrayn(argv_buffer))
+        {
+            argv        = argv_buffer;
+            argv_maxn   = tb_arrayn(argv_buffer);
+        }
+        else
+        {
+            // too large?
+            if (argv_maxn > TB_MAXU16) argv_maxn = TB_MAXU16;
+
+            // malloc the argv buffer
+            argv = tb_nalloc0_type(argv_maxn, tb_char_t const*);
+            tb_assert_and_check_break(argv);
+        }
 
         // reset index
         i = 0;
 
         // parse command to the arguments
         tb_bool_t   s = 0;
-        tb_size_t   m = tb_arrayn(argv);
+        tb_size_t   m = argv_maxn;
         tb_char_t*  p = buffer;
         tb_char_t*  b = tb_null;
         while ((ch = *p))
@@ -418,7 +439,7 @@ tb_process_ref_t tb_process_init_cmd(tb_char_t const* cmd, tb_process_attr_ref_t
             // next 
             p++;
         }
-
+        
         // save this argument 
         if (b)
         {
@@ -433,7 +454,7 @@ tb_process_ref_t tb_process_init_cmd(tb_char_t const* cmd, tb_process_attr_ref_t
         }
 
         // check
-        tb_assertf_and_check_break(i <= m - 1, "the command(%s) arguments are too much!", cmd);
+        tb_assertf_and_check_break(i < m - 1, "the command(%s) arguments are too much!", cmd);
 
         // init process
         process = tb_process_init(argv[0], argv, attr);
@@ -443,6 +464,10 @@ tb_process_ref_t tb_process_init_cmd(tb_char_t const* cmd, tb_process_attr_ref_t
     // exit buffer
     if (buffer) tb_free(buffer);
     buffer = tb_null;
+
+    // exit argv buffer
+    if (argv != argv_buffer) tb_free(argv);
+    argv = tb_null;
 
     // ok?
     return process;
@@ -591,4 +616,74 @@ tb_long_t tb_process_wait(tb_process_ref_t self, tb_long_t* pstatus, tb_long_t t
 
     // ok?
     return ok;
+}
+tb_long_t tb_process_waitlist(tb_process_ref_t const* processes, tb_process_waitinfo_ref_t infolist, tb_size_t infomaxn, tb_long_t timeout)
+{
+    // check
+    tb_assert_and_check_return_val(processes && infolist && infomaxn, -1);
+
+    // done
+    tb_long_t infosize = 0;
+    tb_hong_t time = tb_mclock();
+    do
+    {
+        // wait it
+        tb_int_t    status = -1;
+        tb_long_t   result = waitpid(-1, &status, timeout < 0? 0 : WNOHANG | WUNTRACED);
+        tb_check_return_val(result != -1, -1);
+
+        // exited?
+        if (result != 0)
+        {
+            // find this process 
+            tb_process_t const** pprocess = (tb_process_t const**)processes;
+            for (; *pprocess && (*pprocess)->pid != result; pprocess++) ;
+
+            // found?
+            if (*pprocess)
+            {
+                // save process info
+                infolist[infosize].index = (tb_process_ref_t const*)pprocess - processes;
+                infolist[infosize].process = (tb_process_ref_t)*pprocess;
+                infolist[infosize].status = WIFEXITED(status)? WEXITSTATUS(status) : -1;
+                infosize++;
+
+                // attempt to wait other processes
+                while (infosize < infomaxn)
+                {
+                    // attempt to wait it
+                    status = -1;
+                    result = waitpid(-1, &status, WNOHANG | WUNTRACED);
+
+                    // error or timeout? end
+                    tb_check_break(result != 0);
+
+                    // find this process 
+                    tb_process_t const** pprocess = (tb_process_t const**)processes;
+                    for (; *pprocess && (*pprocess)->pid != result; pprocess++) ;
+
+                    // found?
+                    if (*pprocess)
+                    {
+                        // save process info
+                        infolist[infosize].index = (tb_process_ref_t const*)pprocess - processes;
+                        infolist[infosize].process = (tb_process_ref_t)*pprocess;
+                        infolist[infosize].status = WIFEXITED(status)? WEXITSTATUS(status) : -1;
+                        infosize++;
+                    }
+                    else break;
+                }
+
+                // end
+                break;
+            }
+        }
+
+        // wait some time
+        if (timeout > 0) tb_msleep(tb_min(timeout, 60));
+
+    } while (timeout > 0 && tb_mclock() - time < (tb_hong_t)timeout);
+
+    // ok?
+    return infosize;
 }

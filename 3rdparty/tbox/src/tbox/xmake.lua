@@ -6,7 +6,7 @@ option("wchar")
 
 -- add option: float
 option("float")
-    set_enable(true)
+    set_default(true)
     set_showmenu(true)
     set_category("option")
     set_description("Enable or disable the float type")
@@ -14,26 +14,34 @@ option("float")
 
 -- add option: info
 option("info")
-    set_enable(true)
+    set_default(true)
     set_showmenu(true)
     set_category("option")
     set_description("Enable or disable to get some info, .e.g version ..")
     add_defines_h_if_ok("$(prefix)_INFO_HAVE_VERSION")
 
+-- add option: deprecated
+option("deprecated")
+    set_default(true)
+    set_showmenu(true)
+    set_category("option")
+    set_description("Enable or disable the deprecated interfaces.")
+    add_defines_h_if_ok("$(prefix)_API_HAVE_DEPRECATED")
+
 -- add option: smallest
 option("smallest")
-    set_enable(false)
+    set_default(false)
     set_showmenu(true)
     set_category("option")
     set_description("Enable the smallest compile mode and disable all modules.")
-    add_rbindings("info")
-    add_rbindings("xml", "zip", "asio", "regex", "object", "thread", "network", "charset", "database")
+    add_rbindings("info", "deprecated")
+    add_rbindings("xml", "zip", "asio", "hash", "regex", "object", "thread", "network", "charset", "database")
     add_rbindings("zlib", "mysql", "sqlite3", "openssl", "polarssl", "pcre2", "pcre")
 
 -- add modules
-for _, module in ipairs({"xml", "zip", "asio", "regex", "object", "thread", "network", "charset", "database"}) do
+for _, module in ipairs({"xml", "zip", "asio", "hash", "regex", "object", "thread", "network", "charset", "database"}) do
     option(module)
-        set_enable(true)
+        set_default(true)
         set_showmenu(true)
         set_category("module")
         set_description(format("The %s module", module))
@@ -70,13 +78,14 @@ target("tbox")
     add_packages("zlib", "mysql", "sqlite3", "openssl", "polarssl", "pcre2", "pcre", "base")
 
     -- add options
-    add_options("info", "float", "wchar")
+    add_options("info", "float", "wchar", "deprecated")
 
     -- add modules
-    add_options("xml", "zip", "asio", "regex", "object", "thread", "network", "charset", "database")
+    add_options("xml", "zip", "asio", "hash", "regex", "object", "thread", "network", "charset", "database")
 
     -- add the common source files
     add_files("*.c") 
+    add_files("hash/bkdr.c", "hash/fnv32.c", "hash/adler32.c")
     add_files("math/**.c") 
     add_files("libc/**.c|string/impl/**.c") 
     add_files("utils/*.c|option.c") 
@@ -94,11 +103,6 @@ target("tbox")
     add_files("libm/idivi8.c") 
     add_files("platform/*.c|aicp.c|aiop.c|aioo.c|socket.c|dns.c|thread*.c|event.c|semaphore.c|mutex.c|timer.c|ltimer.c")
 
-    -- add the source files for arm
-    if is_arch("arm.*") then
-        add_files("utils/impl/crc_arm.S")
-    end
-
     -- add the source files for the float type
     if is_option("float") then add_files("libm/*.c") end
 
@@ -107,6 +111,17 @@ target("tbox")
 
     -- add the source files for the regex module
     if is_option("regex") then add_files("regex/*.c") end
+
+    -- add the source files for the hash module
+    if is_option("hash") then
+        add_files("hash/*.c") 
+        if is_arch("arm.*") then
+            add_files("hash/impl/crc32_arm.S")
+        end
+        if is_option("deprecated") then
+            add_files("hash/deprecated/*.c") 
+        end
+    end
 
     -- add the source files for the network module
     if is_option("network") then
@@ -246,9 +261,11 @@ target("tbox")
                                                                         "mbstowcs")
     add_cfuncs("libc", nil,         "time.h",                           "gmtime", "mktime", "localtime")
     add_cfuncs("libc", nil,         "sys/time.h",                       "gettimeofday")
-    add_cfuncs("libc", nil,         {"signal.h", "setjmp.h"},           "signal", "setjmp", "sigsetjmp", "kill")
+    add_cfuncs("libc", nil,         {"signal.h", "setjmp.h"},           "signal", "setjmp", "sigsetjmp{sigjmp_buf buf; sigsetjmp(buf, 0);}", "kill")
     add_cfuncs("libc", nil,         "execinfo.h",                       "backtrace")
     add_cfuncs("libc", nil,         "locale.h",                         "setlocale")
+    add_cfuncs("libc", nil,         "stdio.h",                          "fputs")
+    add_cfuncs("libc", nil,         "stdlib.h",                         "srandom", "random")
 
     -- add the interfaces for libm
     add_cfuncs("libm", nil,         "math.h",                           "sincos", 

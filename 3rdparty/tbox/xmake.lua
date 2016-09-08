@@ -2,7 +2,7 @@
 set_project("tbox")
 
 -- version
-set_version("1.5.2")
+set_version("1.5.3")
 
 -- set warning all as error
 set_warnings("all", "error")
@@ -11,16 +11,14 @@ set_warnings("all", "error")
 set_languages("c99", "cxx11")
 
 -- add defines to config.h
-add_defines_h("$(prefix)_OS_$(OS)")
+add_defines_h("$(prefix)_OS_$(os:upper)")
+add_defines_h("_GNU_SOURCE=1", "_REENTRANT")
 
 -- add undefines to config.h 
 add_undefines_h("$(prefix)_TRACE_INFO_ONLY")
 add_undefines_h("$(prefix)_EXCEPTION_ENABLE")
 add_undefines_h("$(prefix)_MEMORY_UNALIGNED_ACCESS_ENABLE")
  
--- add defines for c files
-add_defines("_GNU_SOURCE=1", "_REENTRANT")
-
 -- disable some compiler errors
 add_cxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing")
 add_mxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing")
@@ -132,7 +130,7 @@ end
 
 -- add option: demo
 option("demo")
-    set_enable(true)
+    set_default(true)
     set_showmenu(true)
     set_category("option")
     set_description("Enable or disable the demo module")

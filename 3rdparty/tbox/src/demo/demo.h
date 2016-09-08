@@ -80,16 +80,25 @@ TB_DEMO_MAIN_DECL(math_random);
 
 // utils
 TB_DEMO_MAIN_DECL(utils_url);
-TB_DEMO_MAIN_DECL(utils_crc);
-TB_DEMO_MAIN_DECL(utils_md5);
-TB_DEMO_MAIN_DECL(utils_sha);
 TB_DEMO_MAIN_DECL(utils_bits);
 TB_DEMO_MAIN_DECL(utils_dump);
 TB_DEMO_MAIN_DECL(utils_option);
 TB_DEMO_MAIN_DECL(utils_base32);
 TB_DEMO_MAIN_DECL(utils_base64);
-TB_DEMO_MAIN_DECL(utils_adler32);
-TB_DEMO_MAIN_DECL(utils_fnv32);
+
+// hash
+TB_DEMO_MAIN_DECL(hash_md5);
+TB_DEMO_MAIN_DECL(hash_sha);
+TB_DEMO_MAIN_DECL(hash_uuid);
+TB_DEMO_MAIN_DECL(hash_djb2);
+TB_DEMO_MAIN_DECL(hash_sdbm);
+TB_DEMO_MAIN_DECL(hash_crc8);
+TB_DEMO_MAIN_DECL(hash_crc16);
+TB_DEMO_MAIN_DECL(hash_crc32);
+TB_DEMO_MAIN_DECL(hash_fnv32);
+TB_DEMO_MAIN_DECL(hash_fnv64);
+TB_DEMO_MAIN_DECL(hash_adler32);
+TB_DEMO_MAIN_DECL(hash_benchmark);
 
 // other
 TB_DEMO_MAIN_DECL(other_test);

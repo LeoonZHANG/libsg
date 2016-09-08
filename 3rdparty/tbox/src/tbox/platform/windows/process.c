@@ -69,11 +69,19 @@ tb_process_ref_t tb_process_init(tb_char_t const* pathname, tb_char_t const* arg
         // make arguments
         if (argv)
         {
+            tb_char_t ch;
             tb_char_t const* p = tb_null;
             while ((p = *argv++)) 
             {
-                tb_string_cstrcat(&args, p);
-                tb_string_cstrcat(&args, " ");
+                tb_string_chrcat(&args, '\"');
+                while ((ch = *p))
+                {
+                    if (ch == '\"' || ch == '\'' || ch == '\\') tb_string_chrcat(&args, '\\');
+                    tb_string_chrcat(&args, ch);
+                    p++;
+                }
+                tb_string_chrcat(&args, '\"');
+                tb_string_chrcat(&args, ' ');
             }
         }
         // only path name?
@@ -369,8 +377,8 @@ tb_long_t tb_process_wait(tb_process_ref_t self, tb_long_t* pstatus, tb_long_t t
     case WAIT_OBJECT_0: // ok
         {
             // save exit code
-            DWORD dwExitCode;
-            if (pstatus) *pstatus = tb_kernel32()->GetExitCodeProcess(process->pi.hProcess, &dwExitCode)? (tb_long_t)dwExitCode : -1;  
+            DWORD exitcode = 0;
+            if (pstatus) *pstatus = tb_kernel32()->GetExitCodeProcess(process->pi.hProcess, &exitcode)? (tb_long_t)exitcode : -1;  
 
             // close thread handle
             tb_kernel32()->CloseHandle(process->pi.hThread);
@@ -394,4 +402,101 @@ tb_long_t tb_process_wait(tb_process_ref_t self, tb_long_t* pstatus, tb_long_t t
 
     // ok?
     return ok;
+}
+tb_long_t tb_process_waitlist(tb_process_ref_t const* processes, tb_process_waitinfo_ref_t infolist, tb_size_t infomaxn, tb_long_t timeout)
+{
+    // check
+    tb_assert_and_check_return_val(processes && infolist && infomaxn, -1);
+
+    // make the process list
+    tb_size_t               procsize = 0;
+    HANDLE                  proclist[256] = {0};
+    tb_process_t const**    pprocess = (tb_process_t const**)processes;
+    for (; *pprocess && procsize < tb_arrayn(proclist); pprocess++, procsize++)
+        proclist[procsize] = (*pprocess)->pi.hProcess;
+    tb_assertf(procsize < tb_arrayn(proclist), "too much waited processes!");
+
+
+    // wait processes
+    DWORD       exitcode = 0;
+    tb_long_t   infosize = 0;
+    DWORD result = tb_kernel32()->WaitForMultipleObjects((DWORD)procsize, proclist, FALSE, timeout < 0? INFINITE : (DWORD)timeout);
+    switch (result)
+    {
+    case WAIT_TIMEOUT:
+        break;
+    case WAIT_FAILED:
+        return -1;
+    default:
+        {
+            // the process index
+            DWORD index = result - WAIT_OBJECT_0;
+
+            // the process
+            tb_process_t* process = (tb_process_t*)processes[index];
+            tb_assert_and_check_return_val(process, -1);
+
+            // save process info
+            infolist[infosize].index    = index;
+            infolist[infosize].process  = (tb_process_ref_t)process;
+            infolist[infosize].status   = tb_kernel32()->GetExitCodeProcess(process->pi.hProcess, &exitcode)? (tb_long_t)exitcode : -1;  
+            infosize++;
+
+            // close thread handle
+            tb_kernel32()->CloseHandle(process->pi.hThread);
+            process->pi.hThread = INVALID_HANDLE_VALUE;
+
+            // close process
+            tb_kernel32()->CloseHandle(process->pi.hProcess);
+            process->pi.hProcess = INVALID_HANDLE_VALUE;
+
+            // next index
+            index++;
+            while (index < procsize)
+            {
+                // attempt to wait next process
+                result = tb_kernel32()->WaitForMultipleObjects((DWORD)(procsize - index), proclist + index, FALSE, 0);
+                switch (result)
+                {
+                case WAIT_TIMEOUT:
+                    // no more, exit loop
+                    index = (DWORD)procsize;
+                    break;
+                case WAIT_FAILED:
+                    return -1;
+                default:
+                    {
+                        // the process index
+                        index += result - WAIT_OBJECT_0;
+
+                        // the process
+                        process = (tb_process_t*)processes[index];
+                        tb_assert_and_check_return_val(process, -1);
+
+                        // save process info
+                        infolist[infosize].index    = index;
+                        infolist[infosize].process  = (tb_process_ref_t)process;
+                        infolist[infosize].status   = tb_kernel32()->GetExitCodeProcess(process->pi.hProcess, &exitcode)? (tb_long_t)exitcode : -1;  
+                        infosize++;
+
+                        // close thread handle
+                        tb_kernel32()->CloseHandle(process->pi.hThread);
+                        process->pi.hThread = INVALID_HANDLE_VALUE;
+
+                        // close process
+                        tb_kernel32()->CloseHandle(process->pi.hProcess);
+                        process->pi.hProcess = INVALID_HANDLE_VALUE;
+
+                        // next index
+                        index++;
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    }
+
+    // ok?
+    return infosize;
 }
