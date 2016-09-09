@@ -186,10 +186,6 @@ elseif(APPLE)
     add_dependencies(${target_static} openssl dablooms ${common_deps})
 elseif(UNIX)
     set(link_libs ${link_libs}
-        rt
-        dl
-        pthread
-        pcre
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libiconv-1.14/local/lib/libiconv.a
@@ -197,6 +193,10 @@ elseif(UNIX)
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
+        pcre
+        pthread
+        rt # we would better put 'rt', 'dl' to rear, it's sensitive for gcc
+        dl
         )
     add_dependencies(${target_shared} libxml2 libuuid libiconv openssl dablooms ${common_deps})
     add_dependencies(${target_static} libxml2 libuuid libiconv openssl dablooms ${common_deps})
