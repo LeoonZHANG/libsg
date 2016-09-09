@@ -21,10 +21,19 @@ TEST(test_sg_charset, conv) {
 
     memset(in, 0, TEST_CHARSET_IOLEN);
     strcpy(in, text);
+/* Visual C++ 2005 and latter will encode multibyte string as local multibyte encodding instead of utf-8 */
+#if defined (_MSC_VER) && _MSC_VER > 1310
+	sg_log_inf("Source GBK string:%s.", in);
+	sg_charset_conv("GBK", "utf-8", in, in_len, out, out_len);
+	sg_log_inf("Convert to utf-8 string:%s.", out);
+	sg_charset_conv("utf-8", "GBK", out, in_len, in, out_len);
+	sg_log_inf("Convert to GBK string:%s.", in);
+#else
     sg_log_inf("Source utf-8 string:%s.", in);
     sg_charset_conv("utf-8", "GBK", in, in_len, out, out_len);
-    sg_log_inf("Convert GBK string:%s.", out);
+    sg_log_inf("Convert to GBK string:%s.", out);
     sg_charset_conv("GBK", "utf-8", out, in_len, in, out_len);
-    sg_log_inf("Convert utf-8 string:%s.", in);
+    sg_log_inf("Convert to utf-8 string:%s.", in);
+#endif
     ASSERT_STREQ(in, text);
 }
