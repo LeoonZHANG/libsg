@@ -103,19 +103,19 @@ include_directories(3rdparty/openssl/include)
 include_directories(3rdparty/dablooms/src)
 include_directories(3rdparty/tbox/build)
 include_directories(3rdparty/tbox/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
     include_directories(3rdparty/zlib)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib)
 elseif(APPLE)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 elseif(UNIX)
     include_directories(3rdparty/libuuid/include)
     include_directories(3rdparty/libiconv-1.14/local/include)
     include_directories(3rdparty/zlib)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 endif()
 
 ## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
@@ -155,22 +155,37 @@ set_target_properties(${target_shared} PROPERTIES
     )
 
 ## Windows 下直接连接合并编译的库文件
+set(common_deps tbox libmpir openssl)
 if(WIN32)
     set(libxml-static-file ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib)
-    set(link_libs libiconv-static pcre ${libxml-static-file} libc99-snprintf-static zlibstatic Rasapi32.lib)
-    add_dependencies(${target_shared} libxml2)
-    add_dependencies(${target_static} libxml2)
+    set(link_libs ${link_libs}
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/${CMAKE_VS_PLATFORM_NAME}/Release/mpir.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/tbox.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libssl.lib
+        libiconv-static
+        pcre
+        ${libxml-static-file}
+        libc99-snprintf-static
+        zlibstatic
+        Rasapi32.lib
+        ws2_32.lib
+        Crypt32.lib
+        )
+    add_dependencies(${target_shared} libxml2 ${common_deps})
+    add_dependencies(${target_static} libxml2 ${common_deps})
 elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
-        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
+    set(link_libs ${link_libs}
+        iconv dl xml2 curl pthread pcre zlibstatic 
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
         )
-    add_dependencies(${target_shared} libmpir openssl dablooms tbox)
-    add_dependencies(${target_static} libmpir openssl dablooms tbox)
+    add_dependencies(${target_shared} openssl dablooms ${common_deps})
+    add_dependencies(${target_static} openssl dablooms ${common_deps})
 elseif(UNIX)
-    set(link_libs
+    set(link_libs ${link_libs}
         rt
         dl
         pthread
@@ -182,9 +197,9 @@ elseif(UNIX)
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
-         )
-    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir openssl dablooms tbox)
-    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir openssl dablooms tbox)
+        )
+    add_dependencies(${target_shared} libxml2 libuuid libiconv openssl dablooms ${common_deps})
+    add_dependencies(${target_static} libxml2 libuuid libiconv openssl dablooms ${common_deps})
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
