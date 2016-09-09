@@ -7,15 +7,16 @@
 
 void proc_found(const char *id, void *context)
 {
+#if !defined WIN32
     sg_vlstr_t *filename;
     filename = sg_proc_filename(atoi(id));
     if(sg_vlstrlen(filename) > 0)
         printf("%s", sg_vlstrraw(filename));
+#endif
 }
 
 TEST(test_sg_proc, user_id_current) {
     uid_t uid = sg_proc_user_id_current();
-    printf("user id:%d\n", uid);
     ASSERT_GT(uid, 0);
 }
 

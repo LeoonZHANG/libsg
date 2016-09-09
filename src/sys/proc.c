@@ -234,7 +234,6 @@ int sg_proc_id_all(sg_proc_found_callback cb, void *context)
     PROCESS_INFORMATION pi;
     PROCESSENTRY32 ps;
     HANDLE snapshot;
-    DWORD pid;
 
     ZeroMemory(&st, sizeof(STARTUPINFO));
     ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
@@ -256,7 +255,7 @@ int sg_proc_id_all(sg_proc_found_callback cb, void *context)
 
     do {
         char id[32] = { 0 };
-        itoa(pid, id, 10);
+        itoa(ps.th32ProcessID, id, 10);
         cb(id, context);
         ++ctx.count;
     } while (Process32Next(snapshot, &ps));
