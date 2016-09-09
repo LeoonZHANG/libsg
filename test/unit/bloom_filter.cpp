@@ -28,6 +28,7 @@ TEST(test_bloom, all)
     sg_bloom_filter_free(bloom);
 }
 
+#if !defined(WIN32) // they're not ready for win32 yet.
 TEST(test_counting_bloom, remove_reopen_and_accuracy)
 {
     if (FILE* fp = fopen(BLOOM_FILE, "r")) {
@@ -112,3 +113,4 @@ TEST(test_scaling_bloom, remove_reopen_and_accuracy)
 
     sg_scaling_bloom_filter_free(bloom);
 }
+#endif

@@ -1,5 +1,4 @@
 #include <sg/container/bloom_filter.h>
-#include <dablooms.h>
 #include <tbox/tbox.h>
 #include <tbox/container/bloom_filter.h>
 
@@ -82,6 +81,9 @@ int sg_bloom_filter_contain(sg_bloom_filter_t *bloom, const void *key)
 {
     return tb_bloom_filter_get(bloom->pimpl, key);
 }
+
+#if !defined(WIN32)
+#include <dablooms.h>
 
 /****************************************************************
  * counting_bloom
@@ -203,3 +205,4 @@ uint64_t sg_scaling_bloom_filter_disk_seqnum(sg_scaling_bloom_filter_t *bloom)
 {
     return scaling_bloom_disk_seqnum(bloom->pimpl);
 }
+#endif

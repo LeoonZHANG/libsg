@@ -1,13 +1,16 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sg/net/net_card.h>
+
+#ifdef WIN32
+#else
 #include <arpa/inet.h>
 #include <errno.h>
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <sg/net/net_card.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -18,8 +21,17 @@
 #else
 #include <netpacket/packet.h>
 #endif
+#endif
 
-#ifndef WIN32
+#ifdef WIN32
+
+int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_interfaces)
+{
+    // TODO: implement it
+    return 0;
+}
+
+#else
 
 #define get_inet_addr(version)                                                                                                 \
     if (if_addr->ifa_addr != NULL)                                                                                             \
@@ -159,7 +171,5 @@ int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_i
     free(if_info_set);
     return 0;
 }
-
-#else
 
 #endif
