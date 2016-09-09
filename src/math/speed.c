@@ -90,7 +90,8 @@ sg_speed_counter_t *sg_speed_counter_open(int stat_duration_ms)
     sg_speed_counter_t* result = malloc(sizeof(sg_speed_counter_t));
     result->stat_duration_ms = stat_duration_ms;
     result->byte_slots = calloc(counter_slots_capacities(result), sizeof(size_t));
-    result->head = result->byte_slots;
+    // assign head as NULL idicates empty
+    result->head = NULL;
     result->tail = result->byte_slots;
     result->while_start = sg_boot_time_ms();
     result->grains_count = 0;
@@ -110,9 +111,11 @@ void sg_speed_counter_close(sg_speed_counter_t * counter)
 
 static size_t counter_slots_size(sg_speed_counter_t* counter)
 {
+    if (counter->head == NULL)
+        return 0;
     int distance = counter->tail - counter->head;
     if (distance >= 0)
-        return counter->tail - counter->head;
+        return 1 + counter->tail - counter->head;
     else
         return counter_slots_capacities(counter) + 1 + distance;
 }
@@ -128,15 +131,20 @@ static void counter_slots_advance(sg_speed_counter_t* counter, size_t** pointer)
     if ((*pointer) >= (counter->byte_slots + counter_slots_capacities(counter)))
         (*pointer) = counter->byte_slots;
 }
-
+static int cccc = 0;
 static void counter_forward(sg_speed_counter_t* counter)
 {
+    // from empty to one, reset head
+    if (counter->head == NULL)
+        counter->head = counter->tail;
+
     counter_slots_advance(counter, &counter->tail);
     *counter->tail = 0;
     /* The tail hit head, slots must be full, 'cause it's definitely not empty.
        Then advance head. */
-    if (counter->tail == counter->head)
+    if (counter->tail == counter->head) {
         counter_slots_advance(counter, &counter->head);
+    }
 }
 
 static void try_fast_forward(sg_speed_counter_t * counter)
