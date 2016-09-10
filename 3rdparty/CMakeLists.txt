@@ -7,6 +7,82 @@ include(ExternalProject)
 set(3RDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 ## 展开第三方依赖库直接编译进来，以简化安装和使用
+# tbox
+set(tbox_xmake_configs --zip=false --zlib=false --asio=false --openssl=false --pcre=false --network=false --demo=false --database=false --regex=false)
+if("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
+    set(tbox_xmake_configs ${tbox_xmake_configs} -m debug)
+endif()
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set (tbox_xmake_configs ${tbox_xmake_configs} --cflags=-fPIC)
+endif()
+ExternalProject_Add(
+    tbox
+    PREFIX ${3RDPARTY_DIR}/tbox
+    SOURCE_DIR ${3RDPARTY_DIR}/tbox
+    CONFIGURE_COMMAND xmake f ${tbox_xmake_configs}
+    BUILD_COMMAND xmake
+    INSTALL_COMMAND ""
+    BUILD_IN_SOURCE 1
+    )
+# mpir
+if(WIN32)
+    if("${MSVC_VERSION}" MATCHES "1600")
+        set(vc_build_dir build.vc10)
+    elseif("${MSVC_VERSION}" MATCHES "1700")
+        set(vc_build_dir build.vc11)
+    elseif("${MSVC_VERSION}" MATCHES "1800")
+        set(vc_build_dir build.vc12)
+    elseif("${MSVC_VERSION}" MATCHES "1900")
+        set(vc_build_dir build.vc14)
+    else()
+        message(FETAL_ERROR "mpir not support the current vc")
+    endif()
+    ExternalProject_Add(
+        libmpir
+        PREFIX ${3RDPARTY_DIR}/mpir
+        SOURCE_DIR ${3RDPARTY_DIR}/mpir/${vc_build_dir}
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ${3RDPARTY_DIR}/mpir/${vc_build_dir}/msbuild gc lib ${CMAKE_VS_PLATFORM_NAME} release
+        BUILD_IN_SOURCE 1
+        )
+else()
+    ExternalProject_Add(
+        libmpir
+        PREFIX ${3RDPARTY_DIR}/mpir
+        SOURCE_DIR ${3RDPARTY_DIR}/mpir
+        CONFIGURE_COMMAND ${3RDPARTY_DIR}/mpir/configure --prefix=${3RDPARTY_DIR}/mpir --with-pic
+        BUILD_COMMAND ${MAKE}
+        )
+endif()
+
+# openssl
+if(WIN32)
+    if("${CMAKE_VS_PLATFORM_NAME}" MATCHES "Win32")
+        set(openssl_platform VC-WIN32)
+    else()
+        set(openssl_platform VC-WIN64A)
+    endif()
+    ExternalProject_Add(
+        openssl
+        PREFIX ${3RDPARTY_DIR}/openssl
+        SOURCE_DIR ${3RDPARTY_DIR}/openssl
+        CONFIGURE_COMMAND perl Configure ${openssl_platform} --prefix=${3RDPARTY_DIR}/openssl no-shared enable-md2 enable-rc5
+        BUILD_COMMAND nmake
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1 # seems openssl does not support build in directory out of source
+        )
+else()
+    ExternalProject_Add(
+        openssl
+        PREFIX ${3RDPARTY_DIR}/openssl
+        SOURCE_DIR ${3RDPARTY_DIR}/openssl
+        CONFIGURE_COMMAND ${3RDPARTY_DIR}/openssl/config --prefix=${3RDPARTY_DIR}/openssl enable-md2 enable-rc5
+        BUILD_COMMAND ${MAKE}
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1 # seems openssl does not support build in directory out of source
+        )
+endif()
+
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     ExternalProject_Add(
         libxml2
@@ -37,11 +113,13 @@ endif()
 
 if(UNIX)
     ExternalProject_Add(
-        libmpir
-        PREFIX ${3RDPARTY_DIR}/mpir
-        SOURCE_DIR ${3RDPARTY_DIR}/mpir
-        CONFIGURE_COMMAND ${3RDPARTY_DIR}/mpir/configure --prefix=${3RDPARTY_DIR}/mpir --with-pic
+        dablooms
+        PREFIX ${3RDPARTY_DIR}/dablooms
+        SOURCE_DIR ${3RDPARTY_DIR}/dablooms
+        CONFIGURE_COMMAND ""
         BUILD_COMMAND ${MAKE}
+        INSTALL_COMMAND ""
+        BUILD_IN_SOURCE 1
         )
 endif()
 

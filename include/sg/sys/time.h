@@ -7,7 +7,13 @@
 #ifndef LIBSG_TIME_H
 #define LIBSG_TIME_H
 
+/* Flollowing is a workaround of error: <C2526> for Visual C++, seams a bug of compiler. */
+#if defined  _MSC_VER && defined __cplusplus
+#include <winsock.h>
+#include <ctime>
+#else
 #include <time.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -358,7 +358,8 @@ unsigned long sg_boot_time_ms(void)
     mach_port_deallocate(mach_task_self(), cclock);
     ms = (unsigned long)(mts.tv_sec * 1000) + (unsigned long)(mts.tv_nsec / 1000000);
 #elif defined(WIN32)
-    ms = GetTickCount();
+    struct timeval tv = sg_unix_time_us();
+    ms = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 #else
     struct timespec t;
     /* Unsigned long (32-bit OS) could describe

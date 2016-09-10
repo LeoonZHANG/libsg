@@ -3,26 +3,29 @@
  * Counting bloom filter and scaling bloom filter data structure.
  */
 
-/**
- * bloom_filter: 基于https://github.com/waruqi/tbox的bloom filter模块
- * conting_bloom_filter和scaling_bloom_filter: 基于https://github.com/bitly/dablooms/实现
- * https://github.com/bitly/dablooms/它是支持linux/unix的, 请写一个fork,少数几个linux的api增加对windows的同等支持,并提交官方PR。
- * 疑问,add、remove喝contain接口中的len,在有的实现中有,有的实现中没有,到底需要吗?
- */
-
 #ifndef LIBSG_BLOOM_FILTER_H
 #define LIBSG_BLOOM_FILTER_H
+
+#include <stdlib.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
+enum sg_bloom_element_type {
+    SGBLOOM_ELEMENT_TYPE_UINT8,
+    SGBLOOM_ELEMENT_TYPE_UINT16,
+    SGBLOOM_ELEMENT_TYPE_UINT32,
+    SGBLOOM_ELEMENT_TYPE_UINT64,
+    SGBLOOM_ELEMENT_TYPE_CSTRING,
+};
+
 typedef struct sg_bloom_filter_real sg_bloom_filter_t;
 
-sg_bloom_filter_t *sg_bloom_filter_alloc(...);
-sg_bloom_filter_t *sg_bloom_filter_alloc_from_file();
-int sg_bloom_filter_add(sg_bloom_filter_t *cbf, const char *key, size_t len);
-int sg_bloom_filter_contain(sg_bloom_filter_t *cbf, const char *key, size_t len);
+sg_bloom_filter_t *sg_bloom_filter_alloc(unsigned int capacity, enum sg_bloom_element_type type);
+int sg_bloom_filter_add(sg_bloom_filter_t *cbf, const void *key);
+int sg_bloom_filter_contain(sg_bloom_filter_t *cbf, const void *key);
 int sg_bloom_filter_free(sg_bloom_filter_t *cbf);
 
 typedef struct sg_counting_bloom_filter_real sg_counting_bloom_filter_t;
@@ -33,9 +36,6 @@ int sg_counting_bloom_filter_add(sg_counting_bloom_filter_t *cbf, const char *ke
 int sg_counting_bloom_filter_remove(sg_counting_bloom_filter_t *cbf, const char *key, size_t len);
 int sg_counting_bloom_filter_contain(sg_counting_bloom_filter_t *cbf, const char *key, size_t len);
 int sg_counting_bloom_filter_free(sg_counting_bloom_filter_t *cbf);
-
-
-
 
 typedef struct sg_scaling_bloom_filter_real sg_scaling_bloom_filter_t;
 

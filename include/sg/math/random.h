@@ -11,13 +11,13 @@
 extern "C" {
 #endif /* __cplusplus */
 
-long sg_rondom_l(void);
+long sg_random_l(void);
 
-float sg_rondom_f(void);
+float sg_random_f(void);
 
-long sg_rondom_range_l(long min, long max);
+long sg_random_range_l(long min, long max);
 
-float sg_rondom_range_f(float min, float max);
+float sg_random_range_f(float min, float max);
 
 #ifdef __cplusplus
 }

@@ -25,19 +25,8 @@
  * includes
  */
 #include "prefix.h"
-#include "../print.h"
-#include "../thread.h"
 #include <stdio.h>
-#ifdef TB_CONFIG_OS_WINDOWS
-#   include <windows.h>
-#else
-#   include <unistd.h>
-#endif
-#if defined(TB_CONFIG_OS_ANDROID)
-#   include <android/log.h>     
-#elif defined(TB_CONFIG_OS_IOS)
-#   include <asl.h>
-#endif
+#include <unistd.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -47,45 +36,19 @@ tb_void_t tb_print(tb_char_t const* string)
     // check
     tb_check_return(string);
 
-#if defined(TB_CONFIG_OS_ANDROID)
-    // print to the android device log
-    __android_log_print(ANDROID_LOG_ERROR, __tb_prefix__? __tb_prefix__ : "tbox", "[%08x]: %s", (tb_uint32_t)tb_thread_self(), string);
-#elif defined(TB_CONFIG_OS_IOS)
-    // print to the ios device log
-    asl_log(tb_null, tb_null, ASL_LEVEL_WARNING, "[%08x]: %s", (tb_uint32_t)tb_thread_self(), string);
-#endif
-
     // print to the stdout
     fputs(string, stdout);
-
-    // force flush it for windows
-#ifdef TB_CONFIG_OS_WINDOWS
-    fflush(stdout);
-#endif
 }
 tb_void_t tb_printl(tb_char_t const* string)
 {
     // check
     tb_check_return(string);
-
-#if defined(TB_CONFIG_OS_ANDROID)
-    // print to the android device log
-    __android_log_print(ANDROID_LOG_ERROR, __tb_prefix__? __tb_prefix__ : "tbox", "[%08x]: %s\n", (tb_uint32_t)tb_thread_self(), string);
-#elif defined(TB_CONFIG_OS_IOS)
-    // print to the ios device log
-    asl_log(tb_null, tb_null, ASL_LEVEL_WARNING, "[%08x]: %s\n", (tb_uint32_t)tb_thread_self(), string);
-#endif
-
+ 
     // print string to the stdout
     fputs(string, stdout);
 
     // print newline to the stdout
     fputs(__tb_newline__, stdout);
-
-    // force flush it for windows
-#ifdef TB_CONFIG_OS_WINDOWS
-    fflush(stdout);
-#endif
 }
 tb_void_t tb_print_sync()
 {

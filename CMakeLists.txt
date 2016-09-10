@@ -38,6 +38,8 @@ file(GLOB src_vtd-xml 3rdparty/vtd-xml/*.c)
 list(REMOVE_ITEM src_vtd-xml
     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy (2).c"
     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/vtd-xml/lex.yy_old.c")
+file(GLOB src_dablooms 3rdparty/dablooms/src/*.c)
+list(REMOVE_ITEM src_dablooms "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/src/test_dablooms.c")
 file(GLOB src_str src/str/*.c)
 file(GLOB src_compress src/compress/*.c)
 file(GLOB src_container src/container/*.c)
@@ -47,6 +49,8 @@ file(GLOB src_net src/net/*.c)
 file(GLOB src_platform_windows src/platform/windows/*.c)
 file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
+file(GLOB src_crypto src/crypto/*.c)
+file(GLOB src_hash src/hash/*.c)
 
 set(src_lib
     ${src_b64}
@@ -60,6 +64,9 @@ set(src_lib
     ${src_math}
     ${src_sys}
     ${src_util}
+    ${src_crypto}
+    ${src_hash}
+    src/net/net_card.c
     )
 
 ## 有些文件是 Windwos 专用的。
@@ -92,19 +99,23 @@ include_directories(include)
 include_directories(3rdparty/pcre)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre)
 include_directories(3rdparty/libxml2/include)
+include_directories(3rdparty/openssl/include)
+include_directories(3rdparty/dablooms/src)
+include_directories(3rdparty/tbox/build)
+include_directories(3rdparty/tbox/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 ## Windows 下还需要添加直接包含的依赖库
 if(WIN32)
     include_directories(3rdparty/libiconv/include)
     include_directories(3rdparty/zlib)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib)
 elseif(APPLE)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 elseif(UNIX)
     include_directories(3rdparty/libuuid/include)
     include_directories(3rdparty/libiconv-1.14/local/include)
     include_directories(3rdparty/zlib)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/include)
 endif()
 
 ## Linux 下由于用了一些 GNU C 特有方法及标准 C99语法，必须设置为 gnu99 或更新的标准。
@@ -144,30 +155,51 @@ set_target_properties(${target_shared} PROPERTIES
     )
 
 ## Windows 下直接连接合并编译的库文件
+set(common_deps tbox libmpir openssl)
 if(WIN32)
     set(libxml-static-file ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib)
-    set(link_libs libiconv-static pcre ${libxml-static-file} libc99-snprintf-static zlibstatic Rasapi32.lib)
-    add_dependencies(${target_shared} libxml2)
-    add_dependencies(${target_static} libxml2)
-elseif(APPLE)
-    set(link_libs iconv dl xml2 curl pthread pcre zlibstatic
-        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
-        )
-    add_dependencies(${target_shared} libmpir)
-    add_dependencies(${target_static} libmpir)
-elseif(UNIX)
-    set(link_libs
-        rt
-        dl
-        pthread
+    set(link_libs ${link_libs}
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/${CMAKE_VS_PLATFORM_NAME}/Release/mpir.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/tbox.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libssl.lib
+        libiconv-static
         pcre
+        ${libxml-static-file}
+        libc99-snprintf-static
+        zlibstatic
+        Rasapi32.lib
+        ws2_32.lib
+        Crypt32.lib
+        )
+    add_dependencies(${target_shared} libxml2 ${common_deps})
+    add_dependencies(${target_static} libxml2 ${common_deps})
+elseif(APPLE)
+    set(link_libs ${link_libs}
+        iconv dl xml2 curl pthread pcre zlibstatic 
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
+        )
+    add_dependencies(${target_shared} openssl dablooms ${common_deps})
+    add_dependencies(${target_static} openssl dablooms ${common_deps})
+elseif(UNIX)
+    set(link_libs ${link_libs}
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libiconv-1.14/local/lib/libiconv.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
-         )
-    add_dependencies(${target_shared} libxml2 libuuid libiconv libmpir)
-    add_dependencies(${target_static} libxml2 libuuid libiconv libmpir)
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
+        pcre
+        pthread
+        rt # we would better put 'rt', 'dl' to rear, it's sensitive for gcc
+        dl
+        )
+    add_dependencies(${target_shared} libxml2 libuuid libiconv openssl dablooms ${common_deps})
+    add_dependencies(${target_static} libxml2 libuuid libiconv openssl dablooms ${common_deps})
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})

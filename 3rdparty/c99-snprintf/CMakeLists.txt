@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 2.8)
 
 
 # project
@@ -31,7 +31,7 @@ add_definitions(
     -DHAVE_STDDEF_H=1
     -DHAVE_STDINT_H=1
     -DHAVE_STDLIB_H=1
-    -DHAVE_INTTYPES_H=1
+    -DHAVE_INTTYPES_H=0
     -DHAVE_LOCALE_H=1
     -DHAVE_LOCALECONV=1
     -DHAVE_LCONV_DECIMAL_POINT=1

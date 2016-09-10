@@ -33,10 +33,10 @@
  */
 tb_void_t tb_srandom(tb_size_t seed)
 {
-    tb_random_seed(tb_null, seed);
+    tb_random_seed(seed);
 }
 tb_long_t tb_random()
 {
-    return tb_random_value(tb_null);
+    return tb_random_value();
 }
 
