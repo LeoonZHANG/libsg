@@ -1,9 +1,3 @@
-/*
- * 请参考github等开源实现
- * http://blog.csdn.net/weiyumingwww/article/details/17554461
- * Linux不同发行版网络配置文件位置可能不一样，请使用统一可靠的方式读取，最好通过系统API。
- * Windows下则要注意API的版本要兼容不同版本Windows。
- */
 /**
  * net_card.h
  * Network card information reader for Linux / OSX / Windows.
