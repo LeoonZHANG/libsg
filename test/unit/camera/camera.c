@@ -27,18 +27,20 @@ static void etp_server_on_open(sg_etp_client_t *client)
         return;
 
     addr = sg_etp_server_get_client_addr(client);
-    printf("conn from %s\n", addr);
+    printf("new client from %s\nstart pipe thread\n", addr);
     free(addr);
 
     start_pipe_thread((void *)client);
 }
 
-static void etp_server_on_message(sg_etp_client_t *client, char *data, size_t size)
+static void etp_server_on_recv(sg_etp_client_t *client, char *data, size_t size)
 {
+    printf("recv %lu bytes data\n", size);
 }
 
 void etp_server_on_sent(sg_etp_client_t *client, int status/*0:OK*/, void *data, size_t len)
 {
+    printf("sent %lu bytes data\n", len);
 }
 
 static void etp_server_on_error(sg_etp_client_t *client, const char *msg)
@@ -83,10 +85,9 @@ static void pipe_thread_func(void *param)
     fprintf(stdout, "ffmpeg exit with %d\n", ret);
 
     /* loop: read -> send -> save */
+    fprintf(stdout, "start to read\n");
     while (1) {
-
         /* read from pipe */
-        fprintf(stdout, "start to read\n");
         read_size = read(fd[0], read_buf, READBUFSIZE);
         if (read_size <= 0) {
             fprintf(stderr, "pipe read error\n");
@@ -144,12 +145,15 @@ int main(int argc,char**argv)
     }
     snprintf(rtsp_url, RTSPURLLEN, "%s", argv[1]);
     etp_server_port = atoi(argv[2]);
+    printf("rtsp url:%s\netp server listen port:%d\n", rtsp_url, etp_server_port);
 
     /* open etp server to ack data */
     server = sg_etp_server_open("0.0.0.0", etp_server_port, 10,
-                                etp_server_on_open, etp_server_on_message,
+                                etp_server_on_open, etp_server_on_recv,
                                 etp_server_on_sent, etp_server_on_error, etp_server_on_close);
-    if (!server)
+    if (server)
+        printf("etp server open success\n");
+    else
         printf("etp server open error\n");
     sg_etp_server_run(server, 10);
     return 0;
