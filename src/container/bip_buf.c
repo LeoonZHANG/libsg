@@ -8,8 +8,8 @@ struct sg_bip_buf_real
     unsigned int a_start, a_end; /* region A */
     unsigned int b_end; /* region B */
     int b_inuse; /* is B inuse? */
-    unsigned char *data;
     size_t data_size;
+    unsigned char data[]; /* how about char *data ? */
 };
 
 /* find out if we should turn on region B
