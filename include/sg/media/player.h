@@ -40,6 +40,8 @@ int sg_player_load_buf(sg_player_t *);
  */
 int sg_player_put_buf(sg_player_t *, void *data, size_t size);
 
+int sg_player_put_buf2(sg_player_t *, void *data, size_t size);
+
 /**
  * @brief 获取内部bip buffer缓冲区的未播放数据大小
  * @return 0:OK, other:Error

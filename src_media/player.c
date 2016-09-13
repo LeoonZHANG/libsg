@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <sg/media/player.h>
+#include <sg/container/bip_buf.h>
+#include <sg/sys/thread.h>
 #include <vlc/vlc.h>
 #include <vlc/libvlc.h>
 #include <vlc/libvlc_media_player.h>
@@ -11,6 +13,9 @@ struct sg_player_real {
     libvlc_media_t          *media;
     libvlc_media_player_t   *player;
     int                     fd[2];
+    sg_bip_buf_t            *io_buf; /* play buffer */
+    sg_mutex_t              *io_buf_mtx;
+    sg_thread_t             *io_thread;
 };
 
 enum sg_player_load_type {
@@ -20,6 +25,30 @@ enum sg_player_load_type {
     SGPLAYERLOADTYPE_BUF      = 2,
     SGPLAYERLOADTYPE_MAX      = 2
 };
+
+static void io_thread_func(void *param)
+{
+    struct sg_player_real *pl = (struct sg_player_real *)param;
+    int buf_get_size = 0;
+    unsigned char buf_tmp[1024];
+
+    while (1) {
+        sg_mutex_lock(pl->io_buf_mtx);
+        buf_get_size = sg_bip_buf_used_size(pl->io_buf);
+        sg_mutex_unlock(pl->io_buf_mtx);
+        if (buf_get_size == 0) {
+            usleep(1);
+            continue;
+        }
+        if (buf_get_size > 1024)
+            buf_get_size = 1024;
+
+        sg_mutex_lock(pl->io_buf_mtx);
+        memcpy(buf_tmp, sg_bip_buf_get(pl->io_buf, buf_get_size), buf_get_size);
+        sg_mutex_unlock(pl->io_buf_mtx);
+        write(pl->fd[1], buf_tmp, buf_get_size);
+    }
+}
 
 /*
 ssize_t libvlc_media_read_cb(void *opaque, unsigned char *buf, size_t len)
@@ -69,6 +98,16 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
             goto error;
         }
     } else {
+        pl->io_buf = sg_bip_buf_create(102400);
+        if (!pl->io_buf) {
+            printf("play buffer create error\n");
+            goto error;
+        }
+        pl->io_buf_mtx = sg_mutex_create();
+        if (!pl->io_buf_mtx) {
+            printf("play buffer mutex create error\n");
+            goto error;
+        }
         if (pipe(pl->fd) != 0) {
             printf("pipe create error\n");
             goto error;
@@ -79,6 +118,7 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
             goto error;
         }
         printf("play load buf success, fd[0]:%d, fd[1]:%d\n", pl->fd[0], pl->fd[1]);
+        pl->io_thread = sg_thread_alloc(io_thread_func, (void *)pl);
     }
 
     pl->player = libvlc_media_player_new_from_media(pl->media);
@@ -97,6 +137,10 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
         libvlc_release(pl->inst);
     if (pl->media)
         libvlc_media_release(pl->media);
+    if (pl->io_buf)
+        sg_bip_buf_destroy(pl->io_buf);
+    if (pl->io_buf_mtx)
+        sg_mutex_destroy(pl->io_buf_mtx);
     exit(-1);
     return -1;
 }
@@ -151,13 +195,24 @@ int sg_player_put_buf(sg_player_t *p, void *data, size_t size)
     return 0;
 }
 
+int sg_player_put_buf2(sg_player_t *p, void *data, size_t size)
+{
+    struct sg_player_real *pl = (struct sg_player_real *)p;
+
+    sg_mutex_lock(pl->io_buf_mtx);
+    sg_bip_buf_put(pl->io_buf, data, size);
+    sg_mutex_unlock(pl->io_buf_mtx);
+
+    return 0;
+}
+
 int sg_player_play(sg_player_t *p)
 {
     struct sg_player_real *pl = (struct sg_player_real *)p;
     int ret;
 
     ret = libvlc_media_player_play(pl->player);
-    printf("---------vlc player play %s\n", ret == 0 ? "success" : "error");
+    printf("vlc player play %s\n", ret == 0 ? "success" : "error");
     return ret;
 }
 
@@ -207,5 +262,9 @@ void sg_player_destroy(sg_player_t *p)
         close(pl->fd[0]);
     if (pl->fd[1])
         close(pl->fd[1]);
+    if (pl->io_buf)
+        sg_bip_buf_destroy(pl->io_buf);
+    if (pl->io_buf_mtx)
+        sg_mutex_destroy(pl->io_buf_mtx);
     free(pl);
 }

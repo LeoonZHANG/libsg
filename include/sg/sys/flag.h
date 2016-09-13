@@ -24,7 +24,7 @@ void sg_flag_write(sg_flag_t *f, int value);
 
 /* When any thread is trying flag_read / flag_write to a flag,
  * DO NOT call flag_destroy with it. */
-void sg_flag_destroy(sg_flag_t **f);
+void sg_flag_destroy(sg_flag_t *f);
 
 #ifdef __cplusplus
 }

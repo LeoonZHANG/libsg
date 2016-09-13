@@ -7,35 +7,21 @@
 #ifndef LIBSG_THREAD_H
 #define LIBSG_THREAD_H
 
-#include "os.h"
-
-#if defined(OS_WIN)
-# include <Windows.h>
-#else
-# include <pthread.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-typedef void (sg_thread_routine)(void *);
+typedef void (sg_thread_routine_func_t)(void *);
 
-struct sg_thread {
-    void                *arg;
-#if defined(OS_WIN)
-    HANDLE              handle;
-#else
-    pthread_t           handle;
-#endif
-    sg_thread_routine   *routine;
-};
+typedef struct sg_thread_real sg_thread_t;
 
 /* Start a thread and run it. */
-void sg_thread_init(struct sg_thread *self, sg_thread_routine *routine, void *arg);
+sg_thread_t *sg_thread_alloc(sg_thread_routine_func_t *routine, void *arg);
 
 /* Wait a thread to exit. */
-void sg_thread_join(struct sg_thread *self);
+void sg_thread_join(sg_thread_t *self);
+
+void sg_thread_free(sg_thread_t *self);
 
 #ifdef __cplusplus
 }

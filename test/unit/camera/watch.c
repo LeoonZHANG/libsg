@@ -21,7 +21,7 @@ static void etp_on_open(sg_etp_t *client)
 
 static void etp_on_message(sg_etp_t *client, char *data, size_t size)
 {
-	int ret = sg_player_put_buf(player, data, size);
+	int ret = sg_player_put_buf2(player, data, size);
 	if (ret != 0)
 		printf("player put buffer error\n");
 

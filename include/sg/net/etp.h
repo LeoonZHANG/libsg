@@ -16,7 +16,7 @@ extern "C" {
 typedef struct sg_etp_real sg_etp_t;
 
 typedef void (*sg_etp_on_open_func_t)(sg_etp_t *);
-typedef void (*sg_etp_on_data_func_t)(sg_etp_t *, char *data, size_t size);
+typedef void (*sg_etp_on_data_func_t)(sg_etp_t *, char *data, size_t size); /* 如果回调中操作阻塞时间长,是否影响其他操作以及下一次本回调执行 */
 typedef void (*sg_etp_on_sent_func_t)(sg_etp_t *, int status/*0:OK*/, void *data, size_t len);
 typedef void (*sg_etp_on_close_func_t)(sg_etp_t *, int code, const char *reason);
 typedef void (*sg_etp_on_error_func_t)(sg_etp_t *, const char *msg);

@@ -7,37 +7,23 @@
 #ifndef LIBSG_MUTEX_H
 #define LIBSG_MUTEX_H
 
-#include "os.h"
-
-#ifdef OS_WIN
-# include <Windows.h>
-#else
-# include <pthread.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-struct sg_mutex {
-#ifdef OS_WIN
-    CRITICAL_SECTION mutex;
-#else
-    pthread_mutex_t mutex;
-#endif
-};
+typedef struct sg_mutex_real sg_mutex_t;
 
 /*  create mutex */
-void sg_mutex_create(struct sg_mutex *self);
+sg_mutex_t *sg_mutex_create(void);
 
 /*  lock the mutex */
-void sg_mutex_lock(struct sg_mutex *self);
+void sg_mutex_lock(sg_mutex_t *self);
 
 /*  unlock the mutex */
-void sg_mutex_unlock(struct sg_mutex *self);
+void sg_mutex_unlock(sg_mutex_t *self);
 
 /*  destroy the mutex */
-void sg_mutex_destroy(struct sg_mutex *self);
+void sg_mutex_destroy(sg_mutex_t *self);
 
 #ifdef __cplusplus
 }

@@ -1,1 +1,1 @@
-gcc watch.c ../../../src/net/etp.c ../../../src_media/player.c ../../../3rdparty/kcp/ikcp.c  -I../../../3rdparty/kcp/ -I../../../include  -lpthread -lcurl -luv -lvlc -o watch
+gcc watch.c ../../../src/net/etp.c ../../../src/container/bip_buf.c ../../../src/sys/thread.c ../../../src/sys/mutex.c ../../../src_media/player.c ../../../3rdparty/kcp/ikcp.c  -I../../../3rdparty/kcp/ -I../../../include  -lpthread -lcurl -luv -lvlc -o watch

@@ -13,7 +13,7 @@
 
 struct flag_body {
     int             value;
-    struct sg_mutex mutex;
+    sg_mutex_t      *mutex;
 };
 
 
@@ -26,7 +26,7 @@ sg_flag_t *sg_flag_create(void)
         return NULL;
 
     f->value = FLAG_INIT_VALUE;
-    sg_mutex_create(&(f->mutex));
+    f->mutex = sg_mutex_create();
 
     return f;
 }
@@ -37,9 +37,9 @@ int sg_flag_read(sg_flag_t *f)
 
     assert(f);
 
-    sg_mutex_lock(&(f->mutex));
+    sg_mutex_lock(f->mutex);
     value = f->value;
-    sg_mutex_unlock(&(f->mutex));
+    sg_mutex_unlock(f->mutex);
 
     return value;
 }
@@ -48,18 +48,15 @@ void sg_flag_write(sg_flag_t *f, int value)
 {
     assert(f);
 
-    sg_mutex_lock(&(f->mutex));
+    sg_mutex_lock(f->mutex);
     f->value = value;
-    sg_mutex_unlock(&(f->mutex));
+    sg_mutex_unlock(f->mutex);
 }
 
-void sg_flag_destroy(sg_flag_t **f)
+void sg_flag_destroy(sg_flag_t *f)
 {
     assert(f);
-    if (!(*f))
-        return;
 
-    sg_mutex_destroy(&((*f)->mutex));
-    free(*f);
-    *f = NULL;
+    sg_mutex_destroy(f->mutex);
+    free(f);
 }
