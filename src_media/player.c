@@ -2,6 +2,7 @@
 #include <sg/media/player.h>
 #include <sg/container/bip_buf.h>
 #include <sg/sys/thread.h>
+#include <sg/sys/mutex.h>
 #include <vlc/vlc.h>
 #include <vlc/libvlc.h>
 #include <vlc/libvlc_media_player.h>

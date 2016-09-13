@@ -18,7 +18,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct sg_bip_buf sg_bip_buf_t;
+typedef struct sg_bip_buf_real sg_bip_buf_t;
 
 /**
  * Create a new bip buffer.
