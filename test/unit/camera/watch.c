@@ -28,21 +28,22 @@ static void etp_on_message(sg_etp_t *client, char *data, size_t size)
     printf("recv %lu data\n", size);
 
     /* save video data */
-    if (!fp_save)
-        fp_save = fopen("video.mp4", "wb");
+    if (!fp_save && strlen(save_path) > 0)
+        fp_save = fopen(save_path, "wb");
     if (fp_save)
         fwrite(data, size, 1, fp_save);
 }
 
 void etp_on_sent(sg_etp_t *client, int status/*0:OK*/, void *data, size_t len)
 {
+    printf("client on sent event, status %d, len %d\n", status, len);
 }
 
 static void etp_on_close(sg_etp_t *client, int code, const char *reason)
 {
     sg_player_stop(player);
 	sg_player_destroy(player);
-    printf("conn closed\n");
+    printf("connection closed\n");
 }
 
 int main(int argc, char const *argv[])

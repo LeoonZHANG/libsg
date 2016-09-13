@@ -1,6 +1,6 @@
 /**
  * usage example:
- * ./camera rtsp_url etp_server_port
+ * ./camera file/rtsp your_filename/your_rtsp_url your_etp_server_port
  */
 
 #include <stdio.h>
@@ -11,11 +11,22 @@
 
 #define READBUFSIZE 2048
 #define RTSPURLLEN  1024
+#define LOCALFILENAMELEN  1024
 
+enum mode {
+    MODE_FILE = 0,
+    MODE_RTSP = 1
+};
+
+static char local_filename[LOCALFILENAMELEN] = {0};
 static char rtsp_url[RTSPURLLEN] = {0};
 static int  fd[2] = {0, 0};
+void start_file_thread(void *param);
+static void file_thread_func(void *);
 void start_pipe_thread(void *param);
 static void pipe_thread_func(void *);
+enum mode mode = MODE_FILE;
+
 
 static void etp_server_on_open(sg_etp_client_t *client)
 {
@@ -27,10 +38,13 @@ static void etp_server_on_open(sg_etp_client_t *client)
         return;
 
     addr = sg_etp_server_get_client_addr(client);
-    printf("new client from %s\nstart pipe thread\n", addr);
+    printf("new client from %s\n", addr);
     free(addr);
 
-    start_pipe_thread((void *)client);
+    if (mode == MODE_FILE)
+        start_file_thread((void *)client);
+    else
+        start_pipe_thread((void *)client);
 }
 
 static void etp_server_on_recv(sg_etp_client_t *client, char *data, size_t size)
@@ -54,6 +68,61 @@ static void etp_server_on_close(sg_etp_client_t *client, int code, const char *r
     printf("etp server closed\n");
 }
 
+static void file_thread_func(void *param)
+{
+    char read_buf[READBUFSIZE] = {0};
+    ssize_t read_size;
+    int ret;
+    FILE *fp_read;
+    sg_etp_client_t *client = (sg_etp_client_t *)param;
+    char cmd[1024];
+
+    printf("start file thread\n");
+
+    /* open read file */
+    fp_read = fopen(local_filename, "rb");
+    if (!fp_read) {
+        fprintf(stderr, "read file %s open error\n", local_filename);
+        goto exit;
+    }
+
+    /* loop: read -> send */
+    fprintf(stdout, "start to read\n");
+    while (1) {
+        /* read from file */
+        read_size = fread(read_buf, 1, READBUFSIZE, fp_read);
+        if (read_size <= 0) {
+            fprintf(stderr, "file read error\n");
+            break;
+        }
+        fprintf(stdout, "read size %lu", read_size);
+
+        /* send to client */
+        if (client)
+            sg_etp_server_send(client, read_buf, read_size);
+        usleep(1);
+    }
+
+    exit:
+    printf("file thread exit\n");
+    fclose(fp_read);
+}
+
+void start_file_thread(void *param)
+{
+    int ret;
+    pthread_t id;
+
+    /* open file thread to read multimedia data */
+    ret = pthread_create(&id, NULL, file_thread_func, param);
+    if(ret == 0) {
+        printf("create file thread seccess\n");
+    } else {
+        printf("create file thread error\n");
+        exit(-1);
+    }
+}
+
 static void pipe_thread_func(void *param)
 {
     char read_buf[READBUFSIZE] = {0};
@@ -63,6 +132,8 @@ static void pipe_thread_func(void *param)
     FILE *fp_save;
     sg_etp_client_t *client = (sg_etp_client_t *)param;
     char cmd[1024];
+
+    printf("start pipe thread\n");
 
     /* open save file */
     fp_save = fopen("tmp.ts", "wb");
@@ -133,19 +204,34 @@ void start_pipe_thread(void *param)
     }
 }
 
-int main(int argc,char**argv)
+int main(int argc, char**argv)
 {
     int etp_server_port = 0;
     sg_etp_server_t *server;
 
     /* parse param */
-    if (argc < 3) {
-        printf("需要3个参数, 实际输入输入%d个参数\n", argc);
+    if (argc < 4) {
+        printf("需要4个参数, 实际输入输入%d个参数\n", argc);
         return -1;
     }
-    snprintf(rtsp_url, RTSPURLLEN, "%s", argv[1]);
-    etp_server_port = atoi(argv[2]);
-    printf("rtsp url:%s\netp server listen port:%d\n", rtsp_url, etp_server_port);
+    if (strstr(argv[1], "file"))
+        mode = MODE_FILE;
+    else if (strstr(argv[1], "rtsp"))
+        mode = MODE_RTSP;
+    else {
+        printf("unknown read mode:%s\n", argv[1]);
+        exit(-1);
+    }
+    if (mode == MODE_FILE)
+        snprintf(local_filename, LOCALFILENAMELEN, "%s", argv[2]);
+    else
+        snprintf(rtsp_url, RTSPURLLEN, "%s", argv[2]);
+    etp_server_port = atoi(argv[3]);
+    if (mode == MODE_FILE)
+        printf("read file:%s\n", local_filename);
+    else
+        printf("rtsp url:%s\n", rtsp_url);
+    printf("etp server listen port:%d\n", etp_server_port);
 
     /* open etp server to ack data */
     server = sg_etp_server_open("0.0.0.0", etp_server_port, 10,
