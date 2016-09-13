@@ -18,7 +18,8 @@ enum
 typedef struct
 {
     int payload;
-    int len;
+    size_t offset;
+    size_t len;
     char data[1024];
 }ftp_t;
 
@@ -31,6 +32,8 @@ static void s_kcp_on_open(sg_etp_t *client)
 {
     ftp_t output;
 
+    memset(&output, 0, sizeof(ftp_t));
+
     printf("start to recv file %s\n", s_path);
     printf("start @ %u\n", now = sg_etp_now(client));
 
@@ -38,7 +41,7 @@ static void s_kcp_on_open(sg_etp_t *client)
     strncpy(output.data, s_path, sizeof(output.data));
     output.len = strlen(output.data) + 1;
 
-    sg_etp_send(client, &output, output.len + 2*sizeof(int));
+    sg_etp_send(client, &output, sizeof(ftp_t));
 }
 
 static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
@@ -56,16 +59,18 @@ static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
                 printf("open %s failed\n", s_path);
                 return;
             }
+            //printf("%d ", input->offset);
+            fseek(fp, input->offset, SEEK_SET);
             fwrite(input->data, 1, input->len, fp);
             fclose(fp);
             data_size += input->len;
             break;
         case PT_BYE:
-            printf("transfer finished\n");
+            printf("transmit finished\n");
             printf("end @ %u, used %u ms, speed: %ld kB/s\n", sg_etp_now(client), sg_etp_now(client) - now, data_size / (sg_etp_now(client) - now));
             output.payload = PT_BYE;
             output.len = 0;
-            sg_etp_send(client, &output, output.len + 2*sizeof(int));
+            sg_etp_send(client, &output, sizeof(ftp_t));
 
             sg_etp_close(client);
             break;

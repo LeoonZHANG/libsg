@@ -50,29 +50,38 @@ void sg_etp_set_max_send_speed(sg_etp_t * client, size_t kbps);
 \*===========================================================================*/
 struct sg_etp_real
 {
-    IUINT32             conv;           /*< conversation id, for kcp */
+    IUINT32                     conv;               /*< conversation id, for kcp */
 
-    uv_loop_t         * loop;           /*< uv loop handler, for kcp running in */
-    uv_loop_t           loop_hdl;       /*< uv loop handler, for kcp running in */
-    uv_udp_t          * udp;            /*< libuv udp handler, for kcp bearing protocol */
-    uv_udp_t            udp_hdl;        /*< libuv udp handler, for kcp bearing protocol */
+    uv_loop_t *                 loop;               /*< uv loop handler, for kcp running in */
+    uv_loop_t                   loop_hdl;           /*< uv loop handler, for kcp running in */
+    uv_udp_t *                  udp;                /*< libuv udp handler, for kcp bearing protocol */
+    uv_udp_t                    udp_hdl;            /*< libuv udp handler, for kcp bearing protocol */
 
-    uv_timer_t          timer;          /*< libuv timer handler, for update kcp */
+    uv_idle_t                   idle;
 
-    struct sockaddr     addr;           /*< address of the server */
+    uv_timer_t                  timer;              /*< libuv timer handler, for update kcp */
 
-    ikcpcb            * kcp;            /*< kcp pointer */
-    IUINT32             kcp_update_time;    /*< next update time, for kcp, if =0 will updated in the next time period */
-    uint32_t            interval;       /*< interval of the libuv timer, for updating kcp_update() */
+    struct sockaddr             addr;               /*< address of the server */
 
-    bool_t                to_close;       /*< flag for delay close */
+    ikcpcb *                    kcp;                /*< kcp pointer */
+    IUINT32                     kcp_update_time;    /*< next update time, for kcp, if =0 will updated in the next time period */
+    uint32_t                    interval;           /*< interval of the libuv timer, for updating kcp_update() */
 
-    sg_etp_on_open_func_t       on_open;        /*< callback, */
-    sg_etp_on_data_func_t       on_data;        /*< callback, */
-    sg_etp_on_sent_func_t       on_sent;
-    sg_etp_on_close_func_t      on_close;       /*< callback, */
+    IUINT32                     timeout;            /*< session timeout */
+    IUINT32                     recv_data_time;     /*< received data timing */
 
-    void              * data;
+    char *                      recv_buf;
+    size_t                      recv_buf_len;
+
+    bool_t                      to_close;           /*< flag for delay close */
+
+    sg_etp_on_open_func_t       on_open;            /*< callback, */
+    sg_etp_on_data_func_t       on_data;            /*< callback, */
+    sg_etp_on_sent_func_t       on_sent;            /*< callback, */
+    sg_etp_on_close_func_t      on_close;           /*< callback, */
+
+    void *                      data;
+
 
     /* 统计速率相关,采用滑窗试计算 */
     uint64_t            last_time; /* 上一次统计时间 */
@@ -168,8 +177,6 @@ sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
             on_data,
             on_sent,
             on_close);
-
-        SG_CALLBACK(client->on_open, client);
 
         LOG_I("open client %lu", conv);
 
@@ -296,6 +303,8 @@ void sg_etp_set_max_send_speed(sg_etp_t * client, size_t kbps)
  * kcp session
  *****************************************************************************/
 
+#define SG_ETP_SESSION_TIMEOUT (3 * 60 * 1000)
+
 typedef struct send_req_s
 {
     uv_udp_send_t   req;        /*< libuv send handler, keep this field the first one */
@@ -306,18 +315,21 @@ typedef struct send_req_s
 
 /* TODO: merge c/s */
 /* for libuv uv_queue_work, to process the received data via callback. */
-typedef struct recv_data_s
+typedef struct recv_req_s
 {
     uv_work_t   req;        /*< libuv work handler, should keep this field the 1st one */
     void *      session;    /*< */
     size_t      data_len;   /*< */
     char        data[1];    /* keep this field the last one for dynamic length */
-}recv_data_t;
+}recv_req_t;
 
 static void on_uv_timer_cb(uv_timer_t * handle);
+#if 0
 static void recv_data_check(sg_etp_session_t * session);
 static void recv_data_proc(uv_work_t * req);
 static void recv_data_proc_cleanup(uv_work_t *req, int status);
+#endif
+static void on_uv_idle_cb(uv_idle_t * handle);
 static void on_udp_send_done(uv_udp_send_t* req, int status);
 static int on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *user);
 
@@ -328,7 +340,7 @@ static void on_uv_timer_cb(uv_timer_t * handle)
     sg_etp_session_t * session = handle->data;
     IUINT32 now = 0;
 
-    /*LOG_D("update %d\n", client->conv);*/
+    /*LOG_D("update %d", client->conv);*/
 
     /* update ikcp */
     now = (IUINT32)uv_now(session->loop);
@@ -337,34 +349,50 @@ static void on_uv_timer_cb(uv_timer_t * handle)
     {
         ikcp_update(session->kcp, now);
         session->kcp_update_time = ikcp_check(session->kcp, now);
+
+        LOG_D("update %lu @ %lu, timeout: %lu", session->conv, session->kcp_update_time, session->recv_data_time);
+
+        /* check received data and add to work queue */
+        //recv_data_check(session);
+        if (ikcp_peeksize(session->kcp) > 0)
+        {
+            uv_idle_start(&(session->idle), on_uv_idle_cb);
+        }
     }
 
-    recv_data_check(session);
+    /* check if session is timeout */
+    if (session->recv_data_time < now)
+    {
+        session->to_close = true; /* mark to close this session. */
+        ikcp_flush(session->kcp);
+        LOG_I("session %lu timeout, will be closed", session->conv);
+    }
 
+    /* check if should close this session */
     if (session->to_close)
     {
         sg_etp_session_close(session);
     }
 }
 
-
-/* @TODO: merge c/s */
+#if 0
+/*  */
 static void recv_data_check(sg_etp_session_t * session)
 {
     int len = 0;
-    recv_data_t * req = NULL;
+    recv_req_t * req = NULL;
 
     while ((len = ikcp_peeksize(session->kcp)) > 0)
     /*if (len > 0)*/
     {
-        req = malloc(sizeof(recv_data_t) + len);
+        req = malloc(sizeof(recv_req_t) + len);
         if (NULL != req)
         {
             len = ikcp_recv(session->kcp, req->data, len);
             if (len >= 0)
             {
                 req->data_len = len;
-                req->session = session;
+                req->session  = session;
                 uv_queue_work(session->loop, &req->req, recv_data_proc, recv_data_proc_cleanup);
             }
             else
@@ -380,10 +408,10 @@ static void recv_data_check(sg_etp_session_t * session)
     }
 }
 
-/* @TODO: merge c/s */
+/*  */
 static void recv_data_proc(uv_work_t * req)
 {
-    recv_data_t * recv = (recv_data_t *)req;
+    recv_req_t * recv = (recv_req_t *)req;
     sg_etp_session_t * session = (sg_etp_session_t *)recv->session;
 
     SG_CALLBACK(session->on_data, session, recv->data, recv->data_len);
@@ -393,6 +421,32 @@ static void recv_data_proc(uv_work_t * req)
 static void recv_data_proc_cleanup(uv_work_t *req, int status)
 {
     free(req);
+}
+#endif
+
+static void on_uv_idle_cb(uv_idle_t * handle)
+{
+    sg_etp_session_t * session = (sg_etp_session_t *)handle->data;
+    int len = 0;
+
+    len = ikcp_peeksize(session->kcp);
+    if (len > 0)
+    {
+        if (len > session->recv_buf_len)
+        {
+            session->recv_buf = realloc(session->recv_buf, len);
+            session->recv_buf_len = len;
+        }
+
+        SG_ASSERT(NULL != session->recv_buf, "alloc recv buf failed");
+        
+        len = ikcp_recv(session->kcp, session->recv_buf, len);
+        SG_CALLBACK(session->on_data, session, session->recv_buf, len);
+    }
+    else
+    {
+        uv_idle_stop(&(session->idle));
+    }
 }
 
 /* for libuv udp callback */
@@ -505,6 +559,9 @@ sg_etp_session_t * sg_etp_session_open(IUINT32 conv, const struct sockaddr * add
 
         session->kcp->output = on_kcp_output;
 
+        session->timeout        = SG_ETP_SESSION_TIMEOUT;
+        session->recv_data_time = uv_now(session->loop) + session->timeout;
+
         return session;
     } while (0);
 
@@ -534,11 +591,16 @@ int sg_etp_session_set_callback(sg_etp_session_t * session,
 
 int sg_etp_session_close(sg_etp_session_t * session)
 {
+    LOG_D("ikcp_peeksize: %d, ikcp_waitsnd: %d",
+        ikcp_peeksize(session->kcp), ikcp_waitsnd(session->kcp));
+
     if (ikcp_waitsnd(session->kcp) > 0 || ikcp_peeksize(session->kcp) > 0)
     {
         session->to_close = true; /* mark for close later */
         return OK;
     }
+
+    LOG_D("close session");
 
     ikcp_release(session->kcp);
 
@@ -555,6 +617,11 @@ int sg_etp_session_close(sg_etp_session_t * session)
     }
 
     SG_CALLBACK(session->on_close, session, OK, "ok");
+
+    if (NULL != session->recv_buf)
+    {
+        free(session->recv_buf);
+    }
 
     free(session);
 
@@ -584,7 +651,7 @@ int sg_etp_session_start(sg_etp_session_t * session, int interval_ms, uv_udp_t *
         session->udp = udp;
     }
 
-    ret = ikcp_nodelay(session->kcp, 1, interval_ms, 2, 1);
+    ret = ikcp_nodelay(session->kcp, 1, interval_ms, 2, 0);
     SG_ASSERT_RET(ret >= 0, "ikcp nodelay failed", ERROR);
 
     /* start a timer for kcp update and receiving */
@@ -593,6 +660,11 @@ int sg_etp_session_start(sg_etp_session_t * session, int interval_ms, uv_udp_t *
     session->timer.data = session; /* link client pointer to timer */
     ret = uv_timer_start(&(session->timer), on_uv_timer_cb, session->interval, session->interval);
     SG_ASSERT_RET(ret >= 0, "start timer failed", ERROR);
+
+    uv_idle_init(session->loop, &(session->idle));
+    session->idle.data = session;
+
+    SG_CALLBACK(session->on_open, session);
 
     return OK;
 }
@@ -605,6 +677,10 @@ int sg_etp_session_send(sg_etp_session_t * session, const void * data, size_t si
 
 int sg_etp_session_recv(sg_etp_session_t * session, void * data, size_t size)
 {
+    uint64_t now = uv_now(session->loop);
+
+    session->recv_data_time = now + session->timeout;
+
     session->kcp_update_time = 0; /* clear to update kcp in next update period */
     return ikcp_input(session->kcp, data, (long)size);
 }
@@ -630,7 +706,10 @@ IUINT32 sg_etp_session_get_conv(sg_etp_session_t * session)
     return session->conv;
 }
 
-
+void sg_etp_session_set_timeout(sg_etp_session_t * session, uint64_t timeout)
+{
+    session->timeout = timeout;
+}
 
 
 
