@@ -23,8 +23,9 @@ static char rtsp_url[RTSPURLLEN] = {0};
 static int  fd[2] = {0, 0};
 void start_file_thread(void *param);
 static void file_thread_func(void *);
-void start_pipe_thread(void *param);
+void start_pipe_ffmpeg_thread(void *param);
 static void pipe_thread_func(void *);
+static void ffmpeg_thread_func(void *);
 enum mode mode = MODE_FILE;
 
 
@@ -44,7 +45,7 @@ static void etp_server_on_open(sg_etp_client_t *client)
     if (mode == MODE_FILE)
         start_file_thread((void *)client);
     else
-        start_pipe_thread((void *)client);
+        start_pipe_ffmpeg_thread((void *)client);
 }
 
 static void etp_server_on_recv(sg_etp_client_t *client, char *data, size_t size)
@@ -92,10 +93,10 @@ static void file_thread_func(void *param)
         /* read from file */
         read_size = fread(read_buf, 1, READBUFSIZE, fp_read);
         if (read_size <= 0) {
-            fprintf(stderr, "file read error\n");
+            fprintf(stderr, "file read end\n");
             break;
         }
-        fprintf(stdout, "read size %lu", read_size);
+        fprintf(stdout, "local file read size %lu", read_size);
 
         /* send to client */
         if (client)
@@ -130,8 +131,8 @@ static void pipe_thread_func(void *param)
     size_t write_all, write_once;
     int ret;
     FILE *fp_save;
-    sg_etp_client_t *client = (sg_etp_client_t *)param;
     char cmd[1024];
+    sg_etp_client_t *client = (sg_etp_client_t *)param;
 
     printf("start pipe thread\n");
 
@@ -142,18 +143,12 @@ static void pipe_thread_func(void *param)
         goto exit;
     }
 
-    /* open pipe to ffmpeg */
+    /* open pipe for ffmpeg */
     if (pipe(fd) != 0) {
         fprintf(stderr, "pipe open error\n");
         exit(-1);
     }
     fprintf(stdout, "pipe open success, fd[0]:%d, fd[1]:%d\n", fd[0], fd[1]);
-    snprintf(cmd, 1024,
-             "ffmpeg -y -rtsp_transport tcp -i %s -vcodec copy -acodec copy -f mpegts pipe:%d",
-             rtsp_url, fd[1]);
-    fprintf(stdout, "start to run ffmpeg, cmd is:%s\n", cmd);
-    ret = system(cmd);
-    fprintf(stdout, "ffmpeg exit with %d\n", ret);
 
     /* loop: read -> send -> save */
     fprintf(stdout, "start to read\n");
@@ -164,9 +159,11 @@ static void pipe_thread_func(void *param)
             fprintf(stderr, "pipe read error\n");
             break;
         }
-        fprintf(stdout, "read size %lu", read_size);
+        fprintf(stdout, "read size %lu\n", read_size);
 
         /* send to client */
+        //char *tmp = (char *)malloc(read_size);
+        //memcpy(tmp, read_buf, read_size);
         if (client)
             sg_etp_server_send(client, read_buf, read_size);
 
@@ -189,17 +186,40 @@ static void pipe_thread_func(void *param)
         close(fd[1]);
 }
 
-void start_pipe_thread(void *param)
+static void ffmpeg_thread_func(void *param)
 {
     int ret;
-    pthread_t id;
+    char cmd[1024];
 
-    /* open pipe thread to fetch multimedia data */
-    ret = pthread_create(&id, NULL, pipe_thread_func, param);
+    printf("start ffmpeg thread\n");
+    snprintf(cmd, 1024,
+             "ffmpeg -y -rtsp_transport tcp -i %s -vcodec copy -acodec copy -f mpegts pipe:%d",
+             rtsp_url, fd[1]);
+    fprintf(stdout, "start to run ffmpeg, cmd is:%s\n", cmd);
+    ret = system(cmd);
+    fprintf(stdout, "ffmpeg exit with %d\n", ret);
+}
+
+void start_pipe_ffmpeg_thread(void *param)
+{
+    int ret;
+    pthread_t id_pipe, id_ffmpeg;
+
+    /* open pipe thread to read pipe data */
+    ret = pthread_create(&id_pipe, NULL, pipe_thread_func, param);
     if(ret == 0) {
         printf("create pipe thread seccess\n");
     } else {
         printf("create pipe thread error\n");
+        exit(-1);
+    }
+
+    /* open ffmpeg thread to write multimedia data to pipe */
+    ret = pthread_create(&id_ffmpeg, NULL, ffmpeg_thread_func, NULL);
+    if(ret == 0) {
+        printf("create ffmpeg thread seccess\n");
+    } else {
+        printf("create ffmpeg thread error\n");
         exit(-1);
     }
 }
