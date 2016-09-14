@@ -42,7 +42,8 @@ https://github.com/metalwood/libsg/archive/master.zip
 
 ## Build & install
 
-Before building, make sure CMake and C compiler(gcc/clang/msvc) has been installed correctly.
+Before building, make sure CMake / XMake and C compiler(gcc/clang/msvc) has been installed correctly.
+Make sure the source path does not have space.
 
 Linux / MacOS
 
