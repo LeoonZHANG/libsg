@@ -20,5 +20,4 @@ before_script:
   - cd build
   - cmake ..
 script:
-  - make -j4
-  - ctest .
+  - make && ctest .

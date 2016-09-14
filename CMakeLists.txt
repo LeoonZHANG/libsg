@@ -146,7 +146,7 @@ add_library(${target_static} STATIC ${src_lib})
 add_library(${target_shared} SHARED ${src_lib})
 
 set_target_properties(${target_static} PROPERTIES
-    OUTPUT_NAME ${lib_name_static})
+    OUTPUT_NAME ${lib_name_static}_singular)
 set_target_properties(${target_shared} PROPERTIES
     OUTPUT_NAME ${lib_name}
     SOVERSION ${major_version} # 对于 *nix 类系统，major 版本号识别 API 兼容性
@@ -154,38 +154,60 @@ set_target_properties(${target_shared} PROPERTIES
     LINK_FLAGS ${link_flags}
     )
 
-## Windows 下直接连接合并编译的库文件
-set(common_deps tbox libmpir openssl)
+set(common_deps tbox libmpir openssl pcre)
 if(WIN32)
-    set(libxml-static-file ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib)
-    set(link_libs ${link_libs}
+    set(link_archives_release
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/${CMAKE_VS_PLATFORM_NAME}/Release/mpir.lib
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/tbox.lib
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.lib
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libssl.lib
-        libiconv-static
-        pcre
-        ${libxml-static-file}
-        libc99-snprintf-static
-        zlibstatic
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/libiconv/Release/libiconv.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre/Release/pcre.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/c99-snprintf/Release/libc99-snprintf.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib/Release/zlibstatic.lib
+        )
+    set(link_archives_debug
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/${CMAKE_VS_PLATFORM_NAME}/Release/mpir.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/tbox.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libssl.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/libiconv/Debug/libiconv.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre/Debug/pcred.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/win32/bin.msvc/libxml2_a.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/c99-snprintf/Debug/libc99-snprintf.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib/Debug/zlibstaticd.lib
+        )
+    foreach(archive ${link_archives_release})
+        set(link_libs ${link_libs} optimized ${archive})
+    endforeach()
+    foreach(archive ${link_archives_debug})
+        set(link_libs ${link_libs} debug ${archive})
+    endforeach()
+    set(link_libs ${link_libs}
         Rasapi32.lib
         ws2_32.lib
         Crypt32.lib
         )
-    add_dependencies(${target_shared} libxml2 ${common_deps})
-    add_dependencies(${target_static} libxml2 ${common_deps})
+    add_dependencies(${target_shared} libxml2 zlibstatic ${common_deps})
+    add_dependencies(${target_static} libxml2 zlibstatic ${common_deps})
 elseif(APPLE)
-    set(link_libs ${link_libs}
-        iconv dl xml2 curl pthread pcre zlibstatic 
+    set(link_archives
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mpir/lib/libmpir.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre/libpcre.a
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/zlib/libz.a
         )
-    add_dependencies(${target_shared} openssl dablooms ${common_deps})
-    add_dependencies(${target_static} openssl dablooms ${common_deps})
-elseif(UNIX)
     set(link_libs ${link_libs}
+        ${link_archives}
+        iconv dl xml2 curl pthread
+        )
+    add_dependencies(${target_shared} openssl dablooms zlibstatic ${common_deps})
+    add_dependencies(${target_static} openssl dablooms zlibstatic ${common_deps})
+elseif(UNIX)
+    set(link_archives
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libxml2/lib/libxml2.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libuuid/lib/libuuid.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libiconv-1.14/local/lib/libiconv.a
@@ -193,7 +215,10 @@ elseif(UNIX)
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/libcrypto.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/dablooms/build/libdablooms.a
         ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tbox/build/libtbox.a
-        pcre
+        ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/pcre/libpcre.a
+        )
+    set(link_libs ${link_libs}
+        ${link_archives}
         pthread
         rt # we would better put 'rt', 'dl' to rear, it's sensitive for gcc
         dl
@@ -203,10 +228,32 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${target_shared} ${link_libs})
-## 把静态库也链接一下，这样会生成独立的静态库文件，方便使用
 target_link_libraries(${target_static} ${link_libs})
 
-enable_testing()
+## 把静态库合并，这样会生成独立的静态库文件，方便使用
+if(WIN32)
+    add_custom_target(combined_debug ALL
+        COMMAND lib.exe /OUT:${CMAKE_CURRENT_BINARY_DIR}/Debug/${lib_name_static}.lib ${CMAKE_CURRENT_BINARY_DIR}/Debug/${lib_name_static}_singular.lib ${link_archives_debug}
+        DEPENDS ${target_static}
+        )
+    add_custom_target(combined_release ALL
+        COMMAND lib.exe /OUT:${CMAKE_CURRENT_BINARY_DIR}/Release/${lib_name_static}.lib ${CMAKE_CURRENT_BINARY_DIR}/Release/${lib_name_static}_singular.lib ${link_archives_release}
+        DEPENDS ${target_static}
+        )
+elseif(APPLE)
+    add_custom_target(combined ALL
+        COMMAND libtool -static -o libsg.a ${CMAKE_CURRENT_BINARY_DIR}/lib${lib_name_static}_singular.a ${link_archives}
+        DEPENDS ${target_static}
+        )
+else()
+    add_custom_target(combined ALL
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/combine_libs.sh ${CMAKE_CURRENT_BINARY_DIR}/lib${lib_name_static}_singular.a ${link_archives}
+        DEPENDS ${target_static}
+        )
+endif()
 
 ## 最后再调用测试的 CMake，之所以放到最后是因为，测试程序依赖 sg 库，需要链接 sg 库，放到最后这样可以方便调用生成好的文件和变量。
+set(sg_inc_dir ${CMAKE_CURRENT_SOURCE_DIR})
+set(sg_lib_dir ${CMAKE_CURRENT_BINARY_DIR})
+enable_testing()
 add_subdirectory(test/unit)

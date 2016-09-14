@@ -4,6 +4,10 @@
 #include <sg/net/net_card.h>
 
 #ifdef WIN32
+#include <winsock2.h>
+#include <WS2tcpip.h>
+#include <iphlpapi.h>
+#pragma comment(lib, "iphlpapi.lib")
 #else
 #include <arpa/inet.h>
 #include <errno.h>
@@ -25,9 +29,136 @@
 
 #ifdef WIN32
 
+static int is_vista_above()
+{
+    OSVERSIONINFO osvi;
+
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+    GetVersionEx(&osvi);
+    return (osvi.dwMajorVersion > 5);
+}
+
+static size_t get_address_prefix(PIP_ADAPTER_ADDRESSES pCurrAddresses, PIP_ADAPTER_UNICAST_ADDRESS address, int family)
+{
+    // XP has no OnLinkPrefixLength field.
+    size_t prefix = 0;
+    if (is_vista_above()) {
+        prefix = address->OnLinkPrefixLength;
+    }
+    else {
+        // Prior to Windows Vista the FirstPrefix pointed to the list with
+        // single prefix for each IP address assigned to the adapter.
+        // Order of FirstPrefix does not match order of FirstUnicastAddress,
+        // so we need to find corresponding prefix.
+        for (IP_ADAPTER_PREFIX* p = pCurrAddresses->FirstPrefix; p; p = p->Next) {
+            if (p->Address.lpSockaddr->sa_family == family) {
+                prefix = max(prefix, p->PrefixLength);
+            }
+        }
+    }
+    return prefix;
+}
+
 int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_interfaces)
 {
-    // TODO: implement it
+    // Set the flags to pass to GetAdaptersAddresses
+    ULONG flags = GAA_FLAG_INCLUDE_PREFIX;
+    // default to unspecified address family (both)
+    ULONG family = AF_UNSPEC;
+
+    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+    ULONG outBufLen = 0;
+
+    outBufLen = sizeof(IP_ADAPTER_ADDRESSES);
+    pAddresses = (IP_ADAPTER_ADDRESSES *)malloc(outBufLen);
+
+    // Make an initial call to GetAdaptersAddresses to get the
+    // size needed into the outBufLen variable
+    if (GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen) == ERROR_BUFFER_OVERFLOW) {
+        free(pAddresses);
+        pAddresses = (IP_ADAPTER_ADDRESSES *)malloc(outBufLen);
+    }
+
+    if (pAddresses == NULL) {
+        return -1;
+    }
+
+    // Make a second call to GetAdapters Addresses to get the
+    DWORD dwRetVal = GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen);
+    if (dwRetVal != NO_ERROR) {
+        free(pAddresses);
+        return -1;
+    }
+
+    // If successful, output some information from the data we received
+    size_t max_if = 0;
+    for (PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses; pCurrAddresses; pCurrAddresses = pCurrAddresses->Next)
+        ++max_if;
+
+    struct sg_net_card_info *if_info_set = calloc(max_if, sizeof(struct sg_net_card_info));
+    size_t actual_if = 0;
+    for (PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses; pCurrAddresses; pCurrAddresses = pCurrAddresses->Next) {
+        if (pCurrAddresses->IfType != IF_TYPE_ETHERNET_CSMACD && pCurrAddresses->IfType != IF_TYPE_IEEE80211)
+            continue;
+
+        // FIXME: Should used Description instead of UUID style AdapterName?
+        strcpy(if_info_set[actual_if].name, pCurrAddresses->AdapterName);
+        // hard-coded mac length as 6 because of ethernet specification
+        sprintf(if_info_set[actual_if].mac, "%02x:%02x:%02x:%02x:%02x:%02x",
+            pCurrAddresses->PhysicalAddress[0], pCurrAddresses->PhysicalAddress[1],
+            pCurrAddresses->PhysicalAddress[2], pCurrAddresses->PhysicalAddress[3],
+            pCurrAddresses->PhysicalAddress[4], pCurrAddresses->PhysicalAddress[5]);
+        if_info_set[actual_if].mtu = pCurrAddresses->Mtu;
+        if_info_set[actual_if].is_static_ip = !pCurrAddresses->Flags & IP_ADAPTER_DHCP_ENABLED;
+        LPSOCKADDR lpaddr = pCurrAddresses->FirstUnicastAddress->Address.lpSockaddr;
+        DWORD addrlen = pCurrAddresses->FirstUnicastAddress->Address.iSockaddrLength;
+
+
+        for (PIP_ADAPTER_UNICAST_ADDRESS addr = pCurrAddresses->FirstUnicastAddress; addr; addr = addr->Next) {
+            if (addr->Address.lpSockaddr->sa_family == AF_INET) {
+                struct sockaddr_in *sa_in = (struct sockaddr_in *)addr->Address.lpSockaddr;
+                inet_ntop(AF_INET, &(sa_in->sin_addr), if_info_set[actual_if].lan_ipv4, sizeof(if_info_set[actual_if].lan_ipv4));
+
+                size_t prefix = get_address_prefix(pCurrAddresses, addr, AF_INET);
+                ULONG mask = 0;
+                ConvertLengthToIpv4Mask(prefix, &mask);
+                sa_in->sin_addr.s_addr |= ~mask;
+                inet_ntop(AF_INET, &(sa_in->sin_addr), if_info_set[actual_if].broadcast_ipv4, sizeof(if_info_set[actual_if].broadcast_ipv4));
+                sa_in->sin_addr.s_addr = mask;
+                inet_ntop(AF_INET, &(sa_in->sin_addr), if_info_set[actual_if].net_mask_ipv4, sizeof(if_info_set[actual_if].net_mask_ipv4));
+            }
+            else if (addr->Address.lpSockaddr->sa_family == AF_INET6) {
+                struct sockaddr_in6 *sa_in6 = (struct sockaddr_in6 *)addr->Address.lpSockaddr;
+                inet_ntop(AF_INET6, &(sa_in6->sin6_addr), if_info_set[actual_if].lan_ipv6, sizeof(if_info_set[actual_if].lan_ipv6));
+
+                size_t prefix = get_address_prefix(pCurrAddresses, addr, AF_INET6);
+                size_t suffixLength = 128 - prefix;
+                for (size_t i = 0, suffix = suffixLength; suffix && i < 16; ++i) {
+                    size_t suffix_byte = min(8, suffix);
+                    unsigned char mask_byte = ~((1 << suffix_byte) - 1);
+                    sa_in6->sin6_addr.u.Byte[16 - i - 1] |= ~mask_byte;
+                    suffix -= suffix_byte;
+                }
+                inet_ntop(AF_INET6, &(sa_in6->sin6_addr), if_info_set[actual_if].broadcast_ipv6, sizeof(if_info_set[actual_if].broadcast_ipv6));
+                for (size_t i = 0, suffix = suffixLength; i < 16; ++i) {
+                    size_t suffix_byte = min(8, suffix);
+                    unsigned char mask_byte = ~((1 << suffix_byte) - 1);
+                    sa_in6->sin6_addr.u.Byte[16 - i - 1] = mask_byte;
+                    suffix -= suffix_byte;
+                }
+                inet_ntop(AF_INET6, &(sa_in6->sin6_addr), if_info_set[actual_if].net_mask_ipv6, sizeof(if_info_set[actual_if].net_mask_ipv6));
+            }
+        }
+
+        ++actual_if;
+    }
+
+    free(pAddresses);
+
+    for (size_t i = 0; i < actual_if; ++i)
+        callback(&if_info_set[i], ctx);
     return 0;
 }
 
