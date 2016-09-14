@@ -57,7 +57,7 @@ struct shell_data {
     char                *cmd;       /* command text */
     sg_flag_t           *run_flag;  /* thread run flag */
     void                *context;   /* user data */
-    struct sg_thread    thread;     /* thread */
+    sg_thread_t         *thread;    /* thread */
     sg_shell_callback   cb;         /* shell callback function */
 };
 
@@ -142,13 +142,13 @@ sg_shell *sg_shell_open(const char *cmd, sg_shell_callback cb, void *context)
     if (!d->cmd)
         sg_log_err("Shell command clone failure.");
     if (!d->run_flag || !d->cmd) {
-        sg_flag_destroy(&(d->run_flag));
+        sg_flag_destroy(d->run_flag);
         SAFE_FREE(d);
     }
 
     if (d) {
         sg_flag_write(d->run_flag, 1);
-        sg_thread_init(&(d->thread), shell_work, (void *)d);
+        d->thread = sg_thread_alloc(shell_work, (void *)d);
     }
 
     return d;
@@ -161,10 +161,10 @@ void sg_shell_close(sg_shell **s)
         return;
 
     sg_flag_write((*s)->run_flag, 0);
-    sg_thread_join(&((*s)->thread));
+    sg_thread_join((*s)->thread);
     if ((*s)->fp)
         PCLOSE((*s)->fp);
-    sg_flag_destroy(&((*s)->run_flag));
+    sg_flag_destroy((*s)->run_flag);
     SAFE_FREE((*s)->cmd);
     free(*s);
     *s = NULL;
