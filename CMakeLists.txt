@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 
+## 路径里含有空格会导致编译失败，目前没有好的办法处理，所以先以检查并提示而代之。
+if((${CMAKE_CURRENT_SOURCE_DIR} MATCHES " ") OR (${CMAKE_CURRENT_BINARY_DIR} MATCHES " "))
+    message(FATAL_ERROR "'source path': ${CMAKE_CURRENT_SOURCE_DIR}\n'build path': ${CMAKE_CURRENT_BINARY_DIR}\nError: Path invalid, might contains with <spaces>")
+endif()
+
 ## 导入第三方依赖库的 CMake 规则，直接把需要的库编译进来，而不用再去单独编译安装。
 ## 以简化安装和使用，这样主要是针对像 Windows 这种没有包管理的系统。
 add_subdirectory(3rdparty)
