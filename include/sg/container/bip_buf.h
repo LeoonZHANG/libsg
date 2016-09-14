@@ -61,7 +61,7 @@ int sg_bip_buf_unused_size(const sg_bip_buf_t *me);
 
 /**
  * @return the size of the bipbuffer */
-int sg_bip_buf_size(const sg_bip_buf_t *me);
+int sg_bip_buf_total_size(const sg_bip_buf_t *me);
 
 /**
  * @return 1 if buffer is empty; 0 otherwise */
