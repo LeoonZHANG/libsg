@@ -14,13 +14,13 @@ Using C to build important infrastructure, not everything.
 
 ## Feature
 
+#### One key to build
+
+DO NOT need to install any dependency library before building of libsg.
+
 #### Efficient development
 
 Common C API vs libsg API sample.
-
-#### Easy-to-install source code
-
-Official pre-built binaries don't have any dependency, you don't need to build or install dependency for libsg.
 
 #### Easy-to-understand APIs
 
