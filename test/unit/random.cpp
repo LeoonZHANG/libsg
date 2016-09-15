@@ -10,7 +10,7 @@ TEST(test_math_random, generate)
 TEST(test_math_random, generate_float)
 {
     for (size_t i = 0; i < 10000; ++i)
-        ASSERT_NE(0, sg_random_f());
+        EXPECT_PRED_FORMAT2(testing::FloatLE, 0, sg_random_f());
 }
 
 TEST(test_math_random, generate_range)
@@ -29,8 +29,8 @@ TEST(test_math_random, generate_range_float)
 {
     for (size_t i = 0; i < 10000; ++i) {
         float value = sg_random_range_f(0.45, 0.46);
-        ASSERT_LE(0.45, value);
-        ASSERT_LT(value, 0.46);
+        EXPECT_PRED_FORMAT2(testing::FloatLE, 0.45, value);
+        EXPECT_PRED_FORMAT2(testing::FloatLE, value, 0.46);
     }
 }
 
