@@ -24,9 +24,11 @@ pcre:
     - fdd730399c7187be9f2a2643520a7024a574a789
         Fix syntax error in pcre/CMakeLists.txt
         修复cmake语法问题
-libiconv:
+libiconv: (Windows专用)
     - bb794977e10269bf87d750a3dcf4da69c7035898
         为Windows添加CMakeFiles.txt
+libiconv-1.14:
+    - 某些版本的linux下需要更改一行代码才能编译通过，但是没有直接改代码，而是写在3rdparty/CMakeLists.txt里用命令改。
 c99-snprintf:
     - 1a1950c23d4efb870ee5e49923feebb3f35b3ca9
         为Windows添加CMakeFiles.txt
