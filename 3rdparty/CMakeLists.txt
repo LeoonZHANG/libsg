@@ -102,8 +102,6 @@ if("${CMAKE_SYSTEM}" MATCHES "Linux")
     ExternalProject_Add(
         libiconv
         PREFIX ${3RDPARTY_DIR}/libiconv-1.14
-        DOWNLOAD_DIR ${3RDPARTY_DIR}
-        DOWNLOAD_COMMAND sh -c "curl -O http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz && tar xf libiconv-1.14.tar.gz"
         SOURCE_DIR ${3RDPARTY_DIR}/libiconv-1.14
         UPDATE_COMMAND sh -c "sed -i'' -e '682s/@GNULIB_GETS@/0/' ${3RDPARTY_DIR}/libiconv-1.14/srclib/stdio.in.h"
         CONFIGURE_COMMAND ${3RDPARTY_DIR}/libiconv-1.14/configure --prefix=${3RDPARTY_DIR}/libiconv-1.14/local --enable-static --with-pic --with-gnu-ld
