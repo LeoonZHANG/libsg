@@ -1,47 +1,12 @@
 ################################
 # GTest
 ################################
-find_package(GTest)
-if(NOT ${GTEST_FOUND})
-    include(ExternalProject)
-    ExternalProject_Add(googletest
-      URL https://github.com/google/googletest/archive/release-1.8.0.zip
-      URL_MD5 adfafc8512ab65fd3cf7955ef0100ff5
-      PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
-      CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-                 -Dgtest_force_shared_crt=ON
-      INSTALL_COMMAND ""
-    )
-    ExternalProject_Get_Property(googletest source_dir binary_dir)
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+set(gtest_force_shared_crt ON)
+add_subdirectory(gtest)
 
-    set(GTEST_INCLUDE_DIRS ${source_dir}/googletest/include)
-    set(GTEST_LIBRARIES gtest)
-    set(GTEST_MAIN_LIBRARIES gtest_main)
-    set(GTEST_BOTH_LIBRARIES ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES})
-    add_library(${GTEST_LIBRARIES} UNKNOWN IMPORTED)
-    add_library(${GTEST_MAIN_LIBRARIES} UNKNOWN IMPORTED)
-    if(WIN32)
-        set_target_properties(${GTEST_LIBRARIES} PROPERTIES
-            IMPORTED_LOCATION_RELEASE ${binary_dir}/googlemock/gtest/Release/${CMAKE_FIND_LIBRARY_PREFIXES}gtest.lib
-            IMPORTED_LOCATION_DEBUG ${binary_dir}/googlemock/gtest/Debug/${CMAKE_FIND_LIBRARY_PREFIXES}gtest.lib
-            )
-        set_target_properties(${GTEST_MAIN_LIBRARIES} PROPERTIES
-            IMPORTED_LOCATION_RELEASE ${binary_dir}/googlemock/gtest/Release/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main.lib
-            IMPORTED_LOCATION_DEBUG ${binary_dir}/googlemock/gtest/Debug/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main.lib
-            )
-    else()
-        set(GTEST_LIBRARIES_PATH ${binary_dir}/googlemock/gtest/${CMAKE_FIND_LIBRARY_PREFIXES}gtest.a)
-        set(GTEST_MAIN_LIBRARIES_PATH ${binary_dir}/googlemock/gtest/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main.a)
-        set_target_properties(${GTEST_LIBRARIES} PROPERTIES
-            IMPORTED_LOCATION ${GTEST_LIBRARIES_PATH}
-            )
-        set_target_properties(${GTEST_MAIN_LIBRARIES} PROPERTIES
-            IMPORTED_LOCATION ${GTEST_MAIN_LIBRARIES_PATH})
-    endif()
-    add_dependencies(${GTEST_LIBRARIES} googletest)
-    add_dependencies(${GTEST_MAIN_LIBRARIES} googletest)
-endif()
-
+set(GTEST_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googletest/include)
+set(GTEST_BOTH_LIBRARIES gtest gtest_main)
 
 ################################
 # Unit Tests
