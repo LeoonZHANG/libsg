@@ -20,38 +20,40 @@ DO NOT need to install any dependency library before building of libsg.
 
 #### Efficient development
 
+Difference between normal C libray and libsg sample:
+
 ```
-/* use normal md5 library to calc md5 of file */
+    /* normal md5 library api */
 
-FILE *fp;
-struct md5_context *ctx;
-char buf[256], md5_sum[33];
-size_t size;
+    FILE *fp;
+    struct md5_context *ctx;
+    char buf[256], md5_sum[33];
+    size_t size;
 
-fp = fopen("/home/test_file", "rb");
-assert(fp)
+    fp = fopen("/home/test_file", "rb");
+    assert(fp)
 
-ctx = md5_start();
-assert(ctx)
+    ctx = md5_start();
+    assert(ctx)
     
-while (!feof(fp)) {
-    size = fread(buf, 1, 256, fp);
-    if (size > 0)
-        md5_update(ctx, buf, size);
-}
+    while (!feof(fp)) {
+        size = fread(buf, 1, 256, fp);
+        if (size > 0)
+            md5_update(ctx, buf, size);
+    }
 
-md5_final(ctx, md5_sum);
-fclose(fp);
+    md5_final(ctx, md5_sum);
+    fclose(fp);
 ```
 
 ```
-/* use libsg API to calc md5 of file */
+    /* libsg md5 api */
 
-int err;
-struct sg_md_sum md5_sum = {0};
+    int err;
+    struct sg_md_sum md5_sum = {0};
 
-err = sg_md_file("/home/test_file", SGMDTYPE_MD5, &md5_sum);
-assert(err == 0);
+    err = sg_md_file("/home/test_file", SGMDTYPE_MD5, &md5_sum);
+    assert(err == 0);
 ```
 
 #### Easy-to-understand APIs
