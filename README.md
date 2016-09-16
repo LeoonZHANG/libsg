@@ -21,7 +21,7 @@ DO NOT need to install any dependency library before building of libsg.
 #### Efficient development
 
 ```
-/* if you want to get md5 with normal md5 library, your code is like this */
+/* use normal md5 library to calc md5 of file */
 
 FILE *fp;
 struct md5_context *ctx;
@@ -29,12 +29,10 @@ char buf[256], md5_sum[33];
 size_t size;
 
 fp = fopen("/home/test_file", "rb");
-if (!fp)
-    return;
-    
+assert(fp)
+
 ctx = md5_start();
-if (!ctx)
-    return;
+assert(ctx)
     
 while (!feof(fp)) {
     size = fread(buf, 1, 256, fp);
@@ -47,15 +45,13 @@ fclose(fp);
 ```
 
 ```
-/* if you want to get md5 by libsg, the code is like this */
+/* use libsg API to calc md5 of file */
 
 int err;
 struct sg_md_sum md5_sum = {0};
 
 err = sg_md_file("/home/test_file", SGMDTYPE_MD5, &md5_sum);
-if (err != 0)
-    printf("md5 calc error\n");
-
+assert(err == 0);
 ```
 
 #### Easy-to-understand APIs
