@@ -51,7 +51,7 @@ unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *buf, const unsigned int size)
     return (unsigned char *)me->buf + me->a_start;
 }
 
-unsigned char *sg_bip_buf_get(const sg_bip_buf_t *buf, const unsigned int size)
+unsigned char *sg_bip_buf_get_old(const sg_bip_buf_t *buf, const unsigned int size)
 {
     struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
 
@@ -81,7 +81,7 @@ unsigned char *sg_bip_buf_get(const sg_bip_buf_t *buf, const unsigned int size)
     return end;
 }
 
-int sg_bip_buf_get2(sg_bip_buf_t *buf, size_t try_get_size, unsigned char **get_buf, size_t *real_get_size)
+int sg_bip_buf_get(sg_bip_buf_t *buf, size_t try_get_size, unsigned char **get_buf, size_t *real_get_size)
 {
     return 0;
 }

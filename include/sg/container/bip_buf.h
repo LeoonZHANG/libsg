@@ -39,13 +39,15 @@ sg_bip_buf_t *sg_bip_buf_create(size_t size);
  * @return data on success, NULL if we can't peek at this much data */
 unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *me, const unsigned int len);
 
-/* ? */
+int sg_bip_buf_get(sg_bip_buf_t *buf, size_t try_get_size, unsigned char **get_buf, size_t *real_get_size);
+
+/* will replace this api with sg_bip_buf_get */
 /**
  * Get pointer to data to read. Move the cursor on.
  *
  * @param[in] len The length of the data to be polled
  * @return pointer to data, NULL if we can't poll this much data */
-unsigned char *sg_bip_buf_get(const sg_bip_buf_t *me, const unsigned int size);
+unsigned char *sg_bip_buf_get_old(const sg_bip_buf_t *me, const unsigned int size);
 
 /**
  * @param[in] data The data to be offered to the buffer
