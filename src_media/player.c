@@ -30,24 +30,26 @@ enum sg_player_load_type {
 static void io_thread_func(void *param)
 {
     struct sg_player_real *pl = (struct sg_player_real *)param;
-    int buf_get_size = 0;
-    unsigned char buf_tmp[1024];
+    int get_size = 0;
+    unsigned char *get_buf;
+    unsigned char swap[2048];
 
     while (1) {
+        get_buf = NULL;
         sg_mutex_lock(pl->io_buf_mtx);
-        buf_get_size = sg_bip_buf_used_size(pl->io_buf);
-        sg_mutex_unlock(pl->io_buf_mtx);
-        if (buf_get_size == 0) {
+        get_size = sg_bip_buf_used_size(pl->io_buf);
+        if (get_size == 0) {
             usleep(1);
             continue;
         }
-        if (buf_get_size > 1024)
-            buf_get_size = 1024;
-
-        sg_mutex_lock(pl->io_buf_mtx);
-        memcpy(buf_tmp, sg_bip_buf_get(pl->io_buf, buf_get_size), buf_get_size);
+        if (get_size > 2048)
+            get_size = 2048;
+        get_buf = sg_bip_buf_get(pl->io_buf, get_size);
+        if (get_buf)
+            memcpy(swap, get_buf, get_size);
         sg_mutex_unlock(pl->io_buf_mtx);
-        write(pl->fd[1], buf_tmp, buf_get_size);
+        if (get_buf)
+            write(pl->fd[1], swap, get_size);
     }
 }
 
@@ -149,15 +151,19 @@ static int sg_player_load(sg_player_t *p, const void *load_src, enum sg_player_l
 sg_player_t *sg_player_create(void)
 {
     struct sg_player_real *p = (struct sg_player_real *)malloc(sizeof(struct sg_player_real));
-    if (!p)
+    if (!p) {
+        printf("malloc error\n");
         return NULL;
+    }
 
     memset(p, 0, sizeof(struct sg_player_real));
 
-    p->inst = libvlc_new(0,NULL);
+    p->inst = libvlc_new(0, NULL);
 
-    if (!p->inst)
+    if (!p->inst) {
+        printf("libvlc_new error, %s\n", libvlc_errmsg());
         return NULL;
+    }
 
     return (sg_player_t *)p;
 }
