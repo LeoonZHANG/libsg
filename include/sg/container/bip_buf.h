@@ -14,6 +14,8 @@
 #ifndef LIBSG_BIP_BUF_H
 #define LIBSG_BIP_BUF_H
 
+#include <stddef.h> /* size_t */
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -60,8 +62,8 @@ int sg_bip_buf_used_size(const sg_bip_buf_t *cb);
 int sg_bip_buf_unused_size(const sg_bip_buf_t *me);
 
 /**
- * @return the size of the bipbuffer */
-int sg_bip_buf_total_size(const sg_bip_buf_t *me);
+ * @return the size of the bipbuffer payload */
+int sg_bip_buf_max_payload_size(const sg_bip_buf_t *me);
 
 /**
  * @return 1 if buffer is empty; 0 otherwise */

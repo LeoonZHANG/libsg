@@ -81,6 +81,11 @@ unsigned char *sg_bip_buf_get(const sg_bip_buf_t *buf, const unsigned int size)
     return end;
 }
 
+int sg_bip_buf_get2(sg_bip_buf_t *buf, size_t try_get_size, unsigned char **get_buf, size_t *real_get_size)
+{
+    return 0;
+}
+
 int sg_bip_buf_put(const sg_bip_buf_t *buf, const unsigned char *data, const int size)
 {
     struct sg_bip_buf_real *me = (struct sg_bip_buf_real *)buf;
@@ -119,7 +124,7 @@ int sg_bip_buf_used_size(const sg_bip_buf_t *buf)
     return (me->a_end - me->a_start) + me->b_end;
 }
 
-int sg_bip_buf_total_size(const sg_bip_buf_t *buf)
+int sg_bip_buf_max_payload_size(const sg_bip_buf_t *buf)
 {
     return (struct sg_bip_buf_real *)buf->buf_size;
 }
