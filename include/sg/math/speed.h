@@ -18,21 +18,25 @@ enum sg_speed_mode {
 };
 
 enum sg_speed_unit {
-    SGSPEEDUNIT_MIN  = 0,
     /* bit mode */
     SGSPEEDUNIT_bps  = 0,
     SGSPEEDUNIT_Kbps,
     SGSPEEDUNIT_Mbps,
     SGSPEEDUNIT_Gbps,
     SGSPEEDUNIT_Tbps,
+
     /* 0~127 is reserved for bit mode */
+
     /* byte mode */
     SGSPEEDUNIT_Bps  = 128,
     SGSPEEDUNIT_KBps,
     SGSPEEDUNIT_MBps,
     SGSPEEDUNIT_GBps,
     SGSPEEDUNIT_TBps,
-    SGSPEEDUNIT_MAX
+
+    /* min max flag */
+    SGSPEEDUNIT_MIN  = SGSPEEDUNIT_bps,
+    SGSPEEDUNIT_MAX  = SGSPEEDUNIT_TBps
 };
 
 struct sg_speed_val {
