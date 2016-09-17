@@ -7,8 +7,9 @@
 #ifndef LIBSG_FS_H
 #define LIBSG_FS_H
 
-#include <stdbool.h>
+#include "../str/bool.h"
 #include "../str/vlstr.h"
+#include "../container/vlbuf.h"
 
 #ifdef __cplusplus
 extern "C" {
