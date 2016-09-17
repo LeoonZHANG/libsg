@@ -1,7 +1,8 @@
-/*
+/**
  * bool.h
  * Author: wangwei.
  * bool definition.
+ * TODO: 挪到type.h中去
  */
 
 #ifndef LIBSG_BOOL_H

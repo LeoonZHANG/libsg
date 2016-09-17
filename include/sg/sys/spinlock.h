@@ -8,27 +8,23 @@
       rwlock_winxp.c   winxp需要其他方法模拟,网上大把,找个简单的即可,性能无所谓
       除了单元测试,还要做atom与系统api两种实现之间的对比
  */
-#ifndef LIBSG_RWLOCK_H
-#define LIBSG_RWLOCK_H
+#ifndef LIBSG_SPINLOCK_H
+#define LIBSG_SPINLOCK_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct sg_rwlock_real sg_rwlock_t;
+typedef struct sg_spinlock_real sg_spinlock_t;
 
-sg_rwlock_t *sg_rwlock_alloc(void);
-void sg_rwlock_free(sg_rwlock_t *);
+sg_spinlock_t *sg_spinlock_alloc(void);
+void sg_spinlock_free(sg_spinlock_t *);
 
-bool sg_rwlock_lock_r(sg_rwlock_t *);
-bool sg_rwlock_unlock_r(sg_rwlock_t *);
-bool sg_rwlock_lock_w(sg_rwlock_t *);
-bool sg_rwlock_unlock_w(sg_rwlock_t *);
-bool sg_rwlock_try_lock_r(sg_rwlock_t *);
-bool sg_rwlock_try_lock_w(sg_rwlock_t *);
+bool sg_spinlock_lock(sg_spinlock_t *);
+bool sg_spinlock_unlock(sg_spinlock_t *);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_RWLOCK_H */
+#endif /* LIBSG_SPINLOCK_H */

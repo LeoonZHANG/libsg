@@ -35,6 +35,10 @@ int sg_crc_buf(const void *buf, size_t len, enum sg_crc_type type, struct sg_crc
 int sg_crc_str(const char *str, enum sg_crc_type type, struct sg_crc_sum *rst);
 int sg_crc_file(const char *path, enum sg_crc_type type, struct sg_crc_sum *rst);
 
+sg_crc_ctx *sg_murmur_start(enum sg_crc_type);
+int sg_crc_update(sg_crc_ctx *self, void *data, uint64_t size);
+int sg_crc_finish(sg_crc_ctx *self, struct sg_crc_sum *);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

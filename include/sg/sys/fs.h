@@ -21,6 +21,14 @@ enum sg_fs_dir_seek_event {
     SGFSDIRSEEKEVENT_OVER  = 2, /* seeking is done */
 };
 
+struct sg_fs_file_stat {
+
+};
+
+struct sg_fs_dir_stat {
+
+};
+
 /* Directory seek callback function type definition.
    data is a string, it ends in terminator '\0'. */
 typedef void (*sg_fs_dir_seek_callback)(enum sg_fs_dir_seek_event evt,
