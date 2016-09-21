@@ -68,7 +68,7 @@ Key modules are optimized, you can create high performance application with libs
 
 ## Supported Platforms
 
-Linux ／ Windows ／ OS X
+Linux ／ Windows ／ macOS
 
 ## Download
 
@@ -79,7 +79,7 @@ https://github.com/metalwood/libsg/archive/master.zip
 Before building, make sure CMake / XMake and C compiler(gcc/clang/msvc) has been installed correctly.
 Make sure the source path does not have space.
 
-Linux / MacOS
+Linux / macOS
 
         $ mkdir build
         $ cd build
@@ -101,7 +101,7 @@ coming soon
 
 **sys** atom mutex rwlock spin_lock memory module os proc time fs flag shell sleep thread ntp
 
-**str** charset regex sprintf vlstr(variable length string)
+**str** charset regex sprintf vsstr(variable-sized string)
 
 **net** tcp/tcp_server udp/udp_server http/http_server websocket ftp
 
@@ -137,7 +137,7 @@ English: [Linux kernel coding style](https://www.kernel.org/doc/Documentation/Co
 
 ## Contact
 
-email: metalwood@foxmail.com                   QQ群: 556925561
+email: `metalwood@foxmail.com`                   QQ群: `556925561`
 
 ## Contributors
 
