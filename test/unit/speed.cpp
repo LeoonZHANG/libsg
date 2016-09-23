@@ -1,5 +1,5 @@
 #include <sg/math/speed.h>
-#include <sg/sys/time.h>
+#include <sg/sys/clock.h>
 #include <gtest/gtest.h>
 
 class test_math_speed : public ::testing::Test
