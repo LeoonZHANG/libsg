@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sg/sg.h>
 
 #include "../../include/net/websocket.h"
 #include "../../3rdparty/mongoose_6.2/mongoose.h"
