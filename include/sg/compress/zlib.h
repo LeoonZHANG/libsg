@@ -1,6 +1,6 @@
 /**
  * zlib.h
- *
+ * will be deleted
  */
 
 #ifndef LIBSG_ZLIB_H
