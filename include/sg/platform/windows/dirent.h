@@ -13,7 +13,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#if defined (OS_WIN)
+#if defined (SG_OS_WINDOWS)
 
 #include <sys/types.h>
 #include <windows.h>
