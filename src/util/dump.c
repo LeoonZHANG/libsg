@@ -1,4 +1,4 @@
-/*
+/**
  * dump.c
  * Author: wangwei.
  * Dump toolkit.
@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "../../include/sg/util/dump.h"
-#include "../../include/sg/sys/shell.h"
+#include <sg/util/dump.h>
+#include <sg/sys/shell.h>
 
 #define DUMP_CMD_LEN_MAX 256
 
