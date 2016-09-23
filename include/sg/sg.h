@@ -7,7 +7,19 @@
 #ifndef LIBSG_SG_H
 #define LIBSG_SG_H
 
-#include "util/cl.h"
+/* frequently used header files */
+#include "sys/os.h"
+#include "sys/type.h"
+#include "sys/limit.h"
+#include "util/assert.h"
+#include "util/log.h"
+#include "util/err.h"
+#include "util/compiler.h"
+
+#include <stddef.h> /* size_t */
+#include <stdlib.h> /* size_t */
+#include <stdint.h> /* uint8_t */
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,8 +27,17 @@ extern "C" {
 
 inline const char *sg_version(void)
 {
-    return SG_CL_DATETIME_STRING;
+    return SG_COMPILER_DATETIME_STRING;
 }
+
+/* By default, we use the standard "extern" declarations. */
+#ifndef LIBSG_EXP_DECL
+# ifdef __cplusplus
+#  define LIBSG_EXP_DECL  extern "C"
+# else
+#  define LIBSG_EXP_DECL  extern
+# endif
+#endif
 
 #ifdef __cplusplus
 }
