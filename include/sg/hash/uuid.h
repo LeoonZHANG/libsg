@@ -7,6 +7,8 @@
 #ifndef LIBSG_UUID_H
 #define LIBSG_UUID_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -44,7 +46,7 @@ struct sg_uuid_str {
 };
 
 /* Creates a new UUID. */
-struct sg_uuid_str sg_uuid_gen(enum sg_uuid_method method, int uppercase);
+void sg_uuid_gen(enum sg_uuid_method method, bool uppercase, struct sg_uuid_str *out_str);
 
 #ifdef __cplusplus
 }

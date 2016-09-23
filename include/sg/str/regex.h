@@ -7,7 +7,8 @@
 #ifndef LIBSG_REGEX_H
 #define LIBSG_REGEX_H
 
-#include "../str/vlstr_list.h"
+#include <sg/sg.h>
+#include "vsstr_list.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,15 +34,15 @@ sg_pattern *sg_regex_make_pattern(const char *pattern_str);
 int sg_regex_exec(char *src, sg_pattern *pat, sg_regex_callback cb, void *context);
 
 /* Matches a compiled regular expression against a given subject string.
-   Match results are stored in vlstr_list, remember to free the list. */
-sg_vlstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat);
+   Match results are stored in vsstr_list, remember to free the list. */
+sg_vsstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat);
 
 /* Free internal form of regular expression. */
 void sg_regex_free_pattern(sg_pattern **pat);
 
 /* Matches a regular expression string against a given subject string.
-   Match results are stored in vlstr_list, remember to free the list. */
-sg_vlstr_list_t *sg_regex_match(char *src, const char *pattern_str);
+   Match results are stored in vsstr_list, remember to free the list. */
+sg_vsstr_list_t *sg_regex_match(char *src, const char *pattern_str);
 
 #ifdef __cplusplus
 }

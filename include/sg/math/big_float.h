@@ -9,7 +9,8 @@
 #ifndef LIBSG_BIG_FLOAT_H
 #define LIBSG_BIG_FLOAT_H
 
-#include <sg/container/vlbuf.h>
+#include <sg/sg.h>
+#include <sg/container/vsbuf.h>
 #include "c_float.h"
 #include "num_sys.h"
 #include "big_int.h"
@@ -67,10 +68,10 @@ bool sg_big_float_check_num_str(const char *int_str, enum sg_num_sys sys);
 /* try to find a suitable C integer-pointer type, and put it in it */
 int sg_big_float_try_to_get_c_int_type(sg_big_float_t *src, enum sg_c_int_type *type);
 
-int sg_big_float_get_bin(sg_big_float_t *src, sg_vlbuf_t *);
+int sg_big_float_get_bin(sg_big_float_t *src, sg_vsbuf_t *);
 int sg_big_float_get_c_int(sg_big_float_t *src, void *int_ptr, enum sg_c_int_type type);
 int sg_big_float_get_c_float(sg_big_float_t *src, void *c_float_ptr, enum sg_c_float_type);
-int sg_big_float_get_str(sg_big_float_t *src, enum sg_num_sys sys, sg_vlstr_t *);
+int sg_big_float_get_str(sg_big_float_t *src, enum sg_num_sys sys, sg_vsstr_t *);
 
 void sg_big_float_free(sg_big_float_t *);
 
@@ -78,7 +79,7 @@ int sg_big_float_floor(sg_big_float_t* dst, const sg_big_float_t* src);
 int sg_big_float_ceil(sg_big_float_t* dst, const sg_big_float_t* src);
 int sg_big_float_trunc(sg_big_float_t* dst, const sg_big_float_t* src);
 
-int sg_big_float_get_mantissa_and_exponent(sg_big_float_t *src, enum sg_num_sys sys, sg_vlstr_t * mantissa, size_t* exponent);
+int sg_big_float_get_mantissa_and_exponent(sg_big_float_t *src, enum sg_num_sys sys, sg_vsstr_t * mantissa, size_t* exponent);
 
 #ifdef __cplusplus
 }

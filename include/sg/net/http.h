@@ -1,11 +1,13 @@
 /*
- * http_client.h
+ * http.h
  * Author: wangwei.
  * HTTP client interfaces based on libcurl.
  */
 
-#ifndef LIBSG_HTTP_CLIENT_H
-#define LIBSG_HTTP_CLIENT_H
+#ifndef LIBSG_HTTP_H
+#define LIBSG_HTTP_H
+
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -94,4 +96,4 @@ int sg_http_easy_post(const char *url, const char *post_fields, sg_http_reply_fu
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_HTTP_CLIENT_H */
+#endif /* LIBSG_HTTP_H */

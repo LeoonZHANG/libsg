@@ -11,6 +11,8 @@
 #ifndef LIBSG_RWLOCK_H
 #define LIBSG_RWLOCK_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -18,14 +20,14 @@ extern "C" {
 typedef struct sg_rwlock_real sg_rwlock_t;
 
 sg_rwlock_t *sg_rwlock_alloc(void);
-void sg_rwlock_free(sg_rwlock_t *);
+void sg_rwlock_free(sg_rwlock_t *self);
 
-bool sg_rwlock_lock_r(sg_rwlock_t *);
-bool sg_rwlock_unlock_r(sg_rwlock_t *);
-bool sg_rwlock_lock_w(sg_rwlock_t *);
-bool sg_rwlock_unlock_w(sg_rwlock_t *);
-bool sg_rwlock_try_lock_r(sg_rwlock_t *);
-bool sg_rwlock_try_lock_w(sg_rwlock_t *);
+bool sg_rwlock_lock_r(sg_rwlock_t *self);
+bool sg_rwlock_unlock_r(sg_rwlock_t *self);
+bool sg_rwlock_lock_w(sg_rwlock_t *self);
+bool sg_rwlock_unlock_w(sg_rwlock_t *self);
+bool sg_rwlock_try_lock_r(sg_rwlock_t *self);
+bool sg_rwlock_try_lock_w(sg_rwlock_t *self);
 
 #ifdef __cplusplus
 }

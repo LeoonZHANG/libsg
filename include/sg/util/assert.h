@@ -7,6 +7,8 @@
 #ifndef LIBSG_ASSERT_H
 #define LIBSG_ASSERT_H
 
+#include "log.h"
+
 /* keep assert open */
 #ifdef NDEBUG
 # undef NDEBUG
@@ -22,9 +24,19 @@ extern "C" {
 
 #define sg_assert assert
 
-//#define sg_assert_errno
-//#define sg_assert_int
-//#define sg_assert_uint32
+//#define SG_ASSERT_ERRNO
+//#define SG_ASSERT_ALLOC
+//#define SG_ASSERT_PTR
+
+#define SG_ASSERT_MSG(exp, fmt, args...) \
+do { \
+    if (!(exp)) { \
+        sg_log(SGLOGLEVEL_CRIT, \
+               "Assert \'"#exp"\' false. "fmt, \
+               ##args); \
+    } \
+    sg_assert(exp); \
+} while(0)
 
 
 /* if exp equals false, logging by 'fmt' and 'args...',

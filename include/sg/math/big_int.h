@@ -9,9 +9,9 @@
 #ifndef LIBSG_BIG_INT_H
 #define LIBSG_BIG_INT_H
 
-#include <stdbool.h>
-#include <sg/container/vlbuf.h>
-#include <sg/str/vlstr.h>
+#include <sg/sg.h>
+#include <sg/container/vsbuf.h>
+#include <sg/str/vsstr.h>
 #include "c_int.h"
 #include "num_sys.h"
 #include "big_float.h"
@@ -76,10 +76,10 @@ int sg_big_int_try_to_get_c_int_type(sg_big_int_t *src, enum sg_c_int_type *type
 /* Check a string is number or not. */
 bool sg_big_int_check_num_str(const char *int_str, enum sg_num_sys sys);
 
-int sg_big_int_get_bin(sg_big_int_t *src, sg_vlbuf_t *);
+int sg_big_int_get_bin(sg_big_int_t *src, sg_vsbuf_t *);
 int sg_big_int_get_c_int(sg_big_int_t *src, void *c_int_ptr, enum sg_c_int_type);
 int sg_big_int_get_c_float(sg_big_int_t *src, void *c_float_ptr, enum sg_c_float_type);
-int sg_big_int_get_str(sg_big_int_t *src, enum sg_num_sys sys, sg_vlstr_t *);
+int sg_big_int_get_str(sg_big_int_t *src, enum sg_num_sys sys, sg_vsstr_t *);
 
 void sg_big_int_free(sg_big_int_t *);
 
