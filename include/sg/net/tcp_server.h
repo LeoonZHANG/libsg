@@ -6,6 +6,8 @@
 #ifndef LIBSG_TCP_SERVER_H
 #define	LIBSG_TCP_SERVER_H
 
+#include <sg/sg.h>
+
 #ifdef	__cplusplus
 extern "C"
 {

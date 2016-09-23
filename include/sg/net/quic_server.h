@@ -6,6 +6,8 @@
 #ifndef LIBSG_QUIC_SERVER_H
 #define LIBSG_QUIC_SERVER_H
 
+#include <sg/sg.h>
+
 #ifdef  __cplusplus
 extern "C"
 {

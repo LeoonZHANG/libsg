@@ -7,6 +7,8 @@
 #ifndef LIBSG_RTSP_H
 #define LIBSG_RTSP_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

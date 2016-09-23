@@ -10,6 +10,8 @@ http://blog.chinaunix.net/uid-20279362-id-3848329.html*/
 #ifndef LIBSG_C_FLOAT_H
 #define LIBSG_C_FLOAT_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

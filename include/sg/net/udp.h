@@ -6,7 +6,7 @@
 #ifndef LIBSG_UDP_H
 #define LIBSG_UDP_H
 
-#include <stdbool.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

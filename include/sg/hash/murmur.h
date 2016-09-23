@@ -9,6 +9,8 @@
 #ifndef LIBSG_MURMUR_H
 #define LIBSG_MURMUR_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

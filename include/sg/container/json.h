@@ -6,7 +6,7 @@
 #ifndef LIBSG_JSON_H
 #define LIBSG_JSON_H
 
-#include <stdbool.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

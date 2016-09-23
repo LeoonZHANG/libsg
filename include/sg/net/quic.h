@@ -6,7 +6,7 @@
 #ifndef LIBSG_QUIC_H
 #define LIBSG_QUIC_H
 
-#include <stdint.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -7,6 +7,8 @@
 #ifndef LIBSG_PIPE_H
 #define LIBSG_PIPE_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

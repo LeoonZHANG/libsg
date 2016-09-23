@@ -7,7 +7,7 @@
 #ifndef IMGUTIL_COLOR_H
 #define IMGUTIL_COLOR_H
 
-#include <stdint.h>
+#include <sg/sg.h>
 
 enum color_space {
     COLORSPACE_RGB888   = 0,

@@ -6,6 +6,8 @@
 #ifndef LIBSG_MSGPACK_H
 #define LIBSG_MSGPACK_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

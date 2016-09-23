@@ -7,6 +7,8 @@
 #ifndef LIBSG_FLAG_H
 #define LIBSG_FLAG_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

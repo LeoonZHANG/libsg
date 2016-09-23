@@ -7,6 +7,7 @@
 #ifndef LIBSG_CRON_H
 #define LIBSG_CRON_H
 
+#include <sg/sg.h>
 #include <time.h>
 #include <stdint.h>
 

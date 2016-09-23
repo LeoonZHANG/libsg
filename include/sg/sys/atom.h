@@ -7,8 +7,9 @@
 #ifndef LIBSG_ATOM_H
 #define LIBSG_ATOM_H
 
-#include "../sys/os.h"
-#ifdef OS_WIN
+#include <sg/sg.h>
+
+#ifdef SG_OS_WINDOWS
 # include <windows.h>
 #endif
 
@@ -16,7 +17,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef OS_WIN
+#ifdef SG_OS_WINDOWS
     #define sg_atom_cmp_swap_long(ptr, old_val, new_val)   (InterlockedCompareExchange((long volatile *)ptr, new_val, old_val) == old_val)
     #define sg_atom_cmp_swap_ptr(ptr, old_val, new_val)    (InterlockedCompareExchangePointer((PVOID volatile *)ptr, new_val, old_val) == old_val)
     #define sg_atom_inc(ptr)                               InterlockedIncrement((long volatile *)ptr)

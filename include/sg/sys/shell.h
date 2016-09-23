@@ -7,6 +7,8 @@
 #ifndef LIBSG_SHELL_H
 #define LIBSG_SHELL_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

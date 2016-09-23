@@ -6,7 +6,7 @@
 #ifndef LIBSG_SPEED_H
 #define LIBSG_SPEED_H
 
-#include <stdlib.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

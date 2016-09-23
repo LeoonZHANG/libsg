@@ -6,8 +6,8 @@
 #ifndef LIBSG_MEMORY_H
 #define LIBSG_MEMORY_H
 
-#include <stdlib.h>
-#include <stddef.h>
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

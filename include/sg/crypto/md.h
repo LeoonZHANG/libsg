@@ -7,8 +7,7 @@
 #ifndef LIBSG_MD_H
 #define LIBSG_MD_H
 
-#include <stdlib.h> /* size_t */
-#include <stdint.h> /* uint8_t */
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

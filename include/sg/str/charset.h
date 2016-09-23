@@ -7,7 +7,7 @@
 #ifndef LIBSG_CHARSET_H
 #define LIBSG_CHARSET_H
 
-#include <stddef.h> /* size_t */
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +16,7 @@ extern "C" {
 // BIG5 -> GBK
 
 /*
-vlstr *charset_detect(const char *src);
+vsstr *charset_detect(const char *src);
  */
 
 int sg_charset_conv(const char *from_charset, const char *to_charset, const char *from_str, size_t from_len,

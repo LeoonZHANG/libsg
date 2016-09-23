@@ -2,17 +2,16 @@
  * net_card.h
  * Network card information reader for Linux / OSX / Windows.
  */
-#include <stdbool.h>
-
 #ifndef LIBSG_NET_CARD_H
 #define LIBSG_NET_CARD_H
+
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 /* network card information */
-/* 定义错误的数组大小请修正 */
 struct sg_net_card_info {
     char name[256];          /* network card name such as 'eth0' */
     char mac[18];            /* mac address */
@@ -33,9 +32,9 @@ struct sg_net_dns {
     } dns_server[10];        /* max 10 dns server */
 };
 
-typedef void (*sg_net_card_on_read_func_t)(struct sg_net_card_info* inf, void *ctx);
+typedef void (*sg_net_card_on_read_func_t)(struct sg_net_card_info *inf, void *ctx);
 
-int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_interfaces);
+int sg_net_card_scan(sg_net_card_on_read_func_t callback, void *ctx, int merge_interfaces);
 
 #ifdef __cplusplus
 }

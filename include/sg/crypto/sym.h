@@ -6,8 +6,8 @@
 #ifndef LIBSG_SYM_H
 #define LIBSG_SYM_H
 
-#include <stdlib.h>
-#include <sg/container/vlbuf.h>
+#include <sg/sg.h>
+#include <sg/container/vsbuf.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,10 +82,10 @@ void sg_sym_flush(sg_sym_t *);
 void sg_sym_free(sg_sym_t *);
 
 int sg_sym_str(enum sg_sym_type, const char *key, const char *iv, enum sg_sym_mode mode,
-               const char *src, sg_vlbuf_t *res);
+               const char *src, sg_vsbuf_t *res);
 
 int sg_sym_buf(enum sg_sym_type type, const char *key, const char *iv, enum sg_sym_mode mode,
-               const void *src, size_t src_len, sg_vlbuf_t *res);
+               const void *src, size_t src_len, sg_vsbuf_t *res);
 
 int sg_sym_file(enum sg_sym_type, const char *key, const char *iv, enum sg_sym_mode mode,
                 const char *src_filename, const char *res_filename);

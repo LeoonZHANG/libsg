@@ -7,6 +7,8 @@
 #ifndef LIBSG_MUTEX_H
 #define LIBSG_MUTEX_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

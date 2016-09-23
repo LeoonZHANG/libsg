@@ -6,8 +6,7 @@
 #ifndef LIBSG_CRC_H
 #define LIBSG_CRC_H
 
-#include <stdlib.h>
-#include <stdint.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

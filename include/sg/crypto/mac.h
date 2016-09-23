@@ -6,8 +6,7 @@
 #ifndef LIBSG_MAC_H
 #define LIBSG_MAC_H
 
-#include <stdlib.h> /* size_t */
-#include <stdint.h> /* uint8_t */
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

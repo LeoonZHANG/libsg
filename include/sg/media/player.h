@@ -6,6 +6,8 @@
 #ifndef LIBSG_PLAYER_H
 #define LIBSG_PLAYER_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

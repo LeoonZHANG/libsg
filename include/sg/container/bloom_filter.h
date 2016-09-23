@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

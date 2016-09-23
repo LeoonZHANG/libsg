@@ -7,7 +7,7 @@
 #ifndef LIBSG_STRING_H
 #define LIBSG_STRING_H
 
-#include <stdbool.h>
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -7,6 +7,8 @@
 #ifndef LIBSG_THREAD_H
 #define LIBSG_THREAD_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

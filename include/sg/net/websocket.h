@@ -6,8 +6,7 @@
 #ifndef LIBSG_WEBSOCKET_H
 #define LIBSG_WEBSOCKET_H
 
-#include <stdint.h>
-
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {

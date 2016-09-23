@@ -7,10 +7,9 @@
 #ifndef LIBSG_PROC_H
 #define LIBSG_PROC_H
 
-#include <stdint.h>
-#include "os.h"
+#include <sg/sg.h>
 
-#if defined(OS_LNX)
+#if defined(SG_OS_LINUX)
 # include <sys/types.h> /* pid_t */
 #endif
 
@@ -18,7 +17,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 typedef int pid_t;
 typedef int uid_t;
 #endif
@@ -47,7 +46,7 @@ uid_t sg_proc_user_id_current(void);
 
 /* Get process filename by process id.
  * Remember to free return result. */
-sg_vlstr_t *sg_proc_filename(pid_t pid);
+sg_vsstr_t *sg_proc_filename(pid_t pid);
 
 /* Get process priviledge by process id. */
 enum sg_proc_priviledge
