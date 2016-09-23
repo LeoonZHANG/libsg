@@ -8,10 +8,10 @@
 void proc_found(const char *id, void *context)
 {
 #if !defined WIN32
-    sg_vlstr_t *filename;
+    sg_vsstr_t *filename;
     filename = sg_proc_filename(atoi(id));
-    if(sg_vlstrlen(filename) > 0)
-        printf("%s", sg_vlstrraw(filename));
+    if(sg_vsstr_len(filename) > 0)
+        printf("%s", sg_vsstr_raw(filename));
 #endif
 }
 
