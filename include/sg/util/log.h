@@ -7,12 +7,7 @@
 #ifndef LIBSG_LOG_H
 #define LIBSG_LOG_H
 
-/* #define USE_AV_LOG */
-
-#ifdef USE_AV_LOG
-# include "../../libavutil/log.h"
-#endif
-#include "../sys/os.h"
+#include "../sg.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,9 +25,7 @@ enum sg_log_level {
     SGLOGLEVEL_EMERG    = 7
 };
 
-void sg_log_set_colorful(void);
-
-void sg_log_cancel_colorful(void);
+void sg_log_set_colorful(bool on);
 
 /* logging */
 void sg_logging(const char *file, int line, const char *func, enum sg_log_level lv, const char *fmt, ...);
@@ -40,18 +33,9 @@ void sg_logging(const char *file, int line, const char *func, enum sg_log_level 
 /* format and print time stamp with tag followed */
 void sg_printf_time_stamp(const char *tag);
 
-#ifdef USE_AV_LOG
-/* Use av_log. */
-#define sg_log(lv, fmt, ...)\
-av_log(NULL,\
-       lv == SGLOGLEVEL_ERR || lv == SGLOGLEVEL_CRIT ? AV_LOG_ERROR : AV_LOG_INFO,\
-       fmt"\n", ##__VA_ARGS__)
-#else
-/* custom logging */
+
 #define sg_log(lv, fmt, ...)\
     sg_logging(__FILE__, __LINE__, __FUNCTION__, lv, fmt, ##__VA_ARGS__)
-#endif
-
 
 /* logging debug level message */
 #define sg_log_dbg(fmt, ...)    sg_log(SGLOGLEVEL_DBG, fmt, ##__VA_ARGS__)
