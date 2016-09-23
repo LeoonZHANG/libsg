@@ -1,6 +1,5 @@
-/*
+/**
  * Shell.h
- * Author: wangwei.
  * Bash and command shell IO and interactive APIs.
  */
 
@@ -78,9 +77,9 @@ int sg_shell_exec(const char *cmd, sg_shell_callback cb, void *context)
     FILE *fp;
     char buf_read[READ_BUF_SIZE];
 
-    assert(cmd);
-    assert(strlen(cmd) > 0);
-    assert(cb);
+    SG_ASSERT(cmd);
+    SG_ASSERT(strlen(cmd) > 0);
+    SG_ASSERT(cb);
 
     errno = 0;
     fp = POPEN(cmd, "r"); /* Async, create pipe to sub process, and return stdout file. */
@@ -105,8 +104,8 @@ int sg_shell_exec2(const char *cmd)
 {
     FILE *fp;
 
-    assert(cmd);
-    assert(strlen(cmd) > 0);
+    SG_ASSERT(cmd);
+    SG_ASSERT(strlen(cmd) > 0);
 
     errno = 0;
     fp = POPEN(cmd, "w"); /* Sync, create pipe to sub process, and return stdin file. */
@@ -123,8 +122,8 @@ sg_shell *sg_shell_open(const char *cmd, sg_shell_callback cb, void *context)
 {
     struct shell_data *d;
 
-    assert(cmd);
-    assert(strlen(cmd) > 0);
+    SG_ASSERT(cmd);
+    SG_ASSERT(strlen(cmd) > 0);
 
     d = (struct shell_data *)malloc(sizeof(struct shell_data));
     if (!d) {
@@ -159,7 +158,7 @@ sg_shell *sg_shell_open(const char *cmd, sg_shell_callback cb, void *context)
 
 void sg_shell_close(sg_shell **s)
 {
-    assert(s);
+    SG_ASSERT(s);
     if (!*s)
         return;
 
@@ -232,7 +231,7 @@ void shell_colorful_print_win(const char *str, WORD color)
 
 void sg_shell_colorful_print(const char *str, enum sg_shell_color color)
 {
-    assert(str);
+    SG_ASSERT(str);
     if (strlen(str) == 0)
         return;
 
@@ -253,7 +252,7 @@ void sg_shell_colorful_print(const char *str, enum sg_shell_color color)
         SHELL_COLORFUL_PRINT(str, IN_SHELLCOLOR_WHITE_ON_RED);
         break;
     default:
-        assert(1 == 0);
+        SG_ASSERT(1 == 0);
         break;
     }
 }

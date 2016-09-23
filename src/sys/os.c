@@ -1,6 +1,5 @@
-/*
+/**
  * os.c
- * Author: wangwei.
  * Operating system information detection.
  */
 

@@ -38,8 +38,8 @@ bool sg_fs_path_exists(const char *path)
 {
     struct stat s;
 
-    assert(path);
-    assert(strlen(path) > 0);
+    SG_ASSERT(path);
+    SG_ASSERT(strlen(path) > 0);
 
     errno = 0;
     stat(path, &s);
@@ -52,7 +52,7 @@ bool sg_fs_path_get_ext(const char *path, bool uppercase, sg_vsstr_t *ext_out)
     sg_vsstr_t *v;
     char *dot;
 
-    assert(path);
+    SG_ASSERT(path);
 
     dot = strrchr((char *)path, '.');
     if (!dot)
@@ -79,8 +79,8 @@ bool sg_fs_file_exists(const char *path)
 {
     struct stat s;
 
-    assert(path);
-    assert(strlen(path) > 0);
+    SG_ASSERT(path);
+    SG_ASSERT(strlen(path) > 0);
 
     errno = 0;
     stat(path, &s);
@@ -95,8 +95,8 @@ long sg_fs_file_size(const char *path)
 {
     struct stat s;
 
-    assert(path);
-    assert(strlen(path) > 0);
+    SG_ASSERT(path);
+    SG_ASSERT(strlen(path) > 0);
 
     errno = 0;
     stat(path, &s);
@@ -112,7 +112,7 @@ long sg_fs_file_size(const char *path)
 
 bool sg_fs_file_remove(const char *path)
 {
-    assert(path);
+    SG_ASSERT(path);
 
     return (remove(path) == 0) ? true : false;
 }
@@ -199,8 +199,8 @@ bool sg_dir_exists(const char *path)
 {
     struct stat s;
 
-    assert(path);
-    assert(strlen(path) > 0);
+    SG_ASSERT(path);
+    SG_ASSERT(strlen(path) > 0);
 
     errno = 0;
     stat(path, &s);
@@ -220,9 +220,9 @@ bool sg_dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
     struct dirent *d;
     struct stat s;
 
-    assert(dir_path);
-    assert(strlen(dir_path) > 0);
-    assert(cb);
+    SG_ASSERT(dir_path);
+    SG_ASSERT(strlen(dir_path) > 0);
+    SG_ASSERT(cb);
 
     fullpath = sg_vsstr_alloc3(1024);
     if (!fullpath) {
@@ -272,9 +272,9 @@ bool sg_dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
 
 bool sg_dir_seek(const char *path, uint8_t depth, sg_fs_dir_seek_cb_t cb, void *context)
 {
-    assert(path);
-    assert(strlen(path) > 0);
-    assert(cb);
+    SG_ASSERT(path);
+    SG_ASSERT(strlen(path) > 0);
+    SG_ASSERT(cb);
 
     if (!sg_dir_exists(path)) {
         sg_log_err("Seek directory %s dose not exist.", path);

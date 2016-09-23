@@ -1,6 +1,5 @@
-/*
+/**
  * dirent.h
- * Author: wangwei.
  * Posix style directory handler for windows only.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * limit.h
- * Author: wangwei.
  * Limitation data pool.
  */
 

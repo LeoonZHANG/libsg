@@ -1,6 +1,5 @@
-/*
+/**
  * pipe.h
- * Author: wangwei.
  * Pipe for multiple platforms.
  */
 

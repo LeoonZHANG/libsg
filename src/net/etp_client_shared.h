@@ -143,7 +143,7 @@ static void __on_uv_idle(uv_idle_t *idler)
             self->recv_buf_len = len;
         }
 
-        SG_ASSERT_MSG(self->recv_buf, "alloc recv buf failed");
+        SG_ASSERT_MALLOC(self->recv_buf, "alloc recv buf failed");
 
         len = ikcp_recv(self->kcp, self->recv_buf, len);
         self->on_recv(self, self->recv_buf, len);
@@ -178,12 +178,12 @@ static int __on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *u
         return ret;*/
 
     req = (send_req_t *)malloc(sizeof(send_req_t));
-    sg_assert(req != NULL);
+    SG_ASSERT(req != NULL);
 
     memset(req, 0, sizeof(send_req_t));
 
     req->buf.base = malloc(sizeof(char) * len);
-    sg_assert(req->buf.base);
+    SG_ASSERT_MALLOC(req->buf.base);
     req->buf.len = len;
 
     req->session = self; /* remember the client pointer to used in __on_uv_send_done */
@@ -207,7 +207,7 @@ static int __on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *u
 inline etp_client_shared_t *etp_client_shared_alloc(void)
 {
     etp_client_shared_real *client = (etp_client_shared_t *)malloc(sizeof(etp_client_shared_t));
-    sg_assert(client != NULL);
+    SG_ASSERT_MALLOC(client);
     memset(self, 0, sizeof(etp_client_shared_t));
     return self;
 }
@@ -230,10 +230,10 @@ inline sg_err_t etp_client_shared_start(etp_client_shared_t *self, IUINT32 conv,
 {
     int ret = ERROR;
 
-    sg_assert(self->on_open);
-    sg_assert(self->on_recv);
-    sg_assert(self->on_sent);
-    sg_assert(self->on_close);
+    SG_ASSERT(self->on_open);
+    SG_ASSERT(self->on_recv);
+    SG_ASSERT(self->on_sent);
+    SG_ASSERT(self->on_close);
 
     /* init normal parameters */
     self->conv = conv;
@@ -241,7 +241,7 @@ inline sg_err_t etp_client_shared_start(etp_client_shared_t *self, IUINT32 conv,
     self->user_data = user_data;
     self->uv_timer_interval_ms = interval_ms;
     self->speed_counter = sg_speed_counter_open(1000);
-    sg_assert(self->speed_counter);
+    SG_ASSERT(self->speed_counter);
 
     /* init loop */
     if (loop) {
@@ -269,7 +269,7 @@ inline sg_err_t etp_client_shared_start(etp_client_shared_t *self, IUINT32 conv,
 
     /* create and init kcp object */
     self->kcp = ikcp_create(self->conv, (void *)self);
-    sg_assert(self->kcp != NULL);
+    SG_ASSERT(self->kcp);
     self->kcp->output = __on_kcp_output;
     self->conn_timeout_ms  = SG_ETP_SESSION_TIMEOUT;
     self->recv_timeout_timing = uv_now(self->loop) + self->conn_timeout_ms;

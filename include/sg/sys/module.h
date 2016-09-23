@@ -1,6 +1,5 @@
-/*
+/**
  * module.h
- * Author: wangwei.
  * APIs about modules.
  */
 

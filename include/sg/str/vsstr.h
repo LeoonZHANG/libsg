@@ -1,6 +1,5 @@
-/*
+/**
  * vsstr.h
- * Author: wangwei.
  * Variable-sized string.
  * Thread unsafe.
  */

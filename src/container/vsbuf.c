@@ -1,6 +1,5 @@
 /**
  * vsbuf.c
- * Author: wangwei.
  * Flexible buffer.
  */
 
@@ -30,9 +29,9 @@ int sg_vsbuf_insert(struct sg_vsbuf *buf, const void *mem, size_t size)
     size_t new_size;
     void *new_mem;
 
-    sg_assert(buf);
-    sg_assert(mem);
-    sg_assert(size > 0);
+    SG_ASSERT(buf);
+    SG_ASSERT(mem);
+    SG_ASSERT(size > 0);
 
     new_size = buf->size + size;
 
@@ -55,7 +54,7 @@ int sg_vsbuf_insert(struct sg_vsbuf *buf, const void *mem, size_t size)
 
 void sg_vsbuf_reset(struct sg_vsbuf *buf)
 {
-    sg_assert(buf);
+    SG_ASSERT(buf);
 
     if (buf->mem) {
         free(buf->mem);
@@ -66,7 +65,7 @@ void sg_vsbuf_reset(struct sg_vsbuf *buf)
 
 void sg_vsbuf_destroy(struct sg_vsbuf *buf)
 {
-    sg_assert(buf);
+    SG_ASSERT(buf);
 
     if (buf->mem)
         free(buf->mem);

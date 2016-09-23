@@ -1,6 +1,5 @@
-/*
+/**
  * http.h
- * Author: wangwei.
  * HTTP client interfaces based on libcurl.
  */
 

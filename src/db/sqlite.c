@@ -1,6 +1,5 @@
 /**
  * sqlite.c
- * Author: wangwei.
  * Sqlite access library.
  */
 

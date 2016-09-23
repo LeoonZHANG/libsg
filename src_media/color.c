@@ -1,6 +1,5 @@
-/*
+/**
  * color.c
- * Author: wangwei.
  * Color process library.
  */
 

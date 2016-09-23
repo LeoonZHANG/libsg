@@ -1,6 +1,5 @@
 /**
  * type.h
- * Author: wangwei.
  * type definition data pool.
  */
 

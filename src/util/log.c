@@ -1,6 +1,5 @@
-/*
+/**
  * log.c
- * Author: wangwei.
  * Custom logging functions.
  */
 

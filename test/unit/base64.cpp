@@ -1,6 +1,5 @@
-/*
+/**
  * base64.c
- * Author: wangwei.
  * Test for util module base64.
  */
 

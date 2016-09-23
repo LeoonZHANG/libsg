@@ -1,6 +1,5 @@
-/*
+/**
  * dial.c
- * Author: wangwei.
  * Windows dial-up connection management.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * assert.h
- * Author: wangwei.
  * Assert.
  */
 
@@ -22,20 +21,32 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define sg_assert assert
+#define SG_ASSERT assert
 
-//#define SG_ASSERT_ERRNO
-//#define SG_ASSERT_ALLOC
-//#define SG_ASSERT_PTR
+#define SG_ASSERT_ERRNO(exp, errno) \
+do { \
+    if (!(exp)) \
+        sg_log_errno(SGLOGLEVEL_EMERG, errno); \
+    \
+    SG_ASSERT(exp); \
+} while(0)
+
+#define SG_ASSERT_MALLOC(exp) \
+do { \
+    if (!(exp)) \
+        sg_log_errno(SGLOGLEVEL_EMERG, SG_ERR_MALLOC_FAIL); \
+    \
+    SG_ASSERT(exp); \
+} while(0)
 
 #define SG_ASSERT_MSG(exp, fmt, args...) \
 do { \
     if (!(exp)) { \
-        sg_log(SGLOGLEVEL_CRIT, \
-               "Assert \'"#exp"\' false. "fmt, \
+        sg_log(SGLOGLEVEL_EMERG, \
+               "assert \'"#exp"\' false, msg: %s. "fmt, \
                ##args); \
     } \
-    sg_assert(exp); \
+    SG_ASSERT(exp); \
 } while(0)
 
 

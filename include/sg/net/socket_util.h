@@ -1,6 +1,5 @@
-/*
+/**
  * socket_util.h
- * Author: wangwei.
  * Common socket util library.
  */
 

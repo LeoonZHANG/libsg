@@ -1,7 +1,6 @@
-/*
- * @file err.h
- * @author wangwei
- * @brief error subsystem
+/**
+ * err.h
+ * Error subsystem.
  */
 
 #ifndef LIBSG_ERR_H

@@ -1,6 +1,5 @@
 /**
  * sqlite.h
- * Author: wangwei.
  * Sqlite access library with simple APIs.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * http_server.h
- * Author: wangwei.
  * Mini HTTP server package based on mongoose.
  */
 

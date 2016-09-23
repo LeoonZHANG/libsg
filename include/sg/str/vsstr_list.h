@@ -1,6 +1,5 @@
-/*
+/**
  * vsstr_list.h
- * Author: wangwei.
  * List to store variable-sized string.
  */
 

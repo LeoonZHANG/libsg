@@ -1,6 +1,5 @@
-/*
+/**
  * atom.h
- * Author: wangwei.
  * Atomic operation.
  */
 

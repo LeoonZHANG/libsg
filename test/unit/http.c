@@ -1,6 +1,5 @@
-/*
+/**
  * http_client.c
- * Author: wangwei.
  * Test for libsg module http client.
  */
 

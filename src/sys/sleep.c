@@ -1,6 +1,5 @@
-/*
+/**
  * sleep.c
- * Author: wangwei.
  * Unified interface to sleep in milliseconds.
  */
 

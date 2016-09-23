@@ -1,6 +1,5 @@
-/*
+/**
  * udp.c
- * Author: wangwei.
  * High performance udp client and server library based on libuv.
  */
 
@@ -63,7 +62,7 @@ sg_udp_t *sg_udp_open_server(const char* ip, int port, sg_udp_on_recv_func_t on_
 	struct sg_udp_real *server;
 	int retval;
 
-	sg_assert(ip);
+	SG_ASSERT(ip);
 
 	server = (struct sg_udp_real *)malloc(sizeof(struct sg_udp_real));
 	if (!server)
@@ -105,7 +104,7 @@ static void uv_after_udp_send(uv_udp_send_t *req, int status)
 
 void sg_udp_run(sg_udp_t *u)
 {
-	sg_assert(u);
+	SG_ASSERT(u);
 
 	uv_run(((struct sg_udp_real *)u)->uvloop, UV_RUN_DEFAULT);
 }
@@ -130,8 +129,8 @@ int sg_udp_send(sg_udp_t *u, const struct sockaddr *addr, const void *data, size
 
 int sg_udp_send2(sg_udp_t *u, const char *ip, int port, const void *data, size_t size, bool data_realloc)
 {
-	sg_assert(u);
-	sg_assert(ip);
+	SG_ASSERT(u);
+	SG_ASSERT(ip);
 
 	if(strchr(ip, ':')) { /* ipv6 */
 		struct sockaddr_in6 addr;
@@ -151,7 +150,7 @@ int sg_udp_set_broadcast(sg_udp_t *u, bool on)
 
 void sg_udp_close(sg_udp_t *u)
 {
-	sg_assert(u);
+	SG_ASSERT(u);
 
 	uv_udp_recv_stop(&((struct sg_udp_real *)u)->uvudp);
 	uv_close((uv_handle_t *)&((struct sg_udp_real *)u)->uvudp, NULL);

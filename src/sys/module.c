@@ -1,6 +1,5 @@
-/*
+/**
  * module.c
- * Author: wangwei.
  * APIs about modules.
  */
 
@@ -32,7 +31,7 @@ int sg_cur_dir(char *buf, size_t buf_len)
 {
     char *res;
 
-    assert(buf);
+    SG_ASSERT(buf);
 
 #ifdef SG_OS_WINDOWS
     res = _getcwd(buf, (int)buf_len);
@@ -48,7 +47,7 @@ int sg_module_path(char *buf, size_t buf_len)
 {
     DWORD res;
 
-    assert(buf);
+    SG_ASSERT(buf);
 
     res = GetModuleFileName(NULL /* current process */, (LPSTR)buf, buf_len);
 
@@ -64,7 +63,7 @@ int sg_module_path(char *buf, size_t buf_len)
 {
     ssize_t size;
 
-    assert(buf);
+    SG_ASSERT(buf);
 
     size = readlink("/proc/self/exe", buf, buf_len);
 
@@ -83,7 +82,7 @@ int sg_module_path(char *buf, size_t buf_len)
     int ret;
     uint32_t size = (uint32_t)buf_len;
 
-    assert(buf);
+    SG_ASSERT(buf);
 
     ret = _NSGetExecutablePath(buf, &size); /* ret equals zero means succeed. */
     if (ret != 0) {
@@ -101,7 +100,7 @@ int sg_module_dir(char *buf, size_t buf_len)
     int ret;
     char *end;
 
-    assert(buf);
+    SG_ASSERT(buf);
 
     ret = sg_module_path(buf, buf_len);
     if (ret != 0)
@@ -121,7 +120,7 @@ int sg_module_name(char *buf, size_t buf_len)
     char swap[PATH_MAX];
     char *start;
 
-    assert(buf);
+    SG_ASSERT(buf);
 
     ret = sg_module_path(swap, PATH_MAX);
     if (ret != 0)

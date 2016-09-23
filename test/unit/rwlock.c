@@ -1,6 +1,5 @@
-/*
+/**
  * rwlock.c
- * Author: wangwei.
  * Test for util module rwlock.
  */
 

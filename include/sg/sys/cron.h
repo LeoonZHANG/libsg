@@ -1,6 +1,5 @@
-/*
+/**
  * cron.h
- * Author: wangwei.
  * Functions for cron job.
  */
 

@@ -1,6 +1,5 @@
 /**
  * mq.h
- * Author: wangwei.
  * Message queue for lockless share resource and IPC only.
  * 利用操作系统的消息队列,避免使用锁等其它数据同步方法
  */

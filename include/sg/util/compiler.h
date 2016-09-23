@@ -1,6 +1,5 @@
 /**
  * compiler.h
- * Author: wangwei.
  * Compiler macros.
  */
 

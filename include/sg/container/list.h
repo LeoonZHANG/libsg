@@ -1,6 +1,5 @@
-/*
+/**
  * list.h
- * Author: wangwei.
  * Doubly linked list.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * mutex.h
- * Author: wangwei.
  * Mutex for multiple platforms.
  */
 

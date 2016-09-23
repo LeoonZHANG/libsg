@@ -15,8 +15,8 @@ int sg_json_check(const char *json, int check_depth)
 	JSON_checker checker;
 	size_t i, len;
 
-			sg_assert(json);
-			sg_assert(check_depth > 0);
+	SG_ASSERT(json);
+	SG_ASSERT(check_depth > 0);
 
 	len = strlen(json);
 	if (len == 0) /* content null */

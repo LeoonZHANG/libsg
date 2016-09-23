@@ -1,6 +1,5 @@
 /**
  * uuid.c
- * Author: wangwei.
  * Universally unique ID library based on libuuid.
  */
 
@@ -59,7 +58,7 @@ void sg_uuid_gen(enum sg_uuid_method method, bool uppercase, struct sg_uuid_str 
 {
     uuid_t uu;
 
-    assert(method >= SGUUIDMETHOD_DEFAULT && method <= SGUUIDMETHOD_TIME_MAC);
+    SG_ASSERT(method >= SGUUIDMETHOD_DEFAULT && method <= SGUUIDMETHOD_TIME_MAC);
 
     memset(out_str, 0, sizeof(struct sg_uuid_str));
 

@@ -58,7 +58,7 @@ sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
 int sg_etp_run(sg_etp_t *client, int interval_ms)
 {
     struct sg_etp_real *c = (struct sg_etp_real *)client;
-    sg_assert(c);
+    SG_ASSERT(c);
 
     /* enter loop */
     uv_run(c->loop, UV_RUN_DEFAULT);

@@ -1,6 +1,5 @@
-/*
+/**
  * base64.h
- * Author: wangwei.
  * Base64 encoder and decoder.
  */
 

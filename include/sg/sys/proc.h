@@ -1,6 +1,5 @@
-/*
+/**
  * proc.h
- * Author: wangwei.
  * process management.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * flag.h
- * Author: wangwei.
  * Run flag for thread.
  */
 

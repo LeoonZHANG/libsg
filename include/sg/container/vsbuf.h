@@ -1,6 +1,5 @@
-/*
+/**
  * vsbuf.h
- * Author: wangwei.
  * Flexible variable length buffer.
  */
 

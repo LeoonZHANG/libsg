@@ -1,6 +1,5 @@
-/*
+/**
  * cron.c
- * Author: wangwei.
  * Functions for cron job.
  */
 
@@ -15,7 +14,7 @@ int sg_cron_cycle_pack(struct tm *begin, struct tm *end,
 {
     int ret = 0;
 
-    assert(cc);
+    SG_ASSERT(cc);
     if (!begin && !end) {
         sg_log_err("Both begin time and end time are invalid.");
         return -1;
@@ -61,7 +60,7 @@ int sg_cron_cycle_check(struct sg_cron_cycle *cc,
     /* cycle duration value in milliseconds */
     long cycle_ms;
 
-    assert(cc);
+    SG_ASSERT(cc);
     if (cc->duration_ms == 0 && cc->interval_ms != 0)
         return -1;
     if (cc->duration_ms != 0 && cc->interval_ms == 0)

@@ -1,6 +1,5 @@
-/*
+/**
  * snprintf.h
- * Author: wangwei.
  * Cross paltform snprintf.
  */
 

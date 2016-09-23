@@ -1,6 +1,5 @@
-/*
+/**
  * c_float.h
- * Author: wangwei.
  * Extended API for regular integer, float and double number in C.
  */
 

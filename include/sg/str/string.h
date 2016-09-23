@@ -1,6 +1,5 @@
-/*
+/**
  * string.h
- * Author: wangwei.
  * String process.
  */
 

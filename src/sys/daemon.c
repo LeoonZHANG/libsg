@@ -1,6 +1,5 @@
-/*
+/**
  * daemon.c
- * Author: wangwei.
  * Start with OS and independent of terminal.
  */
 

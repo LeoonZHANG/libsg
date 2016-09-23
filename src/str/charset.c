@@ -1,6 +1,5 @@
-/*
+/**
  * charset.c
- * Author: wangwei.
  * Char encoding detective and transcoding.
  */
 
@@ -18,15 +17,15 @@ int sg_charset_conv(const char *from_charset, const char *to_charset,
     size_t rc;
     iconv_t ict;
 
-    assert(from_charset);
-    assert(strlen(from_charset) > 0);
-    assert(to_charset);
-    assert(strlen(to_charset) > 0);
-    assert(from_str);
-    assert(strlen(from_str) > 0);
-    assert(from_len > 0);
-    assert(out_str);
-    assert(out_max_len > 0);
+    SG_ASSERT(from_charset);
+    SG_ASSERT(strlen(from_charset) > 0);
+    SG_ASSERT(to_charset);
+    SG_ASSERT(strlen(to_charset) > 0);
+    SG_ASSERT(from_str);
+    SG_ASSERT(strlen(from_str) > 0);
+    SG_ASSERT(from_len > 0);
+    SG_ASSERT(out_str);
+    SG_ASSERT(out_max_len > 0);
 
     ict = iconv_open(to_charset, from_charset);
     if (!ict) {

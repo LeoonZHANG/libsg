@@ -1,6 +1,5 @@
-/*
+/**
  * c_float.h
- * Author: wangwei.
  * Extended API for regular floating-pointer number in C.
  */
 

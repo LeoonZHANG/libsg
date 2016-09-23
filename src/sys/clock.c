@@ -1,6 +1,5 @@
-/*
+/**
  * clock.c
- * Author: wangwei.
  * Get/set/format/compare and convert date and time.
  */
 
@@ -347,7 +346,7 @@ time_t sg_clock_unix_time_s(void)
     time_t res = 0;
 
     res = time(NULL);
-    assert(res > 0);
+    SG_ASSERT(res > 0);
 
     return res;
 }
@@ -451,9 +450,9 @@ time_t sg_clock_date_time_s_diff(struct tm later, struct tm earlier)
 
 int sg_clock_str_to_date_time_s(const char *str, const char *fmt, struct tm *out)
 {
-    assert(str);
-    assert(fmt);
-    assert(out);
+    SG_ASSERT(str);
+    SG_ASSERT(fmt);
+    SG_ASSERT(out);
 
     strptime(str, fmt, out);
 
@@ -464,9 +463,9 @@ int sg_clock_date_time_s_to_str(struct tm time, const char *fmt, char *out, size
 {
     struct tm swap;
 
-    assert(fmt);
-    assert(out);
-    assert(out_len > 0);
+    SG_ASSERT(fmt);
+    SG_ASSERT(out);
+    SG_ASSERT(out_len > 0);
 
     swap = time;
     out[0] = 0;
@@ -494,7 +493,7 @@ time_t sg_clock_date_time_s_to_unix_time_s(struct tm *time)
 {
     time_t res;
 
-    assert(time);
+    SG_ASSERT(time);
 
     res = mktime(time);
     res = (res < 0) ? 0 : res;
@@ -503,8 +502,8 @@ time_t sg_clock_date_time_s_to_unix_time_s(struct tm *time)
 
 int sg_clock_date_time_s_to_unix_time_ns(struct tm *time, struct timespec *out)
 {
-    assert(time);
-    assert(out);
+    SG_ASSERT(time);
+    SG_ASSERT(out);
 
     out->tv_sec  = mktime(time);
     out->tv_nsec = 0;

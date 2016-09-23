@@ -1,6 +1,5 @@
-/*
+/**
  * dynlib.c
- * Author: wangwei.
  * Dynamic library handle.
  */
 
@@ -20,8 +19,8 @@ sg_dynlib *sg_dynlib_open(const char *path)
 {
     void *handle;
 
-    assert(path);
-    assert(strlen(path) > 0);
+    SG_ASSERT(path);
+    SG_ASSERT(strlen(path) > 0);
 
 #if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
     handle = dlopen(path, RTLD_LAZY);
@@ -40,9 +39,9 @@ void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol)
 {
     void *func_addr;
 
-    assert(handle);
-    assert(symbol);
-    assert(strlen(symbol) > 0);
+    SG_ASSERT(handle);
+    SG_ASSERT(symbol);
+    SG_ASSERT(strlen(symbol) > 0);
 
 #if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
     func_addr = dlsym(handle, symbol);
@@ -60,7 +59,7 @@ void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol)
 
 void sg_dynlib_close(sg_dynlib **handle)
 {
-    assert(handle);
+    SG_ASSERT(handle);
 
     if (!*handle)
         return;

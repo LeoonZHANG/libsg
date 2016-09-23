@@ -1,6 +1,5 @@
-/*
+/**
  * net.c
- * Author: wangwei.
  * Common network util library.
  */
 
@@ -83,7 +82,7 @@ int sg_net_sockaddr_to_ip_port(const struct sockaddr *addr, char *ipbuf, int buf
 
 int sg_net_sockaddr_to_raw_ip_port(const struct sockaddr *addr, unsigned char *ipbuf, int *port)
 {
-	sg_assert(addr);
+	SG_ASSERT(addr);
 
 	switch (addr->sa_family) {
 	case AF_INET: /* IPv4 */

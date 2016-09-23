@@ -1,6 +1,5 @@
-/*
+/**
  * Shell.h
- * Author: wangwei.
  * Bash and command shell IO and interactive APIs.
  */
 

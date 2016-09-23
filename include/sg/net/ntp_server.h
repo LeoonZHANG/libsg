@@ -1,6 +1,5 @@
 /**
  * ntp_server.h
- * Author: wangwei.
  * Network time protocol client.
  */
 

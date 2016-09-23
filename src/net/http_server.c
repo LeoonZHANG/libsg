@@ -1,6 +1,5 @@
-/*
+/**
  * http_server.c
- * Author: wangwei.
  * Mini HTTP server package based on mongoose.
  */
 
@@ -77,9 +76,9 @@ static int ev_handler(struct mg_connection *conn, enum mg_event ev)
 
 void sg_http_server_reply_header(void *client_conn, const char *name, const char *value)
 {
-    sg_assert(client_conn);
-    sg_assert(name);
-    sg_assert(value);
+    SG_ASSERT(client_conn);
+    SG_ASSERT(name);
+    SG_ASSERT(value);
 
     if (strlen(name) == 0 || strlen(value) == 0)
         return;
@@ -89,17 +88,17 @@ void sg_http_server_reply_header(void *client_conn, const char *name, const char
 
 void sg_http_server_reply_status(void *client_conn, int status_code)
 {
-    sg_assert(client_conn);
-    sg_assert(status_code >= 0);
+    SG_ASSERT(client_conn);
+    SG_ASSERT(status_code >= 0);
 
     mg_send_status((struct mg_connection *)client_conn, status_code);
 }
 
 void sg_http_server_reply_data(void *client_conn, void *data, size_t size)
 {
-    sg_assert(client_conn);
-    sg_assert(data);
-    sg_assert(size > 0);
+    SG_ASSERT(client_conn);
+    SG_ASSERT(data);
+    SG_ASSERT(size > 0);
 
     mg_send_data((struct mg_connection *)client_conn, data, size);
 }
@@ -109,8 +108,8 @@ sg_http_server *sg_http_server_create(const char *port, sg_http_server_request_f
 {
     struct http_server_real *s;
 
-    assert(port);
-    assert(strlen(port) > 0);
+    SG_ASSERT(port);
+    SG_ASSERT(strlen(port) > 0);
 
     if (sg_str_is_decimal(port) != 1) {
         sg_log_err("Port %s is not decimal.", port);
@@ -135,7 +134,7 @@ void http_server_sync_run(void *p)
 {
     struct http_server_real *s = (struct http_server_real *)p;
 
-    assert(s);
+    SG_ASSERT(s);
 
     /* Run HTTP server. */
     sg_log_inf("HTTP server starting on port %s.", mg_get_option(s->server, "listening_port"));
@@ -151,14 +150,14 @@ void http_server_sync_run(void *p)
 
 void http_server_async_run(sg_http_server *s)
 {
-    assert(s);
+    SG_ASSERT(s);
 
     sg_thread_init(&(s->thread), http_server_sync_run, (void*)s);
 }
 
 int sg_http_server_start(sg_http_server *s)
 {
-    assert(s);
+    SG_ASSERT(s);
 
     sg_flag_write(s->run_flag, 1);
 
@@ -172,21 +171,21 @@ int sg_http_server_start(sg_http_server *s)
 
 void sg_http_server_stop(sg_http_server *s)
 {
-    assert(s);
+    SG_ASSERT(s);
 
     sg_flag_write(s->run_flag, 0);
 }
 
 void sg_http_server_join(sg_http_server *s)
 {
-    assert(s);
+    SG_ASSERT(s);
 
     sg_thread_join(&(s->thread));
 }
 
 void sg_http_server_destroy(sg_http_server **s)
 {
-    assert(s);
+    SG_ASSERT(s);
     if (!(*s))
         return;
 

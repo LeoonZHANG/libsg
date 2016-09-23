@@ -1,6 +1,5 @@
-/*
+/**
  * charset.h
- * Author: wangwei.
  * Char encoding detective and transcoding.
  */
 

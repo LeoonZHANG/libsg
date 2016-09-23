@@ -1,6 +1,5 @@
-/*
+/**
  * vsstr_list.c
- * Author: wangwei.
  * List to store variablesized string.
  */
 
@@ -34,7 +33,7 @@ sg_vsstr_list_t *sg_vsstr_list_alloc(void)
 
 size_t sg_vsstr_list_size(sg_vsstr_list_t *vl)
 {
-    assert(vl);
+    SG_ASSERT(vl);
     if (!vl->list)
         return 0;
 
@@ -46,8 +45,8 @@ char *sg_vsstr_list_get(sg_vsstr_list_t *vl, int index)
     sg_vsstr_t *s;
     int tmp_index = 0;
 
-    assert(vl);
-    assert(index >= 0);
+    SG_ASSERT(vl);
+    SG_ASSERT(index >= 0);
 
 
     s = (sg_vsstr_t *)sg_list_at(vl->list, (uint64_t)index);
@@ -62,8 +61,8 @@ int sg_vsstr_list_push(sg_vsstr_list_t *vl, const char *src)
     sg_vsstr_t *s;
     struct sg_list_item *item;
 
-    assert(vl);
-    assert(src);
+    SG_ASSERT(vl);
+    SG_ASSERT(src);
 
     s = sg_vsstr_alloc2(src);
     if (!s)
@@ -79,8 +78,8 @@ int sg_vsstr_list_push2(sg_vsstr_list_t *vl, const char *src, size_t num)
     sg_vsstr_t *s;
     struct sg_list_item *item;
 
-    assert(vl);
-    assert(src);
+    SG_ASSERT(vl);
+    SG_ASSERT(src);
 
     s = sg_vsstr_ndup(src, num);
     if (!s)
@@ -103,7 +102,7 @@ void sg_vsstr_list_free(sg_vsstr_list_t **vl)
     struct sg_list_item *cur;
     sg_vsstr_t *s;
 
-    assert(vl);
+    SG_ASSERT(vl);
     if (!*vl || !(*vl)->list)
         return;
 

@@ -1,6 +1,5 @@
 /**
  * dump.c
- * Author: wangwei.
  * Dump toolkit.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * thread.h
- * Author: wangwei.
  * Platform independent implementation of threading.
  */
 

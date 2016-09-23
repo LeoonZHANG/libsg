@@ -1,6 +1,5 @@
-/*
+/**
  * regex.h
- * Author: wangwei.
  * Regular expression library based on pcre.
  */
 

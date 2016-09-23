@@ -1,6 +1,5 @@
-/*
+/**
  * vsstr.c
- * Author: wangwei.
  * Variable-sized string.
  * Thread unsafe.
  */
@@ -31,7 +30,7 @@ sg_vsstr_t *sg_vsstr_alloc2(const char *str)
 {
     sg_vsstr_t *v;
 
-    assert(str);
+    SG_ASSERT(str);
 
     v = sg_vsstr_alloc3(strlen(str) + 1);
     if (!v)
@@ -62,7 +61,7 @@ sg_vsstr_t *sg_vsstr_alloc3(uint64_t size)
 
 uint64_t sg_vsstr_len(sg_vsstr_t *str)
 {
-    assert(str);
+    SG_ASSERT(str);
 
     return str->used_size - 1 /* terminator */;
 }
@@ -74,8 +73,8 @@ char *sg_vsstr_raw(sg_vsstr_t *str)
 
 sg_vsstr_t *sg_vsstr_cpy(sg_vsstr_t *dst, const char *src)
 {
-    assert(dst);
-    assert(src);
+    SG_ASSERT(dst);
+    SG_ASSERT(src);
 
     if (strlen(src) == 0) {
         dst->used_size = 0;
@@ -102,7 +101,7 @@ sg_vsstr_t *sg_vsstr_cpy(sg_vsstr_t *dst, const char *src)
 
 sg_vsstr_t *sg_vsstr_ncpy(sg_vsstr_t *dst, const char *src, size_t num)
 {
-    assert(src);
+    SG_ASSERT(src);
     if (num == 0)
         return dst;
 
@@ -112,15 +111,15 @@ sg_vsstr_t *sg_vsstr_ncpy(sg_vsstr_t *dst, const char *src, size_t num)
 
 void sg_vsstr_setinc(sg_vsstr_t *str, uint32_t increment)
 {
-    assert(str);
+    SG_ASSERT(str);
 
     str->increment = increment;
 }
 
 sg_vsstr_t *sg_vsstr_cat(sg_vsstr_t *dst, const char *src)
 {
-    assert(dst);
-    assert(src);
+    SG_ASSERT(dst);
+    SG_ASSERT(src);
 
     return sg_vsstr_ncat(dst, src, strlen(src));
 }
@@ -132,8 +131,8 @@ sg_vsstr_t *sg_vsstr_ncat(sg_vsstr_t *dst, const char *src, size_t num)
     uint64_t new_len; /* without terminator */
     uint64_t cat_len; /* without terminator */
 
-    assert(dst);
-    assert(src);
+    SG_ASSERT(dst);
+    SG_ASSERT(src);
 
     if (strlen(src) == 0 || num == 0)
         return dst;
@@ -172,15 +171,15 @@ sg_vsstr_t *sg_vsstr_ncat(sg_vsstr_t *dst, const char *src, size_t num)
 
 sg_vsstr_t *sg_vsstr_dup(const char *src)
 {
-    assert(src);
+    SG_ASSERT(src);
 
     return sg_vsstr_ndup(src, strlen(src) + 1);
 }
 
 sg_vsstr_t *sg_vsstr_dup2(sg_vsstr_t *src)
 {
-    assert(src);
-    assert(src->buf);
+    SG_ASSERT(src);
+    SG_ASSERT(src->buf);
 
     return sg_vsstr_ndup(src->buf, strlen(src->buf) + 1);
 }
@@ -189,7 +188,7 @@ sg_vsstr_t *sg_vsstr_ndup(const char *src, size_t num)
 {
     sg_vsstr_t *v;
 
-    assert(src);
+    SG_ASSERT(src);
 
     v = sg_vsstr_alloc();
     if (!v)
@@ -203,7 +202,7 @@ sg_vsstr_t *sg_vsstr_fmt(const char *fmt, ...)
     sg_vsstr_t *v = NULL;
     va_list ap;
 
-    assert(fmt);
+    SG_ASSERT(fmt);
 
     va_start(ap, fmt);
     v = sg_vsstr_fmt_ap(fmt, ap);
@@ -220,8 +219,8 @@ sg_vsstr_t *sg_vsstr_fmt_ap(const char *fmt, va_list ap)
     size_t open_size = 0;
     char *buf = NULL;
 
-    assert(fmt);
-    assert(ap);
+    SG_ASSERT(fmt);
+    SG_ASSERT(ap);
 
     //printf("vsstr fmt ap->fmt:%s\n", fmt);
     //printf("vsstr fmt ap->ap:%s\n", va_arg(ap, char *));
@@ -278,7 +277,7 @@ sg_vsstr_t *sg_vsstr_fmt_ap(const char *fmt, va_list ap)
 
 void sg_vsstr_zero(sg_vsstr_t *str)
 {
-    assert(str);
+    SG_ASSERT(str);
 
     memset(str->buf, 0, str->open_size);
     str->used_size = 0;
@@ -286,7 +285,7 @@ void sg_vsstr_zero(sg_vsstr_t *str)
 
 void sg_vsstr_free(sg_vsstr_t **str)
 {
-    assert(str);
+    SG_ASSERT(str);
     if (!*str)
         return;
 

@@ -1,6 +1,5 @@
-/*
+/**
  * shm.h
- * Author: wangwei.
  * Shared memory for multiple platforms.
  */
 

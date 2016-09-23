@@ -1,6 +1,5 @@
-/*
+/**
  * sg.h
- * Author: wangwei.
  * Libsg public module.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * http_client.c
- * Author: wangwei.
  * HTTP client interfaces based on libcurl.
  */
 
@@ -90,11 +89,11 @@ int sg_http_set_base(sg_http_t *client, const char *url, const char *request_met
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
-    sg_assert(url);
-    sg_assert(strlen(url) > 0);
-    sg_assert(request_method);
-    sg_assert(strlen(request_method) > 0);
+    SG_ASSERT(client);
+    SG_ASSERT(url);
+    SG_ASSERT(strlen(url) > 0);
+    SG_ASSERT(request_method);
+    SG_ASSERT(strlen(request_method) > 0);
 
     if (c->url)
         free(c->url);
@@ -110,7 +109,7 @@ int sg_http_set_conn_timeout(sg_http_t *client, unsigned int ms)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
+    SG_ASSERT(client);
     if (ms == 0)
         return -1;
 
@@ -122,7 +121,7 @@ int sg_http_set_recv_timeout(sg_http_t *client, unsigned int ms)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
+    SG_ASSERT(client);
     if (ms == 0)
         return -1;
 
@@ -134,8 +133,8 @@ int sg_http_set_version(sg_http_t *client, const char *ver)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
-    sg_assert(ver);
+    SG_ASSERT(client);
+    SG_ASSERT(ver);
 
     if (strlen(ver) == 0)
         return -1;
@@ -165,7 +164,7 @@ int sg_http_set_async(sg_http_t *client)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
+    SG_ASSERT(client);
 
     c->async = 1;
 
@@ -174,7 +173,7 @@ int sg_http_set_async(sg_http_t *client)
 
 void sg_http_set_verbose(sg_http_t *client, int off_on)
 {
-    sg_assert(client);
+    SG_ASSERT(client);
 
     if (off_on == 0)
         ((struct sg_http_real *)client)->verbose = 0;
@@ -186,8 +185,8 @@ int sg_http_append_header(sg_http_t *client, const char *header)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
-    sg_assert(header);
+    SG_ASSERT(client);
+    SG_ASSERT(header);
 
     if (strlen(header) == 0)
         return -1;
@@ -200,8 +199,8 @@ int sg_http_set_post_fields(sg_http_t *client, const char *post_fields)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
-    sg_assert(post_fields);
+    SG_ASSERT(client);
+    SG_ASSERT(post_fields);
     if (strlen(post_fields) == 0)
         return -1;
 
@@ -214,8 +213,8 @@ int sg_http_set_recv_callback(sg_http_t *client, sg_http_reply_func_t cb, void *
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
-    sg_assert(cb);
+    SG_ASSERT(client);
+    SG_ASSERT(cb);
 
     c->cb = cb;
     c->ctx = ctx;
@@ -231,7 +230,7 @@ int sg_http_run(sg_http_t *client)
     CURLoption request_method;
     CURLcode res;
 
-    sg_assert(client);
+    SG_ASSERT(client);
 
     if (!c->url || strlen(c->url) == 0 || !c->request_method || strlen(c->request_method) == 0) {
         sg_log_err("Error HTTP request parameters.");
@@ -292,7 +291,7 @@ void sg_http_reset(sg_http_t *client)
 {
     struct sg_http_real *c = (struct sg_http_real *)client;
 
-    sg_assert(client);
+    SG_ASSERT(client);
 
     if (c->url) {
         free(c->url);
@@ -320,7 +319,7 @@ void sg_http_reset(sg_http_t *client)
 
 void sg_http_destroy(sg_http_t *client)
 {
-    sg_assert(client);
+    SG_ASSERT(client);
 
     sg_http_reset(client);
     free(client);
@@ -335,7 +334,7 @@ int sg_http_easy_get(const char *url, sg_http_reply_func_t cb, void *ctx)
 {
     sg_http_t *client;
 
-    sg_assert(url);
+    SG_ASSERT(url);
 
     client = sg_http_create();
     if (!client)
@@ -351,7 +350,7 @@ int sg_http_easy_post(const char *url, const char *post_fields, sg_http_reply_fu
 {
     sg_http_t *client;
 
-    sg_assert(url);
+    SG_ASSERT(url);
 
     client = sg_http_create();
     if (!client)

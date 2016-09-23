@@ -1,6 +1,5 @@
-/*
+/**
  * dial.h
- * Author: wangwei.
  * Windows dial-up connection management.
  */
 

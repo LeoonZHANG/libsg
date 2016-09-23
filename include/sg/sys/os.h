@@ -1,6 +1,5 @@
-/*
+/**
  * os.h
- * Author: wangwei.
  * Operating system information detection.
  */
 

@@ -1,6 +1,6 @@
-/*
+/**
  * trick.h
- * C tricks.
+ * C useful tricks.
  */
 
 #ifndef LIBSG_TRICK_H

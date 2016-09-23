@@ -1,6 +1,5 @@
-/*
+/**
  * thread.c
- * Author: wangwei.
  * Platform independent implementation of threading.
  */
 
@@ -63,7 +62,7 @@ sg_thread_t *sg_thread_alloc(sg_thread_routine_func_t *routine, void *arg)
     self->arg = arg;
     self->handle = (HANDLE)_beginthreadex(NULL, 0, thread_main_routine,
                                           (void *)self, 0 , NULL);
-    assert(self->handle != NULL);
+    SG_ASSERT(self->handle != NULL);
     return (sg_thread_t *)self;
 
 #else
@@ -81,18 +80,18 @@ sg_thread_t *sg_thread_alloc(sg_thread_routine_func_t *routine, void *arg)
        use signals and thus all the signals should be delivered to application
        threads, not to worker threads. */
     res = sigfillset(&new_sigmask);
-    assert(res == 0);
+    SG_ASSERT(res == 0);
     res = pthread_sigmask(SIG_BLOCK, &new_sigmask, &old_sigmask);
-    assert(res == 0);
+    SG_ASSERT(res == 0);
 
     self->routine = routine;
     self->arg = arg;
     res = pthread_create(&self->handle, NULL, thread_main_routine, (void *) self);
-    assert(res == 0);
+    SG_ASSERT(res == 0);
 
     /* Restore signal set to what it was before. */
     res = pthread_sigmask(SIG_SETMASK, &old_sigmask, NULL);
-    assert(res == 0);
+    SG_ASSERT(res == 0);
 
 #endif
 }
@@ -105,16 +104,16 @@ void sg_thread_join(sg_thread_t *self)
     BOOL bres;
 
     res = WaitForSingleObject(((struct sg_thread_real *)self)->handle, INFINITE);
-    assert(res != WAIT_FAILED);
+    SG_ASSERT(res != WAIT_FAILED);
     bres = CloseHandle(((struct sg_thread_real *)self)->handle);
-    assert(bres != 0);
+    SG_ASSERT(bres != 0);
 
 #else
 
     int res;
 
     res = pthread_join(((struct sg_thread_real *)self)->handle, NULL);
-    assert(res == 0);
+    SG_ASSERT(res == 0);
 
 #endif
 }

@@ -35,7 +35,7 @@ static void uv_comm_after_send_to_stream(uv_write_t* w, int status)
 
 int uv_comm_send_to_stream(uv_stream_t* stream, void* data, unsigned int size)
 {
-    assert(stream && data);
+    SG_ASSERT(stream && data);
     uv_buf_t buf;
     /* 构造传递给uv_write的buf */
     buf.base = (char*)data;

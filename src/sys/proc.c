@@ -1,6 +1,5 @@
-/*
+/**
  * proc.c
- * Author: wangwei.
  * Process management.
  */
 
@@ -21,7 +20,7 @@
 # include <signal.h> /* kill */
 #endif
 #include <sg/util/log.h>
-#include <sg/util/assert.h>
+#include <sg/util/SG_ASSERT.h>
 #include <sg/sys/proc.h>
 #include <sg/sys/shell.h>
 #include <sg/str/string.h>
@@ -224,7 +223,7 @@ int sg_proc_id_all(sg_proc_found_callback cb, void *context)
     int ret = 0;
     struct sg_proc_shell_context ctx;
 
-    assert(cb);
+    SG_ASSERT(cb);
 
     ctx.cb = (void *)cb;
     ctx.context = context;
@@ -300,7 +299,7 @@ sg_vsstr_t *sg_proc_filename(pid_t pid)
 #if defined(SG_OS_LINUX)
     ret = sg_shell_exec(list_cmd, ls_l_shell_callback, filename);
     //printf("ret:%d\n", ret);
-    assert(ret == 0);
+    SG_ASSERT(ret == 0);
 #else
     sg_vsstr_cpy(filename, "not support except on Linux");
 #endif
@@ -330,7 +329,7 @@ int sg_proc_kill(pid_t pid)
 {
     int ret;
 
-    assert(pid > 0);
+    SG_ASSERT(pid > 0);
 
 #if defined(SG_OS_WINDOWS)
     DWORD dwDesiredAccess = PROCESS_TERMINATE;

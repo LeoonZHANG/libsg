@@ -1,6 +1,5 @@
-/*
+/**
  * flag.c
- * Author: wangwei.
  * Run flag for thread.
  */
 
@@ -35,7 +34,7 @@ int sg_flag_read(sg_flag_t *f)
 {
     int value;
 
-    assert(f);
+    SG_ASSERT(f);
 
     sg_mutex_lock(((struct sg_flag_real *)f)->mutex);
     value = ((struct sg_flag_real *)f)->value;
@@ -46,7 +45,7 @@ int sg_flag_read(sg_flag_t *f)
 
 void sg_flag_write(sg_flag_t *f, int value)
 {
-    assert(f);
+    SG_ASSERT(f);
 
     sg_mutex_lock(((struct sg_flag_real *)f)->mutex);
     ((struct sg_flag_real *)f)->value = value;
@@ -55,7 +54,7 @@ void sg_flag_write(sg_flag_t *f, int value)
 
 void sg_flag_destroy(sg_flag_t *f)
 {
-    assert(f);
+    SG_ASSERT(f);
 
     sg_mutex_destroy(((struct sg_flag_real *)f)->mutex);
     free(f);

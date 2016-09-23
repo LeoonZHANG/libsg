@@ -1,6 +1,5 @@
-/*
+/**
  * dynlib.h
- * Author: wangwei.
  * Dynamic library handle.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * clock.h
- * Author: wangwei.
  * Get/set/format/compare and convert date and time.
  */
 

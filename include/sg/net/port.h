@@ -1,6 +1,5 @@
-/*
+/**
  * port.h
- * Author: wangwei.
  * Default port definition of commonly used services.
  */
 

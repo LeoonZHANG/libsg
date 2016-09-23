@@ -1,6 +1,5 @@
-/*
+/**
  * uuid.h
- * Author: wangwei.
  * Universally unique ID library based on libuuid.
  */
 

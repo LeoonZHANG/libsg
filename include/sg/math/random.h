@@ -1,6 +1,5 @@
-/*
+/**
  * random.h
- * Author: wangwei.
  * "True" random number generator.
  */
 

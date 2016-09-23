@@ -103,7 +103,7 @@ static void __on_uv_recv_udp(uv_udp_t *handle, ssize_t nread,
 
         /* get conversion id made by client side */
         ret = ikcp_get_conv(rcvbuf->base, (long)nread, (IUINT32 *)&conv);
-        sg_assert(ret == 1);
+        SG_ASSERT(ret == 1);
 
         /* check is existing client */
         client = (etp_client_shared_t *)lh_table_lookup(server->clients_list, (const void *)conv);
@@ -115,7 +115,7 @@ static void __on_uv_recv_udp(uv_udp_t *handle, ssize_t nread,
                 break;
             }
             client = etp_client_shared_alloc();
-            sg_assert(client); /* create session must be successful */
+            SG_ASSERT(client); /* create session must be successful */
             etp_client_shared_set_callbacks(client, __on_open, __on_recv, __on_sent, __on_close);
             lh_table_insert(server->clients_list, (void *)conv, client);
             etp_client_shared_start(client, conv, addr, &server->loop, server->udp, server->interval, (void *)server);
@@ -147,7 +147,7 @@ sg_etp_server_open(const char *server_addr, int server_port, int max_backlog,
 
     /* create the client object */
     server = (struct sg_etp_server_real *)malloc(sizeof(struct sg_etp_server_real));
-    sg_assert(server);
+    SG_ASSERT_MALLOC(server);
     memset(server, 0, sizeof(struct sg_etp_server_real));
 
     server->backlog  = 0;

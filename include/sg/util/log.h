@@ -1,6 +1,5 @@
-/*
+/**
  * log.h
- * Author: wangwei.
  * Custom logging functions.
  */
 
@@ -37,37 +36,24 @@ void sg_printf_time_stamp(const char *tag);
 #define sg_log(lv, fmt, ...)\
     sg_logging(__FILE__, __LINE__, __FUNCTION__, lv, fmt, ##__VA_ARGS__)
 
-/* logging debug level message */
+
 #define sg_log_dbg(fmt, ...)    sg_log(SGLOGLEVEL_DBG, fmt, ##__VA_ARGS__)
 
-/* logging notice level message */
 #define sg_log_notice(fmt, ...) sg_log(SGLOGLEVEL_NOTICE, fmt, ##__VA_ARGS__)
 
-/* logging information level message */
 #define sg_log_inf(fmt, ...)    sg_log(SGLOGLEVEL_INF, fmt, ##__VA_ARGS__)
 
-/* logging warning level message */
 #define sg_log_warn(fmt, ...)   sg_log(SGLOGLEVEL_WARN, fmt, ##__VA_ARGS__)
 
-/* logging error level message */
 #define sg_log_err(fmt, ...)    sg_log(SGLOGLEVEL_ERR, fmt, ##__VA_ARGS__)
 
-/* logging critical level message */
 #define sg_log_crit(fmt, ...)   sg_log(SGLOGLEVEL_CRIT, fmt, ##__VA_ARGS__)
 
-/* logging alert level message */
 #define sg_log_alert(fmt, ...)  sg_log(SGLOGLEVEL_ALERT, fmt, ##__VA_ARGS__)
 
-/* logging emerge level message */
 #define sg_log_emerg(fmt, ...)  sg_log(SGLOGLEVEL_EMERG, fmt, ##__VA_ARGS__)
 
-#define sg_log_check_alloc(ptr) \
-    if (!(ptr)) \
-        sg_log_crit("Out of memory when %s allocated.", #ptr);
-
-//?
-#define sg_log_errno() \
-    sg_log()
+#define sg_log_errno(lv, errno) sg_log(lv, sg_err_fmt(errno))
 
 #ifdef __cplusplus
 }

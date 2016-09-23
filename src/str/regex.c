@@ -1,6 +1,5 @@
-/*
+/**
  * regex.c
- * Author: wangwei.
  * Regular expression library based on pcre.
  */
 
@@ -19,7 +18,7 @@ sg_pattern *sg_regex_make_pattern(const char *pattern_str)
     const char *err_msg = NULL;
     int err_offset = 0;
 
-    assert(pattern_str);
+    SG_ASSERT(pattern_str);
 
     res = pcre_compile(pattern_str, 0, &err_msg, &err_offset, NULL);
     if (!res) {
@@ -33,9 +32,9 @@ sg_pattern *sg_regex_make_pattern(const char *pattern_str)
 
 int sg_regex_exec(char *src, sg_pattern *pat, sg_regex_callback cb, void *context)
 {
-    assert(src);
-    assert(pat);
-    assert(cb);
+    SG_ASSERT(src);
+    SG_ASSERT(pat);
+    SG_ASSERT(cb);
 
     return regex_exec_real(src, pat, cb, context, NULL);
 }
@@ -45,8 +44,8 @@ sg_vsstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat)
     int ret;
     sg_vsstr_list_t *vl;
 
-    assert(src);
-    assert(pat);
+    SG_ASSERT(src);
+    SG_ASSERT(pat);
 
     vl = sg_vsstr_list_alloc();
     if (!vl)
@@ -66,7 +65,7 @@ void sg_regex_free_pattern(sg_pattern **pat)
 {
     pcre **p = (pcre **)pat;
 
-    assert(p);
+    SG_ASSERT(p);
     if (!(*p))
         return;
 
@@ -79,10 +78,8 @@ sg_vsstr_list_t *sg_regex_match(char *src, const char *pattern_str)
     sg_pattern *pat;
     sg_vsstr_list_t *vl;
 
-    assert(src);
-    assert(pattern_str);
-    if (strlen(src) == 0 || strlen(pattern_str) == 0)
-        return NULL;
+    SG_ASSERT(src);
+    SG_ASSERT(pattern_str);
 
     pat = sg_regex_make_pattern(pattern_str);
     if (!pat)
@@ -105,9 +102,9 @@ int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *cont
     int substr_len;
     char *substr;
 
-    assert(src);
-    assert(pat);
-    assert(cb || vl);
+    SG_ASSERT(src);
+    SG_ASSERT(pat);
+    SG_ASSERT(cb || vl);
 
     while (1) {
         if (ov) {

@@ -1,6 +1,5 @@
-/*
+/**
  * daemon.h
- * Author: wangwei.
  * Start with OS and independent of terminal.
  */
 
