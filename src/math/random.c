@@ -1,8 +1,9 @@
-#include <sg/math/random.h>
-#include <sg/sys/time.h>
 #include <stdlib.h>
 #include <limits.h>
-#ifndef WIN32
+#include <sg/sg.h>
+#include <sg/math/random.h>
+#include <sg/sys/clock.h>
+#ifndef SG_OS_WINDOWS
 # include <fcntl.h>
 # include <sys/types.h>
 # include <unistd.h>
@@ -14,7 +15,7 @@ static void random_seed(void)
     size_t seed;
     size_t read_bytes = 0;
 
-#ifndef WIN32
+#ifndef SG_OS_WINDOWS
     int fd = open("/dev/urandom", O_RDONLY);
     if (fd) {
         char* data = (char*)&seed;
@@ -67,4 +68,3 @@ float sg_random_range_f(float min, float max)
     float factor = (float)sg_random_range_l(0, INT_MAX) / (float)INT_MAX;
     return min + (max - min) * factor;
 }
-
