@@ -8,8 +8,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sg/sys/os.h>
-#if defined(OS_WIN)
+#include <sg/sg.h>
+
+#if defined(SG_OS_WINDOWS)
 # include <Windows.h> /* QueryFullProcessImageName / ZeroMemory / CloseHandle ... */
 # include <tlhelp32.h> /* Process32First / CreateToolhelp32Snapshot ... */
 # include <process.h> /* getpid */
@@ -31,7 +32,7 @@ struct sg_proc_shell_context {
     int count;
 };
 
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 
 /* Is a process run as common admin (not super admin) or not. */
 static int proc_is_run_as_admin(uint32_t pid)
@@ -194,7 +195,7 @@ uid_t getuid()
 }
 #endif
 
-#if !defined(OS_WIN)
+#if !defined(SG_OS_WINDOWS)
 void ps_e_shell_callback(enum sg_shell_event evt, const char *line, void *context)
 {
 #define PROC_ID_MAX_LEN 32
@@ -270,7 +271,7 @@ int sg_proc_id_all(sg_proc_found_callback cb, void *context)
 
 void ls_l_shell_callback(enum sg_shell_event evt, const char *line, void *context)
 {
-    sg_vlstr_t *filename = (sg_vlstr_t *)context;
+    sg_vsstr_t *filename = (sg_vsstr_t *)context;
     char *exe_str;
     const char *exe_tag = "exe -> /"; /* Use '/' for avoiding 'exe -> ' string in filename. */
 
@@ -280,33 +281,33 @@ void ls_l_shell_callback(enum sg_shell_event evt, const char *line, void *contex
     /* !Wierd! */
     exe_str = sg_str_r_str((char *)line, (char *)exe_tag);
     if (exe_str)
-        sg_vlstrcat(filename, exe_str + strlen(exe_tag) - 1 /* '/' char in the end */);
+        sg_vsstr_cat(filename, exe_str + strlen(exe_tag) - 1 /* '/' char in the end */);
 }
 
-sg_vlstr_t *sg_proc_filename(pid_t pid)
+sg_vsstr_t *sg_proc_filename(pid_t pid)
 {
 #define PROC_LIST_CMD_LEN 256
     int ret;
     struct sg_proc_shell_context ctx;
     char list_cmd[PROC_LIST_CMD_LEN];
-    sg_vlstr_t *filename;
+    sg_vsstr_t *filename;
 
-    filename = sg_vlstralloc();
+    filename = sg_vsstr_alloc();
     if (!filename)
         return NULL;
     snprintf(list_cmd, PROC_LIST_CMD_LEN, "ls -l /proc/%d/exe", pid);
 
-#if defined(OS_LNX)
+#if defined(SG_OS_LINUX)
     ret = sg_shell_exec(list_cmd, ls_l_shell_callback, filename);
     //printf("ret:%d\n", ret);
     assert(ret == 0);
 #else
-    sg_vlstrcpy(filename, "not support except on Linux");
+    sg_vsstr_cpy(filename, "not support except on Linux");
 #endif
-    if (sg_vlstrlen(filename) > 0)
+    if (sg_vsstr_len(filename) > 0)
         return filename;
 
-    sg_vlstrfree(&filename);
+    sg_vsstr_free(&filename);
     return NULL;
 }
 
@@ -331,7 +332,7 @@ int sg_proc_kill(pid_t pid)
 
     assert(pid > 0);
 
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
     DWORD dwDesiredAccess = PROCESS_TERMINATE;
     BOOL  bInheritHandle = FALSE;
     HANDLE hProcess = OpenProcess(dwDesiredAccess, bInheritHandle, (DWORD) pid);

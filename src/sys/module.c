@@ -6,30 +6,27 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <sg/sys/os.h>
-#if defined(OS_LNX)
-#include <linux/limits.h>
-#elif defined(OS_OSX)
-#include <sys/syslimits.h>
-#endif
-#include <sg/util/assert.h>
-#include <sg/util/log.h>
-
-#ifdef OS_LNX
-#include <unistd.h> /* getcwd readlink ssize_t */
-#endif
-
-#ifdef OS_WIN
-#include <direct.h> /* getcwd */
-#include <windows.h> /* GetModuleFileName */
-#define PATH_MAX MAX_PATH
-#endif
-
-#ifdef OS_OSX
-#include <mach-o/dyld.h> /* _NSGetExecutablePath */
-#endif
-
+#include <sg/sg.h>
 #include <sg/sys/module.h>
+
+#if defined(SG_OS_LINUX)
+# include <linux/limits.h>
+#elif defined(SG_OS_MACOS)
+# include <sys/syslimits.h>
+#endif
+
+#ifdef SG_OS_LINUX
+# include <unistd.h> /* getcwd readlink ssize_t */
+#endif
+
+#ifdef SG_OS_WINDOWS
+# include <direct.h> /* getcwd */
+# include <windows.h> /* GetModuleFileName */
+#endif
+
+#ifdef SG_OS_MACOS
+# include <mach-o/dyld.h> /* _NSGetExecutablePath */
+#endif
 
 int sg_cur_dir(char *buf, size_t buf_len)
 {
@@ -37,7 +34,7 @@ int sg_cur_dir(char *buf, size_t buf_len)
 
     assert(buf);
 
-#ifdef OS_WIN
+#ifdef SG_OS_WINDOWS
     res = _getcwd(buf, (int)buf_len);
 #else
     res = getcwd(buf, buf_len);
@@ -46,7 +43,7 @@ int sg_cur_dir(char *buf, size_t buf_len)
     return (res == NULL) ? -1 : 0; /* getcwd return NULL means failure. */
 }
 
-#ifdef OS_WIN
+#ifdef SG_OS_WINDOWS
 int sg_module_path(char *buf, size_t buf_len)
 {
     DWORD res;
@@ -62,7 +59,7 @@ int sg_module_path(char *buf, size_t buf_len)
 }
 #endif
 
-#ifdef OS_LNX
+#ifdef SG_OS_LINUX
 int sg_module_path(char *buf, size_t buf_len)
 {
     ssize_t size;
@@ -80,7 +77,7 @@ int sg_module_path(char *buf, size_t buf_len)
 }
 #endif
 
-#ifdef OS_OSX
+#ifdef SG_OS_MACOS
 int sg_module_path(char *buf, size_t buf_len)
 {
     int ret;

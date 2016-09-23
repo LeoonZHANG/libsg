@@ -4,9 +4,9 @@
  * Operating system information detection.
  */
 
-#include <sg/sys/os.h>
+#include <sg/sg.h>
 
-sg_vlstr_t *sg_os_distribution(void)
+bool sg_os_distribution(sg_vsstr_t *str_out)
 {
-    return NULL;
+    return true;
 }

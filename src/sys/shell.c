@@ -8,33 +8,33 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <sg/sys/os.h>
-#if defined(OS_WIN)
+#include <sg/sg.h>
+
+#if defined(SG_OS_WINDOWS)
 # include <windows.h>
 #endif
 #include <sg/util/log.h>
 #include <sg/sys/flag.h>
 #include <sg/sys/shell.h>
 #include <sg/sys/sleep.h>
-#include <sg/util/def.h>
-#include <sg/util/assert.h>
+#include <sg/util/trick.h>
 #include <sg/sys/thread.h>
 
 /* max line length in char */
 #define line_size 1024
 
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
 # define POPEN  popen
 # define PCLOSE pclose
 # define SHELL_COLORFUL_PRINT shell_colorful_print_psx
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
 # define POPEN  _popen
 # define PCLOSE _pclose
 # define SHELL_COLORFUL_PRINT shell_colorful_print_win
 #endif
 
 /* standard out colors */
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
 # define IN_SHELLCOLOR_WHITE        "\033[0;37m"
 # define IN_SHELLCOLOR_CYAN         "\033[0;36m"
 # define IN_SHELLCOLOR_BLUE         "\033[0;34m"
@@ -42,7 +42,7 @@
 # define IN_SHELLCOLOR_RED          "\033[0;31m"
 # define IN_SHELLCOLOR_WHITE_ON_RED "\033[0;37;41m"
 # define IN_SHELLCOLOR_DEFAULT      "\033[0m"
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
 # define IN_SHELLCOLOR_WHITE        ( FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE )
 # define IN_SHELLCOLOR_CYAN         ( FOREGROUND_GREEN | FOREGROUND_BLUE )
 # define IN_SHELLCOLOR_BLUE         ( FOREGROUND_BLUE )
@@ -63,10 +63,10 @@ struct shell_data {
 
 /* functions declaration */
 void shell_work(void *p);
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 void shell_colorful_print_win(const char *str, WORD color);
 #endif
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
 void shell_colorful_print_psx(const char *str, const char *color);
 #endif
 
@@ -143,7 +143,10 @@ sg_shell *sg_shell_open(const char *cmd, sg_shell_callback cb, void *context)
         sg_log_err("Shell command clone failure.");
     if (!d->run_flag || !d->cmd) {
         sg_flag_destroy(d->run_flag);
-        SAFE_FREE(d);
+        if (d) {
+            free(d);
+            d = NULL;
+        }
     }
 
     if (d) {
@@ -165,7 +168,10 @@ void sg_shell_close(sg_shell **s)
     if ((*s)->fp)
         PCLOSE((*s)->fp);
     sg_flag_destroy((*s)->run_flag);
-    SAFE_FREE((*s)->cmd);
+    if ((*s)->cmd) {
+        free((*s)->cmd);
+        (*s)->cmd;
+    }
     free(*s);
     *s = NULL;
 }
@@ -195,17 +201,17 @@ end:
     d->cb(SGSHELLEVENT_OVER, buf, d->context);
 }
 
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
 void shell_colorful_print_psx(const char *str, const char *color)
 {
-    sg_vlstr_t *s;
+    sg_vsstr_t *s;
 
-    s = sg_vlstrfmt("%s%s%s", color, str, IN_SHELLCOLOR_DEFAULT);
+    s = sg_vsstr_fmt("%s%s%s", color, str, IN_SHELLCOLOR_DEFAULT);
 
-    fprintf(stdout, "%s", sg_vlstrraw(s));
-    sg_vlstrfree(&s);
+    fprintf(stdout, "%s", sg_vsstr_raw(s));
+    sg_vsstr_free(&s);
 }
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
 void shell_colorful_print_win(const char *str, WORD color)
 {
     HANDLE h;
