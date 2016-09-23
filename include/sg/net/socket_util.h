@@ -1,19 +1,17 @@
 /*
- * net.h
+ * socket_util.h
  * Author: wangwei.
- * Common network util library.
+ * Common socket util library.
  */
 
-#ifndef LIBSG_NET_H
-#define LIBSG_NET_H
+#ifndef LIBSG_SOCKET_UTIL_H
+#define LIBSG_SOCKET_UTIL_H
+
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-#define IPv4_MAX_LEN 16
-#define IPv6_MAX_LEN 46
-#define IP_MAX_LEN IPv6_MAX_LEN
 
 /*
  Get human readable ip address and port from struct sockaddr
@@ -33,4 +31,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_NET_H */
+#endif /* LIBSG_SOCKET_UTIL_H */
