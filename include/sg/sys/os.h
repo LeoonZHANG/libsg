@@ -7,60 +7,62 @@
 #ifndef LIBSG_OS_H
 #define LIBSG_OS_H
 
-#include "../str/vlstr.h"
+#include <sg/sg.h>
+#include <sg/str/vsstr.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-/* 摘自最新的 Win7 SDK 中的 sdkddkver.h */
-/*#define _WIN32_WINNT_NT4                               0x0400
-#define _WIN32_WINNT_WIN2K                           0x0500
-#define _WIN32_WINNT_WINXP               0x0501
-#define _WIN32_WINNT_WS03                  0x0502
+/* come from sdkddkver.h of Win7 SDK */
+/*
+#define _WIN32_WINNT_NT4                  0x0400
+#define _WIN32_WINNT_WIN2K                0x0500
+#define _WIN32_WINNT_WINXP                0x0501
+#define _WIN32_WINNT_WS03                 0x0502
 #define _WIN32_WINNT_WIN6                 0x0600
 #define _WIN32_WINNT_VISTA                0x0600
 #define _WIN32_WINNT_WS08                 0x0600
-#define _WIN32_WINNT_LONGHORN           0x0600
-#define _WIN32_WINNT_WIN7                  0x0601
+#define _WIN32_WINNT_LONGHORN             0x0600
+#define _WIN32_WINNT_WIN7                 0x0601
 
 enum os_win_ver {
-    OSWINVER_2000 = 0,
-    OSWINVER_XP = 1,
+    OSWINVER_2000  = 0,
+    OSWINVER_XP    = 1,
     OSWINVER_VISTA = 2,
-    OSWINVER_7 = 2,
-    OSWINVER_8 = 2,
-    OSWINVER_10 = 2,
-};*/
+    OSWINVER_7     = 3,
+    OSWINVER_8     = 4,
+    OSWINVER_10    = 5
+};
+*/
 
-#if defined(__MACH__)
-# define OS_OSX
+#if defined(__MACH__) || defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__)
+# define SG_OS_MACOS
 #elif defined(linux) || defined(__linux) || defined(__linux__)
-# define OS_LNX
+# define SG_OS_LINUX
 #elif defined(__OpenBSD__)
-# define OS_OPENBSD
+# define SG_OS_OPENBSD
 #elif defined(__ANDROID__)
-# define OS_ANDROID
+# define SG_OS_ANDROID
 #elif defined(IOS_VERSION)
-# define OS_IOS
+# define SG_OS_IOS
 #elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-# define OS_WIN
-# define OS_32
+# define SG_OS_WINDOWS
 #elif defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
-# define OS_WIN
-# define OS_64
+# define SG_OS_WINDOWS
 #else
 # error Unsupported operating system.
 #endif
 
+/* unfinished */
 #if defined(__x86_64__)
-# define OS_64
+# define SG_OS_BITS_64
 #else
-# define OS_32
+# define OS_OS_BITS_32
 #endif
 
 /* Get distribution of OS. */
-sg_vlstr_t *sg_os_distribution(void);
+bool sg_os_distribution(sg_vsstr_t *str_out);
 
 /* sg_start_with_os(const char *binary_filename);
 
