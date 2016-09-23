@@ -12,14 +12,14 @@ const char* plaintext = "The quick brown fox jumps over the lazy dog";
 
 static void cipher_callback(const void* data, size_t size, void* user_data)
 {
-    sg_vlbuf_t* out = (sg_vlbuf_t*)user_data;
-    sg_vlbuf_insert(out, data, size);
+    sg_vsbuf_t* out = (sg_vsbuf_t*)user_data;
+    sg_vsbuf_insert(out, data, size);
 }
 
 TEST(test_crypto_sym, callback)
 {
-    sg_vlbuf_t* cipher = sg_vlbuf_create();
-    sg_vlbuf_t* decipher = sg_vlbuf_create();
+    sg_vsbuf_t* cipher = sg_vsbuf_create();
+    sg_vsbuf_t* decipher = sg_vsbuf_create();
 
     sg_sym_t* encrypter = sg_sym_alloc(SGSYMTYPE_AES_CBC, SGSYMMODE_ENC, cipher_callback);
     sg_sym_set_key(encrypter, (const unsigned char*)key, strlen(key), (const unsigned char*)iv, iv ? strlen(iv) : 0);
@@ -38,14 +38,14 @@ TEST(test_crypto_sym, callback)
     EXPECT_EQ(decipher->size, strlen(plaintext));
     EXPECT_EQ(0, memcmp(decipher->mem, plaintext, strlen(plaintext)));
 
-    sg_vlbuf_destroy(cipher);
-    sg_vlbuf_destroy(decipher);
+    sg_vsbuf_destroy(cipher);
+    sg_vsbuf_destroy(decipher);
 }
 
 static void test_crypto(enum sg_sym_type type)
 {
-    sg_vlbuf_t* cipher = sg_vlbuf_create();
-    sg_vlbuf_t* decipher = sg_vlbuf_create();
+    sg_vsbuf_t* cipher = sg_vsbuf_create();
+    sg_vsbuf_t* decipher = sg_vsbuf_create();
 
     sg_sym_str(type, key, iv, SGSYMMODE_ENC, plaintext, cipher);
     sg_sym_buf(type, key, iv, SGSYMMODE_DEC, cipher->mem, cipher->size, decipher);
@@ -53,8 +53,8 @@ static void test_crypto(enum sg_sym_type type)
     EXPECT_EQ(decipher->size, strlen(plaintext));
     EXPECT_EQ(0, memcmp(decipher->mem, plaintext, strlen(plaintext)));
 
-    sg_vlbuf_destroy(cipher);
-    sg_vlbuf_destroy(decipher);
+    sg_vsbuf_destroy(cipher);
+    sg_vsbuf_destroy(decipher);
 }
 
 TEST(test_crypto_sym, aes_256_cbc) { test_crypto(SGSYMTYPE_AES_CBC); }
