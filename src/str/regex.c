@@ -7,12 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <pcre.h>
-#include <sg/util/assert.h>
+#include <sg/sg.h>
 #include <sg/str/regex.h>
-#include <sg/util/log.h>
-#include <sg/util/def.h>
+#include <sg/util/trick.h>
 
-int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list_t *vl);
+int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vsstr_list_t *vl);
 
 sg_pattern *sg_regex_make_pattern(const char *pattern_str)
 {
@@ -41,22 +40,22 @@ int sg_regex_exec(char *src, sg_pattern *pat, sg_regex_callback cb, void *contex
     return regex_exec_real(src, pat, cb, context, NULL);
 }
 
-sg_vlstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat)
+sg_vsstr_list_t *sg_regex_exec2(char *src, sg_pattern *pat)
 {
     int ret;
-    sg_vlstr_list_t *vl;
+    sg_vsstr_list_t *vl;
 
     assert(src);
     assert(pat);
 
-    vl = sg_vlstr_list_alloc();
+    vl = sg_vsstr_list_alloc();
     if (!vl)
         return NULL;
 
     ret = regex_exec_real(src, pat, NULL, NULL, vl);
 
     if (ret < 0) {
-        sg_vlstr_list_free(&vl);
+        sg_vsstr_list_free(&vl);
         return NULL;
     }
 
@@ -75,10 +74,10 @@ void sg_regex_free_pattern(sg_pattern **pat)
     *p = NULL;
 }
 
-sg_vlstr_list_t *sg_regex_match(char *src, const char *pattern_str)
+sg_vsstr_list_t *sg_regex_match(char *src, const char *pattern_str)
 {
     sg_pattern *pat;
-    sg_vlstr_list_t *vl;
+    sg_vsstr_list_t *vl;
 
     assert(src);
     assert(pattern_str);
@@ -96,7 +95,7 @@ sg_vlstr_list_t *sg_regex_match(char *src, const char *pattern_str)
 }
 
 /* Matches a compiled regular expression against a given subject string. */
-int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vlstr_list_t *vl)
+int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *context, sg_vsstr_list_t *vl)
 {
     int i;
     int rc;
@@ -111,7 +110,10 @@ int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *cont
     assert(cb || vl);
 
     while (1) {
-        SAFE_FREE(ov);
+        if (ov) {
+            free(ov);
+            ov = NULL;
+        }
         ov_cnt += 3 * res_max_size;
         ov = (int *)malloc(ov_cnt * sizeof(int));
         if (!ov) {
@@ -135,13 +137,16 @@ int regex_exec_real(char *src, sg_pattern *pat, sg_regex_callback cb, void *cont
             if (cb)
                 cb(substr, substr_len, context);
             if (vl)
-                sg_vlstr_list_push2(vl, substr, substr_len);
+                sg_vsstr_list_push2(vl, substr, substr_len);
             /* printf("%2d: %.*s\n", i, substr_len, substr); */
         }
         break;
     }
 
-    SAFE_FREE(ov);
+    if (ov) {
+        free(ov);
+        ov = NULL;
+    }
 
     return (rc == PCRE_ERROR_NOMATCH) ? 0 : rc;
 }
