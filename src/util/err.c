@@ -1,6 +1,5 @@
-/*
+/**
  * err.c
- * Author: wangwei.
  * Error get and format.
  */
 
@@ -47,6 +46,15 @@ static void sg_err_add_custom(int err_no, const char *err_msg)
         exit(-1);
     }
     sg_err_map(err_no, err_msg);
+}
+
+const char *sg_err_fmt(sg_err_t err_no)
+{
+    if (err_no < SG_OK || err_no > SG_ERR_MAX) {
+        fprintf(stderr, "errno %d is invalid\n", err_no);
+        return NULL;
+    }
+    return err_msg_list[err_no];
 }
 
 /*
