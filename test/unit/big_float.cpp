@@ -87,29 +87,29 @@ TEST_F(test_big_float, assign_big_float)
 TEST_F(test_big_float, tranform_string)
 {
     const char* src;
-    sg_vlstr_t* str = sg_vlstralloc();
+    sg_vsstr_t* str = sg_vsstr_alloc();
 
     src = "1024000000";
     ASSERT_EQ(0, sg_big_float_set_str(_a, src, SGNUMSYS_DEC));
     ASSERT_EQ(0, sg_big_float_get_str(_a, SGNUMSYS_DEC, str));
-    ASSERT_STREQ(sg_vlstrraw(str), "1024e6");
+    ASSERT_STREQ(sg_vsstr_raw(str), "1024e6");
 
     src = "1024e6";
     ASSERT_EQ(0, sg_big_float_set_str(_a, src, SGNUMSYS_DEC));
     ASSERT_EQ(0, sg_big_float_get_str(_a, SGNUMSYS_DEC, str));
-    ASSERT_STREQ(sg_vlstrraw(str), "1024e6");
+    ASSERT_STREQ(sg_vsstr_raw(str), "1024e6");
 
     src = "-1024e6";
     ASSERT_EQ(0, sg_big_float_set_str(_a, src, SGNUMSYS_DEC));
     ASSERT_EQ(0, sg_big_float_get_str(_a, SGNUMSYS_DEC, str));
-    ASSERT_STREQ(sg_vlstrraw(str), "-1024e6");
+    ASSERT_STREQ(sg_vsstr_raw(str), "-1024e6");
 
     src = "-3480000000";
     ASSERT_EQ(0, sg_big_float_set_str(_a, src, SGNUMSYS_DEC));
     ASSERT_EQ(0, sg_big_float_get_str(_a, SGNUMSYS_DEC, str));
-    ASSERT_STREQ(sg_vlstrraw(str), "-348e7");
+    ASSERT_STREQ(sg_vsstr_raw(str), "-348e7");
 
-    sg_vlstrfree(&str);
+    sg_vsstr_free(&str);
 }
 
 TEST_F(test_big_float, add)

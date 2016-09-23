@@ -31,10 +31,10 @@ TEST_F(test_big_int, transform_binary)
 {
     unsigned int bin[2] = { 0x0000000f, 0xf0000000 };
     sg_big_int_set_bin(_a, (const unsigned char *)bin, sizeof(bin));
-    sg_vlbuf_t* buf = sg_vlbuf_create();
+    sg_vsbuf_t* buf = sg_vsbuf_create();
     sg_big_int_get_bin(_a, buf);
     ASSERT_TRUE(buf->size == sizeof(bin) && memcmp(buf->mem, &bin, sizeof(bin)) == 0);
-    sg_vlbuf_destroy(buf);
+    sg_vsbuf_destroy(buf);
 }
 
 TEST_F(test_big_int, transform_regular_integer)
@@ -103,29 +103,29 @@ TEST_F(test_big_int, assign_big_float)
 TEST_F(test_big_int, tranform_string)
 {
     const char* src;
-    sg_vlstr_t* str = sg_vlstralloc();
+    sg_vsstr_t* str = sg_vsstr_alloc();
 
     src = "1024000000";
     sg_big_int_set_str(_a, src, SGNUMSYS_DEC);
     sg_big_int_get_str(_a, SGNUMSYS_DEC, str);
-    ASSERT_STREQ(sg_vlstrraw(str), src);
+    ASSERT_STREQ(sg_vsstr_raw(str), src);
 
     src = "-3480000000";
     sg_big_int_set_str(_a, src, SGNUMSYS_DEC);
     sg_big_int_get_str(_a, SGNUMSYS_DEC, str);
-    ASSERT_STREQ(sg_vlstrraw(str), src);
+    ASSERT_STREQ(sg_vsstr_raw(str), src);
 
     src = "3480a0b0c0";
     sg_big_int_set_str(_a, src, SGNUMSYS_HEX);
     sg_big_int_get_str(_a, SGNUMSYS_HEX, str);
-    ASSERT_STREQ(sg_vlstrraw(str), src);
+    ASSERT_STREQ(sg_vsstr_raw(str), src);
 
     src = "110010011";
     sg_big_int_set_str(_a, src, SGNUMSYS_BIN);
     sg_big_int_get_str(_a, SGNUMSYS_BIN, str);
-    ASSERT_STREQ(sg_vlstrraw(str), src);
+    ASSERT_STREQ(sg_vsstr_raw(str), src);
 
-    sg_vlstrfree(&str);
+    sg_vsstr_free(&str);
 }
 
 TEST_F(test_big_int, add)

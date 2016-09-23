@@ -9,7 +9,7 @@
 #include <inttypes.h>
 #include <sg/util/log.h>
 #include <sg/str/base64.h>
-#include <sg/str/vlstr.h>
+#include <sg/str/vsstr.h>
 #include <gtest/gtest.h>
 
 TEST(test_sg_base64, enc_dec)
@@ -20,19 +20,19 @@ TEST(test_sg_base64, enc_dec)
         0x14, 0x0e, 0x00, 0x15
     };
     size_t bin_size = sizeof(bin_buf);
-    sg_vlstr_t *b64_str;
-    sg_vlbuf_t *raw_bin;
+    sg_vsstr_t *b64_str;
+    sg_vsbuf_t *raw_bin;
 
-    b64_str = sg_vlstralloc();
+    b64_str = sg_vsstr_alloc();
     sg_base64_enc((void *)bin_buf, bin_size, b64_str);
 
-    raw_bin = sg_vlbuf_create();
-    sg_base64_dec(sg_vlstrraw(b64_str), sg_vlstrlen(b64_str), raw_bin);
+    raw_bin = sg_vsbuf_create();
+    sg_base64_dec(sg_vsstr_raw(b64_str), sg_vsstr_len(b64_str), raw_bin);
 
     ASSERT_TRUE(raw_bin->size == bin_size && memcmp(raw_bin->mem, bin_buf, bin_size) == 0);
 
     if (b64_str)
-        sg_vlstrfree(&b64_str);
+        sg_vsstr_free(&b64_str);
     if (raw_bin)
-        sg_vlbuf_destroy(raw_bin);
+        sg_vsbuf_destroy(raw_bin);
 }
