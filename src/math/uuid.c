@@ -1,4 +1,4 @@
-/*
+/**
  * uuid.c
  * Author: wangwei.
  * Universally unique ID library based on libuuid.
@@ -6,8 +6,28 @@
 
 #include <stdio.h>
 #include <string.h>
-#if defined(WIN32)
-#include <Objbase.h>
+#include <sg/sg.h>
+#include <sg/hash/uuid.h>
+
+#if defined(SG_OS_WINDOWS)
+# include <Objbase.h>
+#endif
+
+#ifndef SG_OS_WINDOWS
+# include <uuid/uuid.h>
+#endif
+
+/* FIXME: There's no uuid_generate_time_safe on macOS, simply use regular one
+   instead of *_safe. */
+#if defined(SG_OS_MACOS)
+# define uuid_generate_time_safe uuid_generate_time
+#endif
+
+
+
+
+
+#if defined(SG_OS_WINDOWS)
 
 static void uuid_generate_win32(uuid_t* in)
 {
@@ -30,26 +50,18 @@ static void uuid_unparse_win32(uuid_t* id, char* out, int (__cdecl *func)(int))
 # define uuid_unparse_lower(id, out)    uuid_unparse_win32(&id, out, tolower)
 # define uuid_unparse_upper(id, out)    uuid_unparse_win32(&id, out, toupper)
 
-#else
-#include <uuid/uuid.h>
 #endif
-/* FIXME: There's no uuid_generate_time_safe on macOS, simply use regular one
-   instead of *_safe. */
-#if defined(__MACH__)
-# define uuid_generate_time_safe uuid_generate_time
-#endif
-#include <sg/util/log.h>
-#include <sg/hash/uuid.h>
-#include <sg/util/assert.h>
 
-struct sg_uuid_str sg_uuid_gen(enum sg_uuid_method method, int uppercase)
+
+
+
+void sg_uuid_gen(enum sg_uuid_method method, bool uppercase, struct sg_uuid_str *out_str)
 {
     uuid_t uu;
-    struct sg_uuid_str us;
 
     assert(method >= SGUUIDMETHOD_DEFAULT && method <= SGUUIDMETHOD_TIME_MAC);
 
-    memset(&us, 0, sizeof(struct sg_uuid_str));
+    memset(out_str, 0, sizeof(struct sg_uuid_str));
 
     switch (method) {
     case SGUUIDMETHOD_DEFAULT:
@@ -65,14 +77,11 @@ struct sg_uuid_str sg_uuid_gen(enum sg_uuid_method method, int uppercase)
         uuid_generate_time_safe(uu);
         break;
     default:
-        sg_log_err("UUID method error.");
-        return us;
+        return;
     }
 
-    if (uppercase == 0)
-        uuid_unparse_lower(uu, us.buf);
+    if (uppercase)
+        uuid_unparse_upper(uu, out_str->buf);
     else
-        uuid_unparse_upper(uu, us.buf);
-
-    return us;
+        uuid_unparse_lower(uu, out_str->buf);
 }
