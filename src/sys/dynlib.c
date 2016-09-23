@@ -1,44 +1,42 @@
 /*
- * dlib.c
+ * dynlib.c
  * Author: wangwei.
  * Dynamic library handle.
  */
 
-#include <sg/sys/os.h>
-#if defined(OS_LNX) || defined(OS_OSX)
+#include <string.h>
+#include <sg/sg.h>
+#include <sg/sys/dynlib.h>
+
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
 # include <dlfcn.h>
-#endif
-#if defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
 # include <Windows.h>
 #endif
-#include <string.h>
-#include <sg/util/log.h>
-#include <sg/sys/dlib.h>
-#include <sg/util/assert.h>
 
-const char *sg_dlib_error(void);
+const char *sg_dynlib_error(void);
 
-sg_dlib *sg_dlib_open(const char *path)
+sg_dynlib *sg_dynlib_open(const char *path)
 {
     void *handle;
 
     assert(path);
     assert(strlen(path) > 0);
 
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
     handle = dlopen(path, RTLD_LAZY);
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
     handle = (void *)LoadLibrary(path); /* returns HMODULE */
 #endif
     if (!handle) {
-        sg_log_err("dlopen %s.", sg_dlib_error());
+        sg_log_err("dlopen %s.", sg_dynlib_error());
         return NULL;
     }
 
     return handle;
 }
 
-void *sg_dlib_symbol(sg_dlib *handle, const char *symbol)
+void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol)
 {
     void *func_addr;
 
@@ -46,30 +44,30 @@ void *sg_dlib_symbol(sg_dlib *handle, const char *symbol)
     assert(symbol);
     assert(strlen(symbol) > 0);
 
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
     func_addr = dlsym(handle, symbol);
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
     func_addr = (void *)GetProcAddress(handle, symbol); /* returns FARPROC */
 #endif
 
     if (!func_addr) {
-        sg_log_err("dlib_symbol error, %s.", sg_dlib_error());
+        sg_log_err("dynlib_symbol error, %s.", sg_dynlib_error());
         return NULL;
     }
 
     return func_addr;
 }
 
-void sg_dlib_close(sg_dlib **handle)
+void sg_dynlib_close(sg_dynlib **handle)
 {
     assert(handle);
 
     if (!*handle)
         return;
 
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
     dlclose(*handle);
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
     FreeLibrary(*handle);
 #endif
 
@@ -77,11 +75,11 @@ void sg_dlib_close(sg_dlib **handle)
 }
 
 /* Get last error message. */
-const char *sg_dlib_error(void)
+const char *sg_dynlib_error(void)
 {
-#if defined(OS_LNX) || defined(OS_OSX)
+#if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
     return dlerror();
-#elif defined(OS_WIN)
+#elif defined(SG_OS_WINDOWS)
     DWORD errno, sys_locale;
     errno = GetLastError();
     HLOCAL handle_local = NULL;
