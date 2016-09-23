@@ -10,12 +10,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <curl/curl.h>
-#include "../../include/util/log.h"
-#include "../../include/util/def.h"
-#include "../../include/util/assert.h"
-#include "../../include/net/http.h"
-#include "../../include/util/vlbuf.h"
-#include "../../include/str/string.h"
+#include <sg/sg.h>
+#include <sg/net/http.h>
+#include <sg/util/vsbuf.h>
+#include <sg/str/string.h>
 
 struct sg_http_real {
     CURL                        *curl;

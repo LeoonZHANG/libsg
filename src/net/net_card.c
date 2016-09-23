@@ -1,33 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sg/sg.h>
 #include <sg/net/net_card.h>
 
-#ifdef WIN32
-#include <winsock2.h>
-#include <WS2tcpip.h>
-#include <iphlpapi.h>
-#pragma comment(lib, "iphlpapi.lib")
+#ifdef SG_OS_WINDOWS
+# include <winsock2.h>
+# include <WS2tcpip.h>
+# include <iphlpapi.h>
+# pragma comment(lib, "iphlpapi.lib")
 #else
-#include <arpa/inet.h>
-#include <errno.h>
-#include <ifaddrs.h>
-#include <net/if.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-#ifdef __MACH__
-#include <net/if_dl.h>
-#include <sys/sockio.h>
-#else
-#include <netpacket/packet.h>
-#endif
+# include <arpa/inet.h>
+# include <errno.h>
+# include <ifaddrs.h>
+# include <net/if.h>
+# include <netdb.h>
+# include <netinet/in.h>
+# include <sys/ioctl.h>
+# include <sys/socket.h>
+# include <sys/types.h>
+# include <unistd.h>
 #endif
 
-#ifdef WIN32
+#ifdef SG_OS_MACOS
+# include <net/if_dl.h>
+# include <sys/sockio.h>
+#else
+# include <netpacket/packet.h>
+#endif
+
+#ifdef SG_OS_WINDOWS
 
 static int is_vista_above()
 {
@@ -257,14 +259,14 @@ int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_i
         strncpy(if_info_set[actual_if].name, if_addr->ifa_name, sizeof(if_info_set[actual_if].name));
 
         switch (if_addr->ifa_addr->sa_family) {
-#ifdef __MACH__
+#ifdef SG_OS_MACOS
         case AF_LINK:
 #else
         case AF_PACKET:
 #endif
             if (if_addr->ifa_addr != NULL) {
                 unsigned char mac[6];
-#ifdef __MACH__
+#ifdef SG_OS_MACOS
                 struct sockaddr_dl* sdl = (struct sockaddr_dl*)if_addr->ifa_addr;
                 if (6 == sdl->sdl_alen) {
                     memcpy(mac, LLADDR(sdl), sdl->sdl_alen);

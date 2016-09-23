@@ -7,13 +7,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sg/sg.h>
+#include <sg/sys/flag.h>
+#include <sg/sys/thread.h>
+#include <sg/str/string.h>
+#include <sg/net/http_server.h>
 #include "../../3rdparty/mongoose_5.6/mongoose.h"
-#include "../../include/util/log.h"
-#include "../../include/sys/flag.h"
-#include "../../include/sys/thread.h"
-#include "../../include/util/assert.h"
-#include "../../include/str/string.h"
-#include "../../include/net/http_server.h"
 
 /* HTTP server context */
 struct http_server_real {

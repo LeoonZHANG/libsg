@@ -7,10 +7,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 #include <uv.h>
-#include "../../include/util/assert.h"
-#include "../../include/net/udp.h"
+#include <sg/sg.h>
+#include <sg/net/udp.h>
 
 struct sg_udp_real {
     uv_loop_t *uvloop;
