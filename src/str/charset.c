@@ -8,9 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
-#include <sg/util/assert.h>
+#include <sg/sg.h>
 #include <sg/str/charset.h>
-#include <sg/util/log.h>
 
 int sg_charset_conv(const char *from_charset, const char *to_charset,
                     const char *from_str, size_t from_len,
