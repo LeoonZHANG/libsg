@@ -6,20 +6,19 @@
 
 #include <stdlib.h>
 #include <signal.h>
+#include <sg/sg.h>
 #include <sg/sys/thread.h>
-#include <sg/util/assert.h>
-#include <sg/sys/os.h>
 
-#if defined(OS_WIN)
-#include <Windows.h>
-#include <process.h>
+#if defined(SG_OS_WINDOWS)
+# include <Windows.h>
+# include <process.h>
 #else
-#include <pthread.h>
+# include <pthread.h>
 #endif
 
 struct sg_thread_real {
     void                *arg;
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
     HANDLE              handle;
 #else
     pthread_t           handle;
@@ -27,7 +26,7 @@ struct sg_thread_real {
     sg_thread_routine_func_t   *routine;
 };
 
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 static unsigned int __stdcall thread_main_routine(void *arg)
 {
     struct sg_thread_real *self;
@@ -52,7 +51,7 @@ static void *thread_main_routine(void *arg)
 
 sg_thread_t *sg_thread_alloc(sg_thread_routine_func_t *routine, void *arg)
 {
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 
     struct sg_thread_real *self = NULL;
 
@@ -100,7 +99,7 @@ sg_thread_t *sg_thread_alloc(sg_thread_routine_func_t *routine, void *arg)
 
 void sg_thread_join(sg_thread_t *self)
 {
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 
     DWORD res;
     BOOL bres;
