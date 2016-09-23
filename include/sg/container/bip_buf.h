@@ -1,20 +1,12 @@
-/*
+/**
  * bip_buf.h
  * Bip buffer data structure.
  */
- 
- /*
-  * 参考实现：
-  * https://github.com/willemt/bipbuffer 清爽，大部分可以直接拿来用
-  * http://blog.csdn.net/hui523hui523hui523/article/details/7389551
-  * https://github.com/ognian-/BipBuffer
-  * 其中，get接口的参数和返回值设计需要疑问，get返回的实际数据量是否一定等于参数指定的大小，这个喝bip buffer的原理有关，需要关注，并正确体现在接口中
-  * */
 
 #ifndef LIBSG_BIP_BUF_H
 #define LIBSG_BIP_BUF_H
 
-#include <stddef.h> /* size_t */
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,7 +31,7 @@ sg_bip_buf_t *sg_bip_buf_create(size_t size);
  * @return data on success, NULL if we can't peek at this much data */
 unsigned char *sg_bip_buf_peek(const sg_bip_buf_t *me, const unsigned int len);
 
-int sg_bip_buf_get(sg_bip_buf_t *buf, size_t try_get_size, unsigned char **get_buf, size_t *real_get_size);
+int sg_bip_buf_get(sg_bip_buf_t *buf, size_t try_get_size, unsigned char *out_buf, size_t *real_get_size);
 
 /* will replace this api with sg_bip_buf_get */
 /**
