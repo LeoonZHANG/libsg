@@ -1,30 +1,32 @@
 /*
- * dlib.h
+ * dynlib.h
  * Author: wangwei.
  * Dynamic library handle.
  */
 
-#ifndef LIBSG_DLIB_H
-#define LIBSG_DLIB_H
+#ifndef LIBSG_DYNLIB_H
+#define LIBSG_DYNLIB_H
+
+#include <sg/sg.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 /* handle type */
-typedef void sg_dlib;
+typedef void sg_dynlib;
 
 /* Open dynamic library handle. */
-sg_dlib *sg_dlib_open(const char *path);
+sg_dynlib *sg_dynlib_open(const char *path);
 
 /* Load function address by symbol from dynamic library. */
-void *sg_dlib_symbol(sg_dlib *handle, const char *symbol);
+void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol);
 
 /* Close dynamic library handle. */
-void sg_dlib_close(sg_dlib **handle);
+void sg_dynlib_close(sg_dynlib **handle);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_DLIB_H */
+#endif /* LIBSG_DYNLIB_H */
