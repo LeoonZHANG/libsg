@@ -1,9 +1,10 @@
+#include <sg/sg.h>
 #include <sg/container/bloom_filter.h>
 #include <tbox/tbox.h>
 #include <tbox/container/bloom_filter.h>
 
 /****************************************************************
- * regular bloom_filter
+ * regular bloom filter
  ***************************************************************/
 struct sg_bloom_filter_real {
     tb_bloom_filter_ref_t pimpl;
@@ -86,7 +87,7 @@ int sg_bloom_filter_contain(sg_bloom_filter_t *bloom, const void *key)
 #include <dablooms.h>
 
 /****************************************************************
- * counting_bloom
+ * counting bloom filter
  ***************************************************************/
 struct sg_counting_bloom_filter_real {
     counting_bloom_t *pimpl;
@@ -140,7 +141,7 @@ int sg_counting_bloom_filter_contain(sg_counting_bloom_filter_t *bloom, const ch
 
 
 /****************************************************************
- * scaling_bloom
+ * scaling bloom filter
  ***************************************************************/
 struct sg_scaling_bloom_filter_real {
     scaling_bloom_t* pimpl;

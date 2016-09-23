@@ -1,10 +1,10 @@
-#include <sg/crypto/sym.h>
+#include <string.h>
+#include <stdio.h>
 #include <openssl/conf.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <openssl/aes.h>
-#include <stdio.h>
-#include <string.h>
+#include <sg/crypto/sym.h>
 
 #undef min
 #undef max
@@ -231,12 +231,12 @@ void sg_sym_flush(sg_sym_t* sym)
 
 static void buffer_output_callback(const void* data, size_t size, void *user_data)
 {
-    sg_vlbuf_t* res = (sg_vlbuf_t*) user_data;
+    sg_vsbuf_t* res = (sg_vsbuf_t*) user_data;
     if (res)
-        sg_vlbuf_insert(res, data, size);
+        sg_vsbuf_insert(res, data, size);
 }
 
-int sg_sym_buf(enum sg_sym_type type, const char *key, const char *iv, enum sg_sym_mode mode, const void *src, size_t src_len, sg_vlbuf_t *res)
+int sg_sym_buf(enum sg_sym_type type, const char *key, const char *iv, enum sg_sym_mode mode, const void *src, size_t src_len, sg_vsbuf_t *res)
 {
     sg_sym_t* sym = sg_sym_alloc(type, mode, buffer_output_callback);
     sg_sym_set_key(sym, (const unsigned char*) key, strlen(key), (const unsigned char*) iv, iv ? strlen(iv) : 0);
@@ -247,7 +247,7 @@ int sg_sym_buf(enum sg_sym_type type, const char *key, const char *iv, enum sg_s
     return 0;
 }
 
-int sg_sym_str(enum sg_sym_type type, const char *key, const char *iv, enum sg_sym_mode mode, const char *src, sg_vlbuf_t *res)
+int sg_sym_str(enum sg_sym_type type, const char *key, const char *iv, enum sg_sym_mode mode, const char *src, sg_vsbuf_t *res)
 {
     return sg_sym_buf(type, key, iv, mode, src, strlen(src), res);
 }

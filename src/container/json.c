@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <sg/container/json.h>
-#include <sg/util/assert.h>
 #include "cjson/cJSON.h"
 #include "json_checker/JSON_checker.h"
+#include <sg/sg.h>
+#include <sg/container/json.h>
 
 int sg_json_check(const char *json, int check_depth)
 {

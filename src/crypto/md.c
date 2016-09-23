@@ -1,4 +1,4 @@
-#include <sg/crypto/md.h>
+#include <string.h>
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include <openssl/sha.h>
@@ -6,7 +6,8 @@
 #include <openssl/md4.h>
 #include <openssl/md5.h>
 #include <openssl/ripemd.h>
-#include <string.h>
+#include <sg/sg.h>
+#include <sg/crypto/md.h>
 
 /* Message digest handle opened by sg_md_start. */
 struct sg_md_ctx {

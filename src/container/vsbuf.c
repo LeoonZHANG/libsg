@@ -1,5 +1,5 @@
-/*
- * flex_buf.c
+/**
+ * vsbuf.c
  * Author: wangwei.
  * Flexible buffer.
  */
@@ -7,15 +7,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/sg/util/log.h"
-#include "../../include/sg/util/assert.h"
-#include <sg/container/vlbuf.h>
+#include <sg/sg.h>
+#include <sg/container/vsbuf.h>
 
-struct sg_vlbuf *sg_vlbuf_create(void)
+struct sg_vsbuf *sg_vsbuf_create(void)
 {
-    struct sg_vlbuf *buf;
+    struct sg_vsbuf *buf;
 
-    buf = (struct sg_vlbuf *)malloc(sizeof(struct sg_vlbuf));
+    buf = (struct sg_vsbuf *)malloc(sizeof(struct sg_vsbuf));
     if (!buf) {
         sg_log_err("error");
         return NULL;
@@ -26,7 +25,7 @@ struct sg_vlbuf *sg_vlbuf_create(void)
     return buf;
 }
 
-int sg_vlbuf_insert(struct sg_vlbuf *buf, const void *mem, size_t size)
+int sg_vsbuf_insert(struct sg_vsbuf *buf, const void *mem, size_t size)
 {
     size_t new_size;
     void *new_mem;
@@ -54,7 +53,7 @@ int sg_vlbuf_insert(struct sg_vlbuf *buf, const void *mem, size_t size)
     return 0;
 }
 
-void sg_vlbuf_reset(struct sg_vlbuf *buf)
+void sg_vsbuf_reset(struct sg_vsbuf *buf)
 {
     sg_assert(buf);
 
@@ -65,7 +64,7 @@ void sg_vlbuf_reset(struct sg_vlbuf *buf)
     buf->size = 0;
 }
 
-void sg_vlbuf_destroy(struct sg_vlbuf *buf)
+void sg_vsbuf_destroy(struct sg_vsbuf *buf)
 {
     sg_assert(buf);
 
@@ -73,4 +72,3 @@ void sg_vlbuf_destroy(struct sg_vlbuf *buf)
         free(buf->mem);
     free(buf);
 }
-

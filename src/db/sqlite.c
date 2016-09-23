@@ -1,7 +1,8 @@
-/*
- * pgsql.c
+/**
+ * sqlite.c
  * Author: wangwei.
- * Postgresql access library.
+ * Sqlite access library.
  */
 
+#include <sg/sg.h>
 #include "sg/db/sqlite.h"

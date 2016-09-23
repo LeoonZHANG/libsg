@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <zlib.h>
+#include <sg/sg.h>
 
 int sg_zip_compress(char *in, int in_size, char **dest, int *dest_size)
 {

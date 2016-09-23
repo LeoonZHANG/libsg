@@ -1,8 +1,10 @@
 #include <stdint.h>
 #include <string.h>
+#include <mpir.h>
+#include <sg/sg.h>
 #include <sg/math/c_int.h>
 #include <sg/math/big_int.h>
-#include <mpir.h>
+
 
 #define BIG_INT_ORDER   1
 #define BIG_INT_ENDIAN  0
@@ -34,7 +36,7 @@ int sg_big_int_set_bin(sg_big_int_t* dst, const unsigned char* bin, size_t bin_l
     return 0;
 }
 
-int sg_big_int_get_bin(sg_big_int_t* src, sg_vlbuf_t* buf)
+int sg_big_int_get_bin(sg_big_int_t* src, sg_vsbuf_t* buf)
 {
     if (!src || !buf)
         return -1;
@@ -45,7 +47,7 @@ int sg_big_int_get_bin(sg_big_int_t* src, sg_vlbuf_t* buf)
     char* data = malloc (count * size);
     mpz_export(data, &count, BIG_INT_ORDER, size, BIG_INT_ENDIAN, 0, src->mpz);
     if (count > 0)
-       sg_vlbuf_insert(buf, data, count); 
+       sg_vsbuf_insert(buf, data, count);
     free(data);
     return 0;
 }
@@ -220,21 +222,21 @@ int sg_big_int_set_big_float(sg_big_int_t *dst, sg_big_float_t *src)
     /* Trunc the float number to be integer in order to get a float-string without exponent,
        which can pass to sg_big_int_set_str directly. */
     sg_big_float_trunc(src, src);
-    sg_vlstr_t* str = sg_vlstralloc();
+    sg_vsstr_t* str = sg_vsstr_alloc();
     size_t exponent = 0;
     sg_big_float_get_mantissa_and_exponent(src, SGNUMSYS_DEC, str, &exponent);
 
     size_t padding = exponent;
-    const char* p = sg_vlstrraw(str);
+    const char* p = sg_vsstr_raw(str);
     /* count up negative symbol */
     if (p[0] == '-')
         ++padding;
     padding -= strlen(p);
     for (size_t i = 0; i < padding; ++i)
-        sg_vlstrcat(str, "0");
+        sg_vsstr_cat(str, "0");
 
-    sg_big_int_set_str(dst, sg_vlstrraw(str), SGNUMSYS_DEC);
-    sg_vlstrfree(&str);
+    sg_big_int_set_str(dst, sg_vsstr_raw(str), SGNUMSYS_DEC);
+    sg_vsstr_free(&str);
     return 0;
 }
 
@@ -248,7 +250,7 @@ int sg_big_int_set_str(sg_big_int_t *dst, const char *num_str, enum sg_num_sys s
     return 0;
 }
 
-int sg_big_int_get_str(sg_big_int_t *src, enum sg_num_sys sys, sg_vlstr_t * str)
+int sg_big_int_get_str(sg_big_int_t *src, enum sg_num_sys sys, sg_vsstr_t * str)
 {
     int base = SG_COMPUTE_BASE(sys);
     if (!src || !str || base <= 0)
@@ -256,7 +258,7 @@ int sg_big_int_get_str(sg_big_int_t *src, enum sg_num_sys sys, sg_vlstr_t * str)
 
     char* s = (char*) malloc(mpz_sizeinbase(src->mpz, base) + 2);
     mpz_get_str(s, base, src->mpz);
-    sg_vlstrcpy(str, s);
+    sg_vsstr_cpy(str, s);
     free(s);
     return 0;
 }

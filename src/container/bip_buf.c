@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> /* for memcpy */
+#include <sg/sg.h>
 #include <sg/container/bip_buf.h>
 
 struct sg_bip_buf_real
@@ -8,7 +9,7 @@ struct sg_bip_buf_real
     unsigned long int buf_size;
     unsigned int a_start, a_end; /* region A */
     unsigned int b_end; /* region B */
-    int b_inuse; /* is B inuse? */
+    int b_inuse; /* is B inuse */
     unsigned char buf[]; /* how about char *buf ? */
 };
 

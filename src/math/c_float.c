@@ -6,7 +6,8 @@
 
 #include <float.h>
 #include <math.h>
-#include "../../include/sg/math/c_float.h"
+#include <sg/sg.h>
+#include <sg/math/c_float.h>
 
 enum sg_c_float_cmp sg_c_float_cmp_f(float a, float b)
 {

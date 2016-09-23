@@ -1,7 +1,8 @@
-#include <sg/hash/crc.h>
-#include "crc_impl.h"
 #include <string.h>
 #include <stdio.h>
+#include <sg/sg.h>
+#include <sg/hash/crc.h>
+#include "crc_impl.h"
 
 DECLARE_CRC8_TABLE(_table);
 static int crc8_table_populated = 0;

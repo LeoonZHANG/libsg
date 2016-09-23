@@ -1,8 +1,9 @@
+#include <string.h>
+#include <mpir.h>
+#include <sg/sg.h>
 #include <sg/math/c_float.h>
 #include <sg/math/big_float.h>
 #include <sg/math/big_int.h>
-#include <mpir.h>
-#include <string.h>
 
 #define BIG_FLOAT_ORDER   1
 #define BIG_FLOAT_ENDIAN  0
@@ -156,10 +157,10 @@ int sg_big_float_set_big_int(sg_big_float_t *dst, sg_big_int_t *src)
     if (!dst || !src)
         return -1;
 
-    sg_vlstr_t* str = sg_vlstralloc();
+    sg_vsstr_t* str = sg_vsstr_alloc();
     sg_big_int_get_str(src, SGNUMSYS_DEC, str);
-    sg_big_float_set_str(dst, sg_vlstrraw(str), SGNUMSYS_DEC);
-    sg_vlstrfree(&str);
+    sg_big_float_set_str(dst, sg_vsstr_raw(str), SGNUMSYS_DEC);
+    sg_vsstr_free(&str);
     return 0;
 }
 
@@ -182,7 +183,7 @@ int sg_big_float_set_str(sg_big_float_t *dst, const char *num_str, enum sg_num_s
     return 0;
 }
 
-int sg_big_float_get_str(sg_big_float_t *src, enum sg_num_sys sys, sg_vlstr_t * str)
+int sg_big_float_get_str(sg_big_float_t *src, enum sg_num_sys sys, sg_vsstr_t * str)
 {
     int base = SG_COMPUTE_BASE(sys);
     if (!src || !str || base <= 0)
@@ -190,21 +191,21 @@ int sg_big_float_get_str(sg_big_float_t *src, enum sg_num_sys sys, sg_vlstr_t * 
 
     mp_exp_t exp;
     char* s = mpf_get_str(NULL, &exp, base, 0, src->mpf);
-    sg_vlstrcpy(str, s);
+    sg_vsstr_cpy(str, s);
     if (exp != 0) {
         long mantissa_length = strlen(s);
         /* rid negative symbol */
         if (mpf_sgn(src->mpf) == -1)
             --mantissa_length;
-        sg_vlstr_t* float_exp = sg_vlstrfmt("e%ld", exp - mantissa_length);
-        sg_vlstrcat(str, sg_vlstrraw(float_exp));
-        sg_vlstrfree(&float_exp);
+        sg_vsstr_t* float_exp = sg_vsstrfmt("e%ld", exp - mantissa_length);
+        sg_vsstr_cat(str, sg_vsstr_raw(float_exp));
+        sg_vsstr_free(&float_exp);
     }
     free(s);
     return 0;
 }
 
-int sg_big_float_get_mantissa_and_exponent(sg_big_float_t *src, enum sg_num_sys sys, sg_vlstr_t * mantissa, size_t* exponent)
+int sg_big_float_get_mantissa_and_exponent(sg_big_float_t *src, enum sg_num_sys sys, sg_vsstr_t * mantissa, size_t* exponent)
 {
     int base = SG_COMPUTE_BASE(sys);
     if (!src || !mantissa || base <= 0)
@@ -212,7 +213,7 @@ int sg_big_float_get_mantissa_and_exponent(sg_big_float_t *src, enum sg_num_sys 
 
     mp_exp_t exp;
     char* s = mpf_get_str(NULL, &exp, base, 0, src->mpf);
-    sg_vlstrcpy(mantissa, s);
+    sg_vsstr_cpy(mantissa, s);
     *exponent = exp;
     free(s);
     return 0;
