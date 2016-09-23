@@ -1,4 +1,7 @@
-#if defined(_WIN32) && !defined(__GNUC__)
+#include "../../sys/os.h"
+#include "../../util/compiler.h"
+
+#if defined(SG_OS_WINDOWS) && !defined(SG_COMPILER_GCC)
 #include <stdarg.h>
 
 /* Emulate snprintf() on Windows */
