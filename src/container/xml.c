@@ -1,29 +1,22 @@
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-
-
-
-//=============================
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
-
-//=============
 #include "vtd-xml/vtdGen.h"
 #include "vtd-xml/vtdNav.h"
 #include "vtd-xml/autoPilot.h"
 #include "vtd-xml/XMLModifier.h"
 #include "vtd-xml/xpath.h"
-
+#include <sg/sg.h>
 #include <sg/container/xml.h>
 
 #if defined(WIN32)
 #define asprintf rpl_asprintf
 #endif
 
-//=================================
+
 static char *make_utf8_string(const wchar_t *in, int inSize) {
 
 	int inIndex = 0;
@@ -117,10 +110,7 @@ static wchar_t *make_unicode_string(const char *in, int inSize) {
 
 
 
-//===================== vtdxml ===============================================
-
-static void vtdxml_init();
-static void vtdxml_free();
+/********************************** vtdxml **********************************/
 static int vtdxml_get_string(VTDNav *vn, const char *xpath, char **value);
 static int vtdxml_set_string(VTDNav *vn, const char *xpath, char *value);
 static VTDNav * vtdxml_create_doc(const char *buffer, size_t length);
@@ -191,13 +181,6 @@ static AutoPilot *select_xpath(VTDNav *vn, const char *xpath,char *nsMap[],int n
 	return ap;
 
 }
-/**
- * =====================================================================
- */
-static void vtdxml_init() {
-}
-static void vtdxml_free() {
-}
 
 static int vtdxml_get_string(VTDNav *vn, const char *xpath, char **value) {
 	exception e;
@@ -266,6 +249,7 @@ static int vtdxml_set_string(VTDNav *vn, const char *xpath, char *value) {
 	freeAutoPilot(ap);
 	return error;
 }
+
 static VTDNav * vtdxml_create_doc(const char *buffer, size_t size) {
 	exception e;
 	VTDGen *vg = NULL;
@@ -289,6 +273,7 @@ static VTDNav * vtdxml_create_doc(const char *buffer, size_t size) {
 
 	return vn;
 }
+
 static void vtdxml_destroy_doc(VTDNav *vn) {
 	//如果是创建的就需要释放，如果是外部传入的就不需要释放
 	//if(vn->XMLDoc){
@@ -362,7 +347,9 @@ static int vtdxml_doc_to_str(VTDNav *vn,  char ** str) {
 	}
 			return -1;
 }
-//========================= libxml ==========================
+
+
+/********************************** libxml2 **********************************/
 
 /**
  * 解析的3个对象
@@ -403,9 +390,7 @@ static int create_xpath(xmlDocPtr doc, const char *xpath, xmlXPathContextPtr *ct
 	return 0;
 
 }
-/*
- * =============================== libxml =============
- */
+
 static void libxml_init();
 static void libxml_free();
 static int libxml_get_string(xmlDocPtr doc,const char *xpath,char **value);
@@ -421,7 +406,9 @@ static void libxml_init() {
 	xmlInitParser();
 	LIBXML_TEST_VERSION
 }
-static void libxml_free() {
+
+static void libxml_free()
+{
 
 	/* Shutdown libxml */
 	xmlCleanupParser();
@@ -429,9 +416,10 @@ static void libxml_free() {
 	 * this is to debug memory for regression tests
 	 */
 	xmlMemoryDump();
-
 }
-static int libxml_set_string(xmlDocPtr doc, const char *xpath, char *value) {
+
+static int libxml_set_string(xmlDocPtr doc, const char *xpath, char *value)
+{
 	xmlXPathObjectPtr xpathObj = NULL;
 	xmlXPathContextPtr ctx = NULL;
 
@@ -481,6 +469,7 @@ static int libxml_set_string(xmlDocPtr doc, const char *xpath, char *value) {
 	//如果没有匹配的节点，返回-1表示失败
 	return size==0?-1:0;
 }
+
 static int libxml_get_string(xmlDocPtr doc, const char *xpath, char **value) {
 	xmlXPathObjectPtr xpathObj;
 	xmlXPathContextPtr ctx;
@@ -537,16 +526,24 @@ static int libxml_get_member_size(xmlDocPtr doc, const char *xpath) {
 
 	return size;
 }
-//================= xml impl ==================================
+
+
+
+
+
+
+
+
+/********************************** sg_xml **********************************/
 typedef struct {
 	//如果是载入文件的，总是存在的
 	VTDNav *vn;
 	//需要的时候才创建
 	xmlDocPtr doc;
 	char *buffer;
-} xml_doc;
+} sg_xml_doc;
 
-#define cast_xml_doc(doc) (xml_doc*)doc
+#define cast_xml_doc(doc) (sg_xml_doc*)doc
 
 static int string_to_double(const char *str, double *value) {
 	//*value=xmlXPathCastStringToNumber(str);
@@ -562,6 +559,7 @@ static int string_to_double(const char *str, double *value) {
 		return -1;
 	}
 }
+
 static int string_to_int(const char *str, int *value) {
 	if (str == NULL || strlen(str) == 0) {
 		return -1;
@@ -575,6 +573,7 @@ static int string_to_int(const char *str, int *value) {
 		return -1;
 	}
 }
+
 static int string_to_bool(const char *str, bool *value) {
 	if (str == NULL || strlen(str) == 0) {
 		return -1;
@@ -589,7 +588,8 @@ static int string_to_bool(const char *str, bool *value) {
 	}
 	return error;
 }
-static char* double_to_string(double *d) {
+
+static char *double_to_string(double *d) {
 	char *buf = NULL;
 	int size = asprintf(&buf, "%f", *d);
 	if (size > 0) {
@@ -599,6 +599,7 @@ static char* double_to_string(double *d) {
 		return NULL;
 	}
 }
+
 static char *int_to_string(int *i) {
 
 	char *buf = NULL;
@@ -610,7 +611,8 @@ static char *int_to_string(int *i) {
 		return NULL;
 	}
 }
-static char * bool_to_string(bool *b) {
+
+static char *bool_to_string(bool *b) {
 	if (*b == TRUE) {
 		return strdup("true");
 	} else {
@@ -640,13 +642,14 @@ static char * read_file(const char *path) {
 	fclose(file);
 	return buffer;
 }
-static xml_doc_t *create_xml_doc(const char *buffer, int size,
+
+static sg_xml_doc_t *create_xml_doc(const char *buffer, int size,
 bool isFreeBuffer) {
-	xml_doc *xml = malloc(sizeof(xml_doc));
+	sg_xml_doc *xml = malloc(sizeof(sg_xml_doc));
 	if (xml == NULL) {
 		return NULL;
 	}
-	memset(xml, 0, sizeof(xml_doc));
+	memset(xml, 0, sizeof(sg_xml_doc));
 	if (buffer == NULL || size == 0) {
 		//表示为创建空白的
 		xml->doc = libxml_create_doc(NULL, 0);
@@ -662,9 +665,9 @@ bool isFreeBuffer) {
 	}
 	return xml;
 }
-static int xml_get_value(xml_doc_t *doc, const char *xpath, void *valuePtr,
+static int _xml_get_value(sg_xml_doc_t *doc, const char *xpath, void *valuePtr,
 		to_value_fn fn) {
-	xml_doc *xml = cast_xml_doc(doc);
+	sg_xml_doc *xml = cast_xml_doc(doc);
 	char *str = NULL;
 	int error = -1;
 
@@ -712,11 +715,11 @@ static int xml_get_value(xml_doc_t *doc, const char *xpath, void *valuePtr,
 	}
 
 	return error;
-
 }
-static int xml_set_value(xml_doc_t *doc, const char *xpath, void *valuePtr,
+
+static int _xml_set_value(sg_xml_doc_t *doc, const char *xpath, void *valuePtr,
 		to_string_fn fn) {
-	xml_doc *xml = cast_xml_doc(doc);
+	sg_xml_doc *xml = cast_xml_doc(doc);
 	char *temp = NULL;
 	char *str = NULL;
 	if (fn != NULL) {
@@ -755,19 +758,29 @@ static int xml_set_value(xml_doc_t *doc, const char *xpath, void *valuePtr,
 	return error;
 
 }
-/*
- * ====================================== 实现的方法 ====================
- */
-void xml_init(void) {
+
+
+
+
+
+
+
+
+
+
+
+
+void sg_xml_init(void)
+{
 	libxml_init();
-	vtdxml_init();
 }
-void xml_free(void) {
+void sg_xml_free(void)
+{
 	libxml_free();
-	vtdxml_free();
 }
 
-xml_doc_t *xml_alloc_doc(const char *path) {
+sg_xml_doc_t *sg_xml_alloc_doc(const char *path)
+{
 	char *buffer = read_file(path);
 	if (buffer == NULL) {
 		return NULL;
@@ -775,17 +788,18 @@ xml_doc_t *xml_alloc_doc(const char *path) {
 	return create_xml_doc(buffer, strlen(buffer), TRUE);
 }
 
-xml_doc_t *xml_alloc_doc2(const char *buffer, size_t size) {
+sg_xml_doc_t *sg_xml_alloc_doc2(const char *buffer, size_t size)
+{
 	return create_xml_doc(buffer, size, FALSE);
 }
 
-xml_doc_t *xml_alloc_doc3(void) {
+sg_xml_doc_t *sg_xml_alloc_doc3(void) {
 	return create_xml_doc(NULL, 0, FALSE);
 }
 
 /* 不要忘记使用xml_free_string释放xml_str_t */
-int xml_doc_to_str(xml_doc_t *doc, xml_str_t **str) {
-	xml_doc *xml = cast_xml_doc(doc);
+int sg_xml_doc_to_str(sg_xml_doc_t *doc, sg_xml_str_t **str) {
+	sg_xml_doc *xml = cast_xml_doc(doc);
 	if (xml->doc != NULL) {
 		return libxml_doc_to_str(xml->doc, str);
 	} else {
@@ -794,8 +808,8 @@ int xml_doc_to_str(xml_doc_t *doc, xml_str_t **str) {
 
 }
 
-int xml_get_member_size(xml_doc_t *doc, const char *xpath) {
-	xml_doc *xml = cast_xml_doc(doc);
+int sg_xml_get_member_size(sg_xml_doc_t *doc, const char *xpath) {
+	sg_xml_doc *xml = cast_xml_doc(doc);
 	if (xml->doc != NULL) {
 		return libxml_get_member_size(xml->doc, xpath);
 	} else {
@@ -804,70 +818,80 @@ int xml_get_member_size(xml_doc_t *doc, const char *xpath) {
 
 }
 
-enum xml_val_type xml_get_type(xml_doc_t *doc, const char *xpath) {
-	xml_doc *xml = cast_xml_doc(doc);
+enum xml_val_type sg_xml_get_type(sg_xml_doc_t *doc, const char *xpath)
+{
+	sg_xml_doc *xml = cast_xml_doc(doc);
 	char *str = NULL;
-	if (xml_get_string(doc, xpath, &str) != 0) {
-		return XMLVALTYPE_ERROR;
+	if (sg_xml_get_string(doc, xpath, &str) != 0) {
+		return SGXMLVALTYPE_ERROR;
 	}
 
 	bool b = TRUE;
 	double d = 0;
 	int i = 0;
 	if (strlen(str) == 0) {
-		return XMLVALTYPE_NULL;
+		return SGXMLVALTYPE_NULL;
 	} else if (string_to_bool(str, &b) == 0) {
-		return XMLVALTYPE_BOOL;
+		return SGXMLVALTYPE_BOOL;
 	} else if (string_to_double(str, &d) == 0 || string_to_int(str, &i)) {
-		return XMLVALTYPE_NUMBER;
+		return SGXMLVALTYPE_NUMBER;
 	} else {
-		return XMLVALTYPE_STRING;
+		return SGXMLVALTYPE_STRING;
 	}
 
 }
 
-int xml_get_int(xml_doc_t *doc, const char *xpath, int *value) {
-	return xml_get_value(doc, xpath, value, string_to_int);
+int sg_xml_get_int(sg_xml_doc_t *doc, const char *xpath, int *value)
+{
+	return _xml_get_value(doc, xpath, value, string_to_int);
 }
 
-int xml_get_double(xml_doc_t *doc, const char *xpath, double *value) {
-	return xml_get_value(doc, xpath, value, string_to_double);
+int sg_xml_get_double(sg_xml_doc_t *doc, const char *xpath, double *value)
+{
+	return _xml_get_value(doc, xpath, value, string_to_double);
 }
 
-int xml_get_bool(xml_doc_t *doc, const char *xpath, bool *value) {
-	return xml_get_value(doc, xpath, value, string_to_bool);
+int sg_xml_get_bool(sg_xml_doc_t *doc, const char *xpath, bool *value)
+{
+	return _xml_get_value(doc, xpath, value, string_to_bool);
 }
 
 /* 不要忘记使用xml_free_string释放xml_str_t */
-int xml_get_string(xml_doc_t *doc, const char *xpath, xml_str_t **value) {
-	return xml_get_value(doc, xpath, value, NULL);
+int sg_xml_get_string(sg_xml_doc_t *doc, const char *xpath, sg_xml_str_t **value)
+{
+	return _xml_get_value(doc, xpath, value, NULL);
 }
 
-int xml_set_int(xml_doc_t *doc, const char *xpath, int value) {
-	return xml_set_value(doc, xpath, &value, int_to_string);
+int sg_xml_set_int(sg_xml_doc_t *doc, const char *xpath, int value)
+{
+	return _xml_set_value(doc, xpath, &value, int_to_string);
 }
 
-int xml_set_double(xml_doc_t *doc, const char *xpath, double value) {
-	return xml_set_value(doc, xpath, &value, double_to_string);
+int sg_xml_set_double(sg_xml_doc_t *doc, const char *xpath, double value)
+{
+	return _xml_set_value(doc, xpath, &value, double_to_string);
 }
 
-int xml_set_bool(xml_doc_t *doc, const char *xpath, bool value) {
-	return xml_set_value(doc, xpath, &value, bool_to_string);
+int sg_xml_set_bool(sg_xml_doc_t *doc, const char *xpath, bool value)
+{
+	return _xml_set_value(doc, xpath, &value, bool_to_string);
 }
 
-int xml_set_string(xml_doc_t *doc, const char *xpath, const char *value) {
-	return xml_set_value(doc, xpath, &value, NULL);
+int sg_xml_set_string(sg_xml_doc_t *doc, const char *xpath, const char *value)
+{
+	return _xml_set_value(doc, xpath, &value, NULL);
 }
 
-void xml_free_string(xml_str_t *str) {
+void sg_xml_free_string(sg_xml_str_t *str)
+{
 	free(str);
 }
 
-void xml_free_doc(xml_doc_t *doc) {
-	xml_doc *xml = cast_xml_doc(doc);
+void sg_xml_free_doc(sg_xml_doc_t *doc)
+{
+	sg_xml_doc *xml = cast_xml_doc(doc);
 	vtdxml_destroy_doc(xml->vn);
 	libxml_destroy_doc(xml->doc);
 	free(xml->buffer);
 	free(xml);
 }
-
