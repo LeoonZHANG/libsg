@@ -2,17 +2,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <memory.h>
-#include <assert.h>
 #include <uv.h>
+#include <sg/sg.h>
 
-const char* uv_comm_get_tcp_ip_port(uv_tcp_t* uvclient, char* ipbuf, int buflen, int* port) {
+const char* uv_comm_get_tcp_ip_port(uv_tcp_t* uvclient, char* ipbuf, int buflen, int* port)
+{
 	struct sockaddr addr;
 	int len = sizeof(addr);
 
-	/* ÏÈµ÷ÓÃuv½Ó¿Ú»ñÈ¡µ½struct sockaddrÐÎÌ¬µÄµØÖ· */
+	/* å…ˆè°ƒç”¨uvæŽ¥å£èŽ·å–åˆ°struct sockaddrå½¢æ€çš„åœ°å€ */
 	int r = uv_tcp_getpeername(uvclient, &addr, &len);
 	if(r == 0) {
-	    /* ×ª»»Îª¿É¶Á·ç¸ñµÄip×Ö·û´®ºÍ¶Ë¿Ú */
+	    /* è½¬æ¢ä¸ºå¯è¯»é£Žæ ¼çš„ipå­—ç¬¦ä¸²å’Œç«¯å£ */
 		return uv_comm_get_ip_port(&addr, ipbuf, buflen, port);
 	} else {
         printf("\n!!! [cmm] get client ip fails: %s\n", uv_strerror(r));
@@ -20,34 +21,44 @@ const char* uv_comm_get_tcp_ip_port(uv_tcp_t* uvclient, char* ipbuf, int buflen,
 	}
 }
 
-/* uv_comm_send_to_streamµÄ½á¹û´¦Àí»Øµ÷º¯Êý */
-static void uv_comm_after_send_to_stream(uv_write_t* w, int status) {
-    /* status Îª0Ê±, send_to_stream³É¹¦, ÆäËûÇé¿ö´¦ÀíÊ§°Ü */
+/* uv_comm_send_to_streamçš„ç»“æžœå¤„ç†å›žè°ƒå‡½æ•° */
+static void uv_comm_after_send_to_stream(uv_write_t* w, int status)
+{
+    /* status ä¸º0æ—¶, send_to_streamæˆåŠŸ, å…¶ä»–æƒ…å†µå¤„ç†å¤±è´¥ */
     if(status) {
         puts("\n!!! [cmm] uv_comm_after_send_to_stream(,-1) failed");
     }
-    //ÊÍ·ÅÔÚuv_comm_send_to_stream·ÖÅäµÄÄÚ´æ
+    //é‡Šæ”¾åœ¨uv_comm_send_to_streamåˆ†é…çš„å†…å­˜
     free(w->data);
     free(w);
 }
 
-int uv_comm_send_to_stream(uv_stream_t* stream, void* data, unsigned int size) {
+int uv_comm_send_to_stream(uv_stream_t* stream, void* data, unsigned int size)
+{
     assert(stream && data);
     uv_buf_t buf;
-    /* ¹¹Ôì´«µÝ¸øuv_writeµÄbuf */
+    /* æž„é€ ä¼ é€’ç»™uv_writeçš„buf */
     buf.base = (char*)data;
     buf.len = (size_t)size;
 
-    /* ¹¹Ôì´«µÝ¸ø½á¹û»Øµ÷º¯Êýuv_comm_after_send_to_streamuv_write_t */
+    /* æž„é€ ä¼ é€’ç»™ç»“æžœå›žè°ƒå‡½æ•°uv_comm_after_send_to_streamuv_write_t */
     uv_write_t* w = (uv_write_t*) malloc(sizeof(uv_write_t));
     memset(w, 0, sizeof(uv_write_t));
     w->data = data;
 
-    /* µ÷ÓÃuv_writeÐ´ÈëÊý¾Ý */
+    /* è°ƒç”¨uv_writeå†™å…¥æ•°æ® */
     return (uv_write(w, stream, &buf, 1, uv_comm_after_send_to_stream) == 0 ? 1 : 0);
 }
 
-void uv_comm_on_alloc_buf(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf) {
-	buf->base = (char*) malloc(suggested_size);
+/* libuv let you customize your memory alloc */
+static void
+uv_comm_on_alloc_buf(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf)
+{
+	buf->base = (char *)malloc(suggested_size);
 	buf->len  = buf->base ? suggested_size : 0;
+}
+
+static void
+uv_common_on_close_done(uv_handle_t *handle)
+{
 }
