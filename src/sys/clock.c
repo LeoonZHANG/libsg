@@ -1,9 +1,10 @@
 /*
- * time.c
+ * clock.c
  * Author: wangwei.
- * Get/set/format/compare and convert time.
+ * Get/set/format/compare and convert date and time.
  */
 
+/* these macros must before #include <time.h> */
 #ifndef __USE_XOPEN
 # define __USE_XOPEN /* strptime */
 #endif
@@ -11,10 +12,25 @@
 # define __USE_XOPEN2K8 /* strftime */
 #endif
 
+#include <stdio.h>
 #include <time.h>
-#if defined(WIN32)
-#include <Windows.h>
+#include <sg/sg.h>
+#include <sg/sys/clock.h>
 
+#ifdef SG_OS_MACOS
+# include <mach/clock.h>
+# include <mach/mach.h>
+#endif
+
+#if defined(SG_OS_WINDOWS)
+# include <Windows.h>
+#else
+# include <sys/time.h>
+#endif
+
+
+
+#if defined(SG_OS_WINDOWS)
 static int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {
     // Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
@@ -281,23 +297,15 @@ char * strptime(const char *s, const char *format, struct tm *tm)
     }
     return (working ? (char *)s : 0);
 }
-#else
-#include <sys/time.h>
 #endif
-#include <stdio.h>
-#include <sg/sys/time.h>
-#include <sg/util/assert.h>
 
-#ifdef __MACH__
-# include <mach/clock.h>
-# include <mach/mach.h>
-#endif
+
 
 /****************************************
  * Get time functions.
  ***************************************/
 
-struct timeval sg_unix_time_us(void)
+struct timeval sg_clock_unix_time_us(void)
 {
     struct timeval tv;
 
@@ -306,11 +314,11 @@ struct timeval sg_unix_time_us(void)
     return tv;
 }
 
-struct timespec sg_unix_time_ns(void)
+struct timespec sg_clock_unix_time_ns(void)
 {
     struct timespec t;
 
-#ifdef __MACH__
+#ifdef SG_OS_MACOS
     /* clock_gettime wasn't implemented before macOS 10.12 */
     clock_serv_t cclock;
     mach_timespec_t mts;
@@ -320,7 +328,7 @@ struct timespec sg_unix_time_ns(void)
     t.tv_sec = mts.tv_sec;
     t.tv_nsec = mts.tv_nsec;
     mach_port_deallocate(mach_task_self(), cclock);
-#elif defined(WIN32)
+#elif defined(SG_OS_WINDOWS)
     /* FIXME: find out a higher resolution solution */
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -334,7 +342,7 @@ struct timespec sg_unix_time_ns(void)
     return t;
 }
 
-time_t sg_unix_time_s(void)
+time_t sg_clock_unix_time_s(void)
 {
     time_t res = 0;
 
@@ -344,11 +352,11 @@ time_t sg_unix_time_s(void)
     return res;
 }
 
-unsigned long sg_boot_time_ms(void)
+unsigned long sg_clock_boot_time_ms(void)
 {
     unsigned long ms; /* milliseconds */
 
-#ifdef __MACH__
+#ifdef SG_OS_MACOS
     /* clock_gettime wasn't implemented before macOS 10.12 */
     clock_serv_t cclock;
     mach_timespec_t mts;
@@ -357,7 +365,7 @@ unsigned long sg_boot_time_ms(void)
     clock_get_time(cclock, &mts);
     mach_port_deallocate(mach_task_self(), cclock);
     ms = (unsigned long)(mts.tv_sec * 1000) + (unsigned long)(mts.tv_nsec / 1000000);
-#elif defined(WIN32)
+#elif defined(SG_OS_WINDOWS)
     struct timeval tv = sg_unix_time_us();
     ms = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 #else
@@ -371,12 +379,12 @@ unsigned long sg_boot_time_ms(void)
     return ms;
 }
 
-unsigned long sg_thread_cpu_time_ms(void)
+unsigned long sg_clock_thread_cpu_time_ms(void)
 {
     struct timespec t;
     unsigned long ms; /* milliseconds */
 
-#ifdef __MACH__
+#ifdef SG_OS_MACOS
     /* clock_gettime wasn't implemented before macOS 10.12 */
     thread_port_t thread = mach_thread_self();
 
@@ -392,7 +400,7 @@ unsigned long sg_thread_cpu_time_ms(void)
     t.tv_nsec = info.user_time.microseconds * 1000 + info.system_time.microseconds * 1000;
 
     mach_port_deallocate(mach_task_self(), thread);
-#elif defined(WIN32)
+#elif defined(SG_OS_WINDOWS)
     FILETIME create, exit, kernel, user;
     GetThreadTimes(GetCurrentThread, &create, &exit, &kernel, &user);
     SYSTEMTIME kernel_time, user_time;
@@ -410,14 +418,14 @@ unsigned long sg_thread_cpu_time_ms(void)
     return ms;
 }
 
-int sg_curr_date_time(const char *fmt, char *buf, size_t size)
+int sg_clock_curr_date_time(const char *fmt, char *buf, size_t size)
 {
     time_t t_t;
     struct tm *t_m;
 
     t_t = time(NULL);
     t_m = localtime(&t_t);
-    return sg_date_time_s_to_str(*t_m, fmt, buf, size);
+    return sg_clock_date_time_s_to_str(*t_m, fmt, buf, size);
 }
 
 
@@ -425,15 +433,15 @@ int sg_curr_date_time(const char *fmt, char *buf, size_t size)
  * Compare time functions.
  ***************************************/
 
-time_t sg_unix_time_s_diff(time_t later, time_t earlier)
+time_t sg_clock_unix_time_s_diff(time_t later, time_t earlier)
 {
     return (later - earlier);
 }
 
-time_t sg_date_time_s_diff(struct tm later, struct tm earlier)
+time_t sg_clock_date_time_s_diff(struct tm later, struct tm earlier)
 {
-    return (sg_date_time_s_to_unix_time_s(&later)
-            - sg_date_time_s_to_unix_time_s(&earlier));
+    return (sg_clock_date_time_s_to_unix_time_s(&later)
+            - sg_clock_date_time_s_to_unix_time_s(&earlier));
 }
 
 
@@ -441,7 +449,7 @@ time_t sg_date_time_s_diff(struct tm later, struct tm earlier)
  * Format time functions.
  ***************************************/
 
-int sg_str_to_date_time_s(const char *str, const char *fmt, struct tm *out)
+int sg_clock_str_to_date_time_s(const char *str, const char *fmt, struct tm *out)
 {
     assert(str);
     assert(fmt);
@@ -452,7 +460,7 @@ int sg_str_to_date_time_s(const char *str, const char *fmt, struct tm *out)
     return 0;
 }
 
-int sg_date_time_s_to_str(struct tm time, const char *fmt, char *out, size_t out_len)
+int sg_clock_date_time_s_to_str(struct tm time, const char *fmt, char *out, size_t out_len)
 {
     struct tm swap;
 
@@ -467,7 +475,7 @@ int sg_date_time_s_to_str(struct tm time, const char *fmt, char *out, size_t out
     return 0;
 }
 
-int sg_unix_time_ns_to_str(struct timespec time, char *out, size_t out_len)
+int sg_clock_unix_time_ns_to_str(struct timespec time, char *out, size_t out_len)
 {
     time_t tm;
 
@@ -482,7 +490,7 @@ int sg_unix_time_ns_to_str(struct timespec time, char *out, size_t out_len)
  * Convert time functions.
  ***************************************/
 
-time_t sg_date_time_s_to_unix_time_s(struct tm *time)
+time_t sg_clock_date_time_s_to_unix_time_s(struct tm *time)
 {
     time_t res;
 
@@ -493,7 +501,7 @@ time_t sg_date_time_s_to_unix_time_s(struct tm *time)
     return res;
 }
 
-int sg_date_time_s_to_unix_time_ns(struct tm *time, struct timespec *out)
+int sg_clock_date_time_s_to_unix_time_ns(struct tm *time, struct timespec *out)
 {
     assert(time);
     assert(out);
