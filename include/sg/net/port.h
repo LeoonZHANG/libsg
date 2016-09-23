@@ -9,6 +9,8 @@
 #ifndef LIBSG_PORT_H
 #define LIBSG_PORT_H
 
+#include <sg/sg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
