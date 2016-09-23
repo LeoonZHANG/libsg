@@ -4,9 +4,9 @@
  * Unified interface to sleep in milliseconds.
  */
 
-#include <sg/sys/os.h>
+#include <sg/sg.h>
 
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 # include <windows.h>
 #else
 # include <time.h>
@@ -16,7 +16,7 @@
 #include <sg/util/log.h>
 #include <sg/sys/sleep.h>
 
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
 void sg_sleep(uint32_t ms)
 {
     Sleep((DWORD)ms);
