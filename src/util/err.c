@@ -6,49 +6,57 @@
 
 #include <errno.h>
 #include <string.h>
-#include "../../include/sg/util/err.h"
-#include "../../include/sg/str/vlstr.h"
-#if defined(OS_WIN)
-#include <Windows.h>
+#include <stdio.h>
+#include <sg/sg.h>
+#include <sg/str/vsstr.h>
+#include <sg/util/err.h>
+
+#if defined(SG_OS_WINDOWS)
+# include <Windows.h>
 #endif
 
-int sg_err_errno_crt(void)
+#define SG_ERR_LIST_MAX 10000
+
+static char *err_msg_list[SG_ERR_LIST_MAX];
+
+static void sg_err_map(sg_err_t err_no, const char *err_msg)
 {
-    return errno;
+    if (err_no < 0) {
+        fprintf(stderr, "err_no %d shouldn\'t be smaller than 0", err_no);
+        exit(-1);
+    }
+    if (err_no > SG_ERR_LIST_MAX) {
+        fprintf(stderr, "add too many errno and errmsg");
+        exit(-1);
+    }
+    err_msg_list[err_no] = err_msg;
 }
 
-int sg_err_errno_win(void)
+void sg_err_list_init(void)
 {
-    return 0;
+    sg_err_map(SG_OK, "no error");
+    sg_err_map(SG_ERR, "normal error");
+    sg_err_map(SG_ERR_MALLOC_FAIL, "malloc failed");
+    sg_err_map(SG_ERR_NULL_PTR, "null pointer");
 }
 
-int sg_err_errno_wsa(void)
+static void sg_err_add_custom(int err_no, const char *err_msg)
 {
-    return 0;
+    if (err_no <= SG_ERR_MAX) {
+        fprintf(stderr, "custom error number shouldn\'t be smaller than %d(SG_ERR_MAX)\n", SG_ERR_MAX);
+        exit(-1);
+    }
+    sg_err_map(err_no, err_msg);
 }
 
-void sg_err_last_reset(void)
+/*
+sg_vsstr_t *err_num_to_msg(int err_num)
 {
-    errno = 0;
-}
+    sg_vsstr_t *err_msg;
 
-int sg_err_last_num(void)
-{
-    return errno;
-}
-
-sg_vlstr_t *err_last_msg(void)
-{
-    return NULL;
-}
-
-sg_vlstr_t *err_num_to_msg(int err_num)
-{
-    sg_vlstr_t *err_msg;
-
-    #if defined(OS_LNX) || defined(OS_OSX)
-    err_msg = sg_vlstralloc2(strerror(errno));
-    #elif defined(OS_WIN)
+    #if defined(SG_OS_LINUX) || defined(SG_OS_MACOS)
+    err_msg = sg_vsstr_alloc2(strerror(errno));
+    #elif defined(SG_OS_WINDOWS)
     DWORD errno, sys_locale;
     errno = GetLastError();
     HLOCAL handle_local = NULL;
@@ -62,4 +70,4 @@ sg_vlstr_t *err_num_to_msg(int err_num)
     #endif
 
     return err_msg;
-}
+}*/
