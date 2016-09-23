@@ -6,23 +6,23 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sg/sys/os.h>
-#if defined(OS_WIN)
-# include <windows.h> /* RegCreateKeyEx... */
-#endif
-#if defined(OS_LNX)
-# include <unistd.h> /* daemon */
-#endif
+#include <sg/sg.h>
 #include <sg/sys/daemon.h>
 #include <sg/sys/module.h>
-#include <sg/util/log.h>
-#include <sg/sys/limit.h>
-#include <sg/str/vlstr.h>
+#include <sg/str/vsstr.h>
 #include <sg/sys/file.h>
+
+#if defined(SG_OS_WINDOWS)
+# include <windows.h> /* RegCreateKeyEx... */
+#endif
+#if defined(SG_OS_LINUX)
+# include <unistd.h> /* daemon */
+#endif
+
 
 int sg_daemon_start_with_os(void)
 {
-#if defined(OS_WIN)
+#if defined(SG_OS_WINDOWS)
     HKEY key;
     HKEY root = HKEY_LOCAL_MACHINE;
     char *sub_key = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -57,11 +57,11 @@ int sg_daemon_start_with_os(void)
     return 0;
 #else
     const char *filename = "/etc/rc.local";
-    char module[SG_PATH_MAX]; /* executable filename */
-    sg_vlstr_t *file_str;
+    char module[SG_LIMIT_PATH_MAX]; /* executable filename */
+    sg_vsstr_t *file_str;
     int retval;
 
-    if (sg_module_path(module, SG_PATH_MAX) != 0) {
+    if (sg_module_path(module, SG_LIMIT_PATH_MAX) != 0) {
         sg_log_err("Get process path error.");
         return -1;
     }
@@ -71,23 +71,23 @@ int sg_daemon_start_with_os(void)
         return -1;
 
     /* already exist */
-    if (strstr(sg_vlstrraw(file_str), module)) {
-        sg_vlstrfree(&file_str);
+    if (strstr(sg_vsstr_raw(file_str), module)) {
+        sg_vsstr_free(&file_str);
         return 0;
     }
 
-    sg_vlstrcat(file_str, "\n");
-    sg_vlstrcat(file_str, module);
+    sg_vsstr_cat(file_str, "\n");
+    sg_vsstr_cat(file_str, module);
 
-    retval = sg_file_overwrite(filename, (uint8_t *)sg_vlstrraw(file_str), sg_vlstrlen(file_str));
-    sg_vlstrfree(&file_str);
+    retval = sg_file_overwrite(filename, (uint8_t *) sg_vsstr_raw(file_str), sg_vsstr_len(file_str));
+    sg_vsstr_free(&file_str);
     return retval;
 #endif
 }
 
 int sg_daemon_independent_of_terminal(void)
 {
-#if defined(OS_LNX)
+#if defined(SG_OS_LINUX)
     return daemon(0, 0);
 #else
     return 0;
