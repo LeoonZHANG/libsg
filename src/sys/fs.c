@@ -1,4 +1,4 @@
-/*
+/**
  * fs.c
  * File system common operations package, including file and directory.
  */
@@ -14,17 +14,21 @@
 
 #if defined(SG_OS_WINDOWS)
 # include <sg/platform/windows/dirent.h>
+# include <direct.h> /* getcwd */
 #endif
 
 #if defined(SG_OS_LINUX)
 # include <bits/errno.h>
 # include <dirent.h>
 # include <stdint.h>
+# include <unistd.h> /* getcwd readlink ssize_t */
 #endif
 
 #if defined(SG_OS_MACOS)
 # include <dirent.h>
+# include <zconf.h> /* getcwd */
 #endif
+
 
 int dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
                       uint8_t max_depth, sg_fs_dir_seek_cb_t cb, void *context);
@@ -33,6 +37,22 @@ int dir_seek_by_depth(const char *dir_path, uint8_t cur_depth,
 /****************************************************
  * path
  ****************************************************/
+
+bool sg_fs_cur_dir(sg_vsstr_t *dir_out)
+{
+    char *res;
+    char tmp[SG_LIMIT_PATH_MAX] = {0};
+
+    SG_ASSERT(dir_out);
+
+#ifdef SG_OS_WINDOWS
+    res = _getcwd(tmp, (int)SG_LIMIT_PATH_MAX);
+#else
+    res = getcwd(tmp, SG_LIMIT_PATH_MAX);
+#endif
+
+    return (res == NULL) ? false : true; /* getcwd return NULL means failure. */
+}
 
 bool sg_fs_path_exists(const char *path)
 {
@@ -47,26 +67,44 @@ bool sg_fs_path_exists(const char *path)
     return (errno == ENOENT) ? false : true; /* does not exist */
 }
 
-bool sg_fs_path_get_ext(const char *path, bool uppercase, sg_vsstr_t *ext_out)
+bool sg_fs_full_path_parse(const char *full_path,
+                           sg_vsstr_t *working_dir, sg_vsstr_t *short_name_no_ext,
+                           sg_vsstr_t *short_name_with_ext, sg_vsstr_t *ext)
 {
     sg_vsstr_t *v;
     char *dot;
+    char *end;
+    char *tmp;
 
-    SG_ASSERT(path);
+    SG_ASSERT(full_path);
 
-    dot = strrchr((char *)path, '.');
-    if (!dot)
-        return false;
-    /* Dot is the last character before terminator. */
-    if (dot == path + strlen(path) - 1)
-        return false;
+    if (ext) {
+        dot = strrchr(sg_vsstr_raw(full_path), '.');
+        /* Dot is the last character before terminator. */
+        if (dot && dot != sg_vsstr_raw(full_path) + sg_vsstr_len(full_path) - 1)
+            sg_vsstr_cpy(ext, dot);
+    }
 
-    sg_vsstr_cpy(ext_out, dot);
-    if (uppercase)
-        sg_str_to_upper(sg_vsstr_raw(v));
-    else
-        sg_str_to_lower(sg_vsstr_raw(v));
+    if (working_dir) {
+        sg_vsstr_cpy(working_dir, full_path);
+
+        end = strrchr(sg_vsstr_raw(working_dir), '/');
+        if (end)
+            end[1] = 0;
+    }
+
     return true;
+}
+
+
+bool sg_proc_dir(sg_vsstr_t *out)
+{
+
+}
+
+int sg_module_name(char *buf, size_t buf_len)
+{
+
 }
 
 

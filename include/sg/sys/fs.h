@@ -30,12 +30,16 @@ typedef void (*sg_fs_dir_seek_cb_t)(enum sg_fs_dir_seek_event evt,
  * path
  ****************************************************/
 
+/* Get current working directory which terminates in '/'. */
+bool sg_fs_cur_dir(sg_vsstr_t *dir_out);
+
 /* Checks whether a file or directory exists. */
 bool sg_fs_path_exists(const char *path);
 
-/* Get suffix name of full path with the dot(.),
- * remember to free it. */
-bool sg_fs_path_get_ext(const char *path, bool uppercase, sg_vsstr_t *ext_out);
+/* unfinished */
+bool sg_fs_full_path_parse(const char *full_path,
+        sg_vsstr_t *working_dir, sg_vsstr_t *short_name_no_ext,
+        sg_vsstr_t *short_name_with_ext, sg_vsstr_t *ext);
 
 
 /****************************************************
