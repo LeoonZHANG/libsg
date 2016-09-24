@@ -14,11 +14,11 @@ Using C to build important infrastructure, not everything.
 
 ## Feature
 
-* *One key to build*: 
+* *One key to build* 
 
 DON'T need to install any dependency library.
 
-* *Efficient development*:
+* *Efficient development*
 
 ```
     /* sample of normal md5 library api */
@@ -27,19 +27,13 @@ DON'T need to install any dependency library.
     struct md5_context *ctx;
     char buf[256], md5_sum[33];
     size_t size;
-
-    fp = fopen("/home/test_file", "rb");
-    assert(fp)
-
-    ctx = md5_start();
-    assert(ctx)
-    
+    assert(fp = fopen("/home/test_file", "rb"));
+    assert(ctx = md5_start());
     while (!feof(fp)) {
         size = fread(buf, 1, 256, fp);
         if (size > 0)
             md5_update(ctx, buf, size);
     }
-
     md5_final(ctx, md5_sum);
     fclose(fp);
 ```
@@ -47,16 +41,13 @@ DON'T need to install any dependency library.
 ```
     /* sample of libsg md5 api */
 
-    int err;
     struct sg_md_sum md5_sum = {0};
-
-    err = sg_md_file("/home/test_file", SGMDTYPE_MD5, &md5_sum);
-    assert(err == 0);
+    assert(sg_md_file("/home/test_file", SGMDTYPE_MD5, &md5_sum) == true);
 ```
 
-* *Easy-to-understand APIs*:
+* *Easy-to-understand APIs*
 
-* *Performance*:
+* *Performance*
 
 Key modules are optimized.
 
