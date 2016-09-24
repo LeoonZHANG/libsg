@@ -16,7 +16,7 @@ typedef struct sg_ntp_server_real sg_ntp_server_t;
 
 sg_ntp_server_t *sg_ntp_server_open(const char *ip, int port);
 
-sg_err_t sg_ntp_server_run(sg_ntp_server_t *self);
+bool sg_ntp_server_run(sg_ntp_server_t *self);
 
 void sg_net_server_close(sg_ntp_server_t *self);
 

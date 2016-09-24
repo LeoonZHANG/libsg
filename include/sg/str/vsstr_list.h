@@ -1,6 +1,7 @@
 /**
  * vsstr_list.h
  * List to store variable-sized string.
+ * TODO: change it to vsstr_array.
  */
 
 #ifndef LIBSG_VSSTR_LIST_H
@@ -13,7 +14,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Types. */
 typedef struct sg_vsstr_list_real sg_vsstr_list_t;
 
 /* Create a null variable length string list. */

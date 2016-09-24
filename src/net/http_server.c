@@ -19,7 +19,7 @@ struct http_server_real {
     struct mg_server                *server;
     sg_http_server_request_func_t   client_request_cb;
     void                            *ctx;
-    struct sg_thread                thread;
+    sg_thread_t                     thread;
     enum sg_http_server_dispatch    dispatch;
 };
 

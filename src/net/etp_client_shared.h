@@ -3,8 +3,8 @@
  * Etp client shared code for etp.c and etp_server.c.
  */
 
-#ifndef LIBSG_ETP_COMM_H
-#define LIBSG_ETP_COMM_H
+#ifndef LIBSG_ETP_CLIENT_SHARED_H
+#define LIBSG_ETP_CLIENT_SHARED_H
 
 #include <inttypes.h>
 #include <string.h>
@@ -225,7 +225,7 @@ inline int etp_client_shared_set_callbacks(etp_client_shared_t *self,
 }
 
 
-inline sg_err_t etp_client_shared_start(etp_client_shared_t *self, IUINT32 conv,
+inline bool etp_client_shared_start(etp_client_shared_t *self, IUINT32 conv,
         const struct sockaddr *addr, uv_loop_t *loop, uv_udp_t *udp, int interval_ms, void *user_data)
 {
     int ret = ERROR;
@@ -288,7 +288,7 @@ inline sg_err_t etp_client_shared_start(etp_client_shared_t *self, IUINT32 conv,
     self->idler.data = self;
 
     self->on_open(self);
-    return SG_OK;
+    return true;
 }
 
 inline sg_err_t etp_client_shared_send(etp_client_shared_t *self, const void *data, size_t size)
@@ -314,7 +314,7 @@ inline void etp_client_shared_set_max_send_speed(etp_client_shared_t *self, size
     self->max_limit_speed = kbps;
 }
 
-inline sg_err_t etp_client_shared_close(etp_client_shared_t *self)
+inline bool etp_client_shared_close(etp_client_shared_t *self)
 {
     sg_log_dbg("ikcp_peeksize: %d, ikcp_waitsnd: %d",
                ikcp_peeksize(self->kcp), ikcp_waitsnd(self->kcp));
@@ -322,7 +322,7 @@ inline sg_err_t etp_client_shared_close(etp_client_shared_t *self)
     /* if there is data waiting to be sent or received in queue */
     if (ikcp_waitsnd(self->kcp) > 0 || ikcp_peeksize(self->kcp) > 0) {
         self->delay_close = true; /* mark for close later, not right now */
-        return SG_OK;
+        return true;
     }
 
     /* cleanup */
@@ -346,11 +346,11 @@ inline sg_err_t etp_client_shared_close(etp_client_shared_t *self)
     self->on_close(self, SG_OK, "ok");
     free(self);
 
-    return SG_OK;
+    return true;
 }
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_ETP_COMM_H */
+#endif /* LIBSG_ETP_CLIENT_SHARED_H */

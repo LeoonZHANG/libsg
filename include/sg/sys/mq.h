@@ -17,9 +17,9 @@ typedef struct sg_mq_real sg_mq_t;
 
 sg_mq_t *sg_mq_open(void);
 
-sg_err_t sg_mq_send(sg_mq_t *self, void *data, uint64_t size);
+bool sg_mq_send(sg_mq_t *self, void *data, uint64_t size);
 
-sg_err_t sg_mq_recv(sg_mq_t *self, ...);
+bool sg_mq_recv(sg_mq_t *self, ...);
 
 void sg_mq_close(sg_mq_t *self);
 

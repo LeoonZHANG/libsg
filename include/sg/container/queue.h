@@ -28,9 +28,9 @@ struct sg_queue_item {
 };
 
 struct sg_queue {
-    sg_queue_item_t *head;
-    sg_queue_item_t *tail;
-    uint64_t        size;
+    sg_queue_item_t     *head;
+    sg_queue_item_t     *tail;
+    uint64_t            size;
     sg_queue_match_cb_t match_cb;
     sg_queue_free_cb_t  free_cb;
 };

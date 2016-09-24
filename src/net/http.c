@@ -26,7 +26,7 @@ struct sg_http_real {
     sg_http_reply_func_t        cb;
     void                        *ctx;
     int                         async;
-    struct sg_flex_buf          *resp_data;
+    sg_vsbuf_t                  *resp_data;
     int                         verbose;            /* 0 / 1 */
 };
 
@@ -35,7 +35,7 @@ size_t curl_write(void *buffer, size_t size, size_t count, void *user_ptr);
 size_t curl_write(void *buffer, size_t size, size_t count, void *user_ptr)
 {fprintf(stderr, "curl_write size %lu count %lu", size, count);
     size_t size_this_time = size * count;
-    struct sg_flex_buf *flex_buf = (struct sg_flex_buf *)user_ptr;
+    sg_vsbuf_t *flex_buf = (sg_vsbuf_t *)user_ptr;
 
     if (!flex_buf)
         return size_this_time;
