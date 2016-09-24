@@ -8,15 +8,15 @@ Cross-platform C utility library focusing on efficient development and easy-to-u
 
 ## Idea
 
-Reuse, not rework or reinvent.
+* *Reuse, not rework or reinvent.*
 
-Using C to build important infrastructure, not everything.
+* *Using C to build important infrastructure, not everything.*
 
 ## Feature
 
-* *One key to build* 
+* *One key to build, no dependency*
 
-DON'T need to install any dependency library.
+* *High performance for key modules*
 
 * *Efficient development*
 
@@ -46,10 +46,6 @@ DON'T need to install any dependency library.
 ```
 
 * *Easy-to-understand APIs*
-
-* *Performance*
-
-Key modules are optimized.
 
 ## Supported Platforms
 
