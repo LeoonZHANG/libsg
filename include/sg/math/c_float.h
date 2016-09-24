@@ -3,9 +3,6 @@
  * Extended API for regular floating-pointer number in C.
  */
 
-/*http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
-http://blog.chinaunix.net/uid-20279362-id-3848329.html*/
-
 #ifndef LIBSG_C_FLOAT_H
 #define LIBSG_C_FLOAT_H
 
