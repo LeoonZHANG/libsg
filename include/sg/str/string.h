@@ -28,10 +28,10 @@ bool sg_str_is_decimal(const char *src);
 int sg_str_to_bool(const char *src, bool *out);
 
 /* Convert a decimal double style string to double value. */
-int sg_decimal_str_to_double(const char *src, double *out);
+int sg_str_decimal_str_to_double(const char *src, double *out);
 
 /* Convert a decimal integer style string to integer value. */
-int sg_decimal_str_to_int(const char *src, int *out);
+int sg_str_decimal_str_to_int(const char *src, int *out);
 
 /* Delete char from string. */
 int sg_str_del_chr(char *str, const char chr);

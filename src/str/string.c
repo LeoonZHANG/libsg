@@ -102,7 +102,7 @@ int sg_str_to_bool(const char *src, bool *out)
     return res;
 }
 
-int sg_decimal_str_to_double(const char *src, double *out)
+int sg_str_decimal_str_to_double(const char *src, double *out)
 {
     SG_ASSERT(src);
     SG_ASSERT(out);
@@ -115,7 +115,7 @@ int sg_decimal_str_to_double(const char *src, double *out)
     return 0;
 }
 
-int sg_decimal_str_to_int(const char *src, int *out)
+int sg_str_decimal_str_to_int(const char *src, int *out)
 {
     SG_ASSERT(src);
     SG_ASSERT(out);
