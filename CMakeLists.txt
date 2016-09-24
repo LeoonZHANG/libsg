@@ -29,9 +29,6 @@ if(WIN32)
     set(lib_name_static lib${lib_name_static})
 endif()
 set(target_static lib${lib_name}-static)
-set(target_shared lib${lib_name}-shared)
-## 为 Windows 的 dll 文件指定 copyright 信息。
-set(copyright "Copyright (C) 2016." CACHE STRING "copyright description")
 
 
 # files
@@ -51,7 +48,6 @@ file(GLOB src_container src/container/*.c)
 file(GLOB src_db src/db/*.c)
 file(GLOB src_math src/math/*.c)
 file(GLOB src_net src/net/*.c)
-file(GLOB src_platform_windows src/platform/windows/*.c)
 file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
 file(GLOB src_crypto src/crypto/*.c)
@@ -74,25 +70,11 @@ set(src_lib
     src/net/net_card.c
     )
 
-## 有些文件是 Windwos 专用的。
-if(WIN32)
-    set(src_lib ${src_lib}
-        ${src_platform_windows}
-        )
-endif()
-
 ## 有些文件在 Linux 上不需要包含进来编译，直接引用安装好的库
 if(NOT "${CMAKE_SYSTEM}" MATCHES "Linux")
     set(src_lib ${src_lib} 
         ${src_vtd-xml}
         )
-endif()
-
-## Windows 下生成 DLL 所需的资源文件件和 API 定义文件。CMake 会用变量替换 *.in 模板文件的 @variable@ 风格的宏。
-if(WIN32)
-    configure_file(version.rc.in version.rc @ONLY)
-    configure_file(module.def.in module.def @ONLY)
-    set(src_lib ${src_lib} module.def version.rc)
 endif()
 
 
@@ -148,16 +130,9 @@ endif()
 #########
 ## 分别设置静态库和动态库目标
 add_library(${target_static} STATIC ${src_lib})
-add_library(${target_shared} SHARED ${src_lib})
 
 set_target_properties(${target_static} PROPERTIES
     OUTPUT_NAME ${lib_name_static}_singular)
-set_target_properties(${target_shared} PROPERTIES
-    OUTPUT_NAME ${lib_name}
-    SOVERSION ${major_version} # 对于 *nix 类系统，major 版本号识别 API 兼容性
-    VERSION ${version}
-    LINK_FLAGS ${link_flags}
-    )
 
 set(common_deps tbox libmpir openssl pcre)
 if(WIN32)
@@ -194,7 +169,6 @@ if(WIN32)
         ws2_32.lib
         Crypt32.lib
         )
-    add_dependencies(${target_shared} libxml2 zlibstatic ${common_deps})
     add_dependencies(${target_static} libxml2 zlibstatic ${common_deps})
 elseif(APPLE)
     set(link_archives
@@ -209,7 +183,6 @@ elseif(APPLE)
         ${link_archives}
         iconv dl xml2 curl pthread
         )
-    add_dependencies(${target_shared} openssl dablooms zlibstatic ${common_deps})
     add_dependencies(${target_static} openssl dablooms zlibstatic ${common_deps})
 elseif(UNIX)
     set(link_archives
@@ -228,11 +201,9 @@ elseif(UNIX)
         rt # we would better put 'rt', 'dl' to rear, it's sensitive for gcc
         dl
         )
-    add_dependencies(${target_shared} libxml2 libuuid libiconv openssl dablooms ${common_deps})
     add_dependencies(${target_static} libxml2 libuuid libiconv openssl dablooms ${common_deps})
 endif()
 
-target_link_libraries(${target_shared} ${link_libs})
 target_link_libraries(${target_static} ${link_libs})
 
 ## 把静态库合并，这样会生成独立的静态库文件，方便使用
