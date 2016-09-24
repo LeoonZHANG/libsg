@@ -99,37 +99,25 @@ coming soon
 
 ## Modules
 
-**sys** atom mutex rwlock spin_lock memory module os proc time fs flag shell sleep thread ntp
+**compress** `zip`
 
-**str** charset regex sprintf vsstr(variable-sized string)
+**container** `bip_buf` `bloom_filter` `json` `kfifo` `list` `msgpack` `queue` `vsbuf` `xml`
 
-**net** tcp/tcp_server udp/udp_server http/http_server websocket ftp
+**crypto** `md` (message digest) `mac` (message authentication code) `sym`: (symmetric encryption)
 
-etp/etp_server: a extreme transfer protocol based on KCP / LIBUV(UDP) and FEC, it's fast and reliable.
+**db** `sqlite` `ejdb` `bdb`
 
-**db** sqlite ejdb berkeleydb
+**hash** `crc` `uuid` `murmur`
 
-**container** bip_buf list queue xml msgpack json
+**math** `big_float` `big_int` `c_float` `c_int` `num_sys` `random` `speed`
 
-**compress** zip gzip
+**net** `dns_server` `etp` `etp_server` `http` `http_server` `net_card` `ntp` `ntp_server` `port` `proxy` `quic` `quic_server` `tcp` `tcp_server` `udp` `udp_server` `websocket`
 
-**crypto**
+**str** `base64` `charset` `regex` `snprintf` `string` `vsstr` (variable-sized string) `vsstr_list`
 
-md: message digest algorithm pack including MD2/MD4/MD5/SHA1/SHA224/SHA256/SHA512.
+**sys** `atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `memory` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `sleep` `spin_lock` `thread` `type`
 
-mac: message authentication code algorithm pack including HmacMD5...
-
-sym: symmetric encryption algorithm pack including DES/3DES/AES.
-
-**hash** uuid murmur
-
-**media** capture_v capture_a rtsp player
-
-**math** c_int c_float big_int big_float
-
-**platform** windows/dial...
-
-**util** assert dump log
+**util** `assert` `compiler` `dump` `err` `log` `trick`
 
 ## Code specification
 
