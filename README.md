@@ -14,16 +14,14 @@ Using C to build important infrastructure, not everything.
 
 ## Feature
 
-#### One key to build
+* *One key to build*: 
 
-DO NOT need to install any dependency library before building of libsg.
+DON'T need to install any dependency library.
 
-#### Efficient development
-
-Difference between normal C libray and libsg sample:
+* *Efficient development*:
 
 ```
-    /* normal md5 library api */
+    /* sample of normal md5 library api */
 
     FILE *fp;
     struct md5_context *ctx;
@@ -47,7 +45,7 @@ Difference between normal C libray and libsg sample:
 ```
 
 ```
-    /* libsg md5 api */
+    /* sample of libsg md5 api */
 
     int err;
     struct sg_md_sum md5_sum = {0};
@@ -56,15 +54,11 @@ Difference between normal C libray and libsg sample:
     assert(err == 0);
 ```
 
-#### Easy-to-understand APIs
+* *Easy-to-understand APIs*:
 
-Header files of libsg include nothing but only pure API declaration, and APIs will not cause misunderstanding.
+* *Performance*:
 
-Common C API vs libsg API sample
-
-#### Performance
-
-Key modules are optimized, you can create high performance application with libsg.
+Key modules are optimized.
 
 ## Supported Platforms
 
