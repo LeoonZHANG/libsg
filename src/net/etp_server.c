@@ -203,7 +203,7 @@ void sg_etp_server_close_client(sg_etp_client_t *client)
     etp_client_shared_close(client);
 }
 
-sg_err_t sg_etp_server_get_client_addr(sg_etp_client_t *client, sg_vsstr_t *addr_out)
+bool sg_etp_server_get_client_addr(sg_etp_client_t *client, sg_vsstr_t *addr_out)
 {
     char addr_tmp[256] = {0};
 
@@ -211,7 +211,7 @@ sg_err_t sg_etp_server_get_client_addr(sg_etp_client_t *client, sg_vsstr_t *addr
 
     sg_vsstrcpy(addr_out, addr_tmp);
 
-    return SG_OK;
+    return true;
 }
 
 void sg_etp_server_run(sg_etp_server_t *server, int interval_ms)
@@ -222,8 +222,6 @@ void sg_etp_server_run(sg_etp_server_t *server, int interval_ms)
     SG_ASSERT_MSG(s, "server pointer is NULL");
 
     s->interval = interval_ms;
-
-
 
     /* enter loop */
     uv_run(&(s->loop), UV_RUN_DEFAULT);
