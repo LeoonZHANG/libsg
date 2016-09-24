@@ -1,6 +1,7 @@
 /**
  * flag.h
  * Run flag for thread.
+ * TO BE DROPED!
  */
 
 #ifndef LIBSG_FLAG_H
