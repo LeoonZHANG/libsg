@@ -63,6 +63,9 @@ pid_t sg_proc_open(const char *cmd);
 /* List all dependent dynamic libraries of a executable binary file. */
 int sg_proc_get_module(const char *exec_filename, sg_proc_module_found_callback cb);
 
+/* Get module full path such like '/home/user/filename.suffix'. */
+bool sg_proc_full_path(sg_vsstr_t *out);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

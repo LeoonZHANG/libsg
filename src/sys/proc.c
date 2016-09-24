@@ -9,16 +9,34 @@
 #include <string.h>
 #include <sg/sg.h>
 
+
+
+
+#if defined(SG_OS_LINUX)
+# include <linux/limits.h>
+# include <unistd.h> /* getcwd readlink ssize_t */
+#endif
+
+#if defined(SG_OS_MACOS)
+# include <sys/syslimits.h>
+# include <mach-o/dyld.h> /* _NSGetExecutablePath */
+#endif
+
 #if defined(SG_OS_WINDOWS)
+# include <direct.h> /* getcwd */
+# include <windows.h> /* GetModuleFileName */
 # include <Windows.h> /* QueryFullProcessImageName / ZeroMemory / CloseHandle ... */
 # include <tlhelp32.h> /* Process32First / CreateToolhelp32Snapshot ... */
 # include <process.h> /* getpid */
 # include <Psapi.h>
 # pragma comment(lib,"psapi.lib")
-#else
+#endif
+
+#ifndef SG_OS_WINDOWS
 # include <unistd.h> /* getpid */
 # include <signal.h> /* kill */
 #endif
+
 #include <sg/util/log.h>
 #include <sg/util/SG_ASSERT.h>
 #include <sg/sys/proc.h>
@@ -357,4 +375,50 @@ int sg_proc_kill(pid_t pid)
 pid_t sg_proc_open(const char *cmd)
 {
     sg_shell_open(cmd, NULL, NULL);
+}
+
+
+bool sg_proc_full_path(sg_vsstr_t *out)
+{
+    char buf[SG_LIMIT_PATH_MAX] = {0};
+    SG_ASSERT(out);
+
+#ifdef SG_OS_WINDOWS
+
+    DWORD res;
+
+    res = GetModuleFileName(NULL /* current process */, (LPSTR)buf, SG_LIMIT_PATH_MAX);
+
+    if (res <= 0) {
+        sg_log_err("sg_proc_full_path error:%u.", GetLastError());
+        return false;
+    }
+
+#elif SG_OS_LINUX
+
+    ssize_t size;
+
+    size = readlink("/proc/self/exe", buf, SG_LIMIT_PATH_MAX);
+
+    if (size < 0 || size >= SG_LIMIT_PATH_MAX)
+        return false;
+
+    buf[size] = 0;
+
+#elif SG_OS_MACOS
+
+    int ret;
+    uint32_t size = SG_LIMIT_PATH_MAX;
+
+    ret = _NSGetExecutablePath(buf, &size); /* ret equals zero means succeed. */
+    if (ret != 0) {
+        sg_log_err("Buffer size %u is smaller than source lenght %u.",
+                   SG_LIMIT_PATH_MAX, size);
+        return false;
+    }
+
+#endif
+
+    sg_vsstr_cpy(out, buf);
+    return true;
 }
