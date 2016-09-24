@@ -15,7 +15,7 @@
 
 const char *sg_dynlib_error(void);
 
-sg_dynlib *sg_dynlib_open(const char *path)
+sg_dynlib_t *sg_dynlib_open(const char *path)
 {
     void *handle;
 
@@ -35,7 +35,7 @@ sg_dynlib *sg_dynlib_open(const char *path)
     return handle;
 }
 
-void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol)
+void *sg_dynlib_symbol(sg_dynlib_t *handle, const char *symbol)
 {
     void *func_addr;
 
@@ -57,7 +57,7 @@ void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol)
     return func_addr;
 }
 
-void sg_dynlib_close(sg_dynlib **handle)
+void sg_dynlib_close(sg_dynlib_t **handle)
 {
     SG_ASSERT(handle);
 

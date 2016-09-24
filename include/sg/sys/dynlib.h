@@ -13,16 +13,16 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* handle type */
-typedef void sg_dynlib;
+typedef void sg_dynlib_t;
 
 /* Open dynamic library handle. */
-sg_dynlib *sg_dynlib_open(const char *path);
+sg_dynlib_t *sg_dynlib_open(const char *path);
 
 /* Load function address by symbol from dynamic library. */
-void *sg_dynlib_symbol(sg_dynlib *handle, const char *symbol);
+void *sg_dynlib_symbol(sg_dynlib_t *handle, const char *symbol);
 
 /* Close dynamic library handle. */
-void sg_dynlib_close(sg_dynlib **handle);
+void sg_dynlib_close(sg_dynlib_t **handle);
 
 #ifdef __cplusplus
 }
