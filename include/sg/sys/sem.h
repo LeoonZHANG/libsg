@@ -1,6 +1,7 @@
 /**
  * sem.h
  * Cross-platform semaphore.
+ * 从https://github.com/nanomsg/nanomsg/blob/master/src/utils/sem.c拷贝
  */
 
 #ifndef LIBSG_SEM_H

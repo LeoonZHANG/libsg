@@ -1,6 +1,6 @@
 /**
  * vsbuf.c
- * Flexible buffer.
+ * Variable-sized buffer.
  */
 
 #include <stdio.h>

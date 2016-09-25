@@ -1,6 +1,7 @@
 /**
  * http_server.h
  * Mini HTTP server package based on mongoose.
+ * 需要使用haywire重构, 并且增加serv静态网页的接口,类似iis和tomcat的网页目录,接口可以微调
  */
 
 #ifndef LIBSG_HTTP_SERVER_H

@@ -1,7 +1,6 @@
 /**
  * vsstr_list.h
  * List to store variable-sized string.
- * TODO: change it to vsstr_array.
  */
 
 #ifndef LIBSG_VSSTR_LIST_H

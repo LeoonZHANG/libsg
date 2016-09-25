@@ -1,6 +1,8 @@
 /**
  * shm.h
  * Shared memory for multiple platforms.
+ * 参考 https://github.com/apache/apr/blob/trunk/include/apr_shm.h
+ * 接口需要参照上面的链接调整,基本可以扒下来, 注意,把平台特有对shm接口去掉,比如apr_shm_delete
  */
 
 #ifndef LIBSG_SHM_H
@@ -14,13 +16,21 @@ extern "C" {
 
 typedef struct sg_shm_real sg_shm_t;
 
-sg_shm_t *sg_shm_open(const char *name);
+sg_shm_t *sg_shm_create(const char *filename, uint64_t require_size);
 
-uint32_t sg_shm_read(sg_shm_t *self, uint8_t *buf, uint32_t try_size);
+sg_shm_t *sg_shm_attach(const char *filename);
 
-bool sg_shm_write(sg_shm_t *self, uint8_t *data, uint32_t size);
+uint64_t sg_shm_get_size(sg_shm_t *self);
 
-void sg_shm_close(sg_shm_t *self);
+void *sg_shm_get_base_addr(sg_shm_t *self);
+
+bool sg_shm_remove(const char *filename);
+
+void sg_shm_detach(sg_shm_t *self);
+
+void sg_shm_detach(sg_shm_t *self);
+
+void sg_shm_destroy(sg_shm_t *self);
 
 #ifdef __cplusplus
 }

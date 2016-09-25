@@ -10,7 +10,7 @@
 #include <sg/crypto/mac.h>
 
 struct sg_mac {
-    HMAC_CTX* pimpl;
+    HMAC_CTX *pimpl;
 };
 
 static const EVP_MD* get_evp_md(enum sg_mac_type type)

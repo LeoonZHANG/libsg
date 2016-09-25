@@ -17,11 +17,11 @@ struct sg_sym_real {
     enum sg_sym_type type;
     enum sg_sym_mode mode;
     sg_sym_on_data_func_t on_data;
-    void* user_data;
-    unsigned char* output;
+    void *user_data;
+    unsigned char *output;
     size_t output_size;
-    EVP_CIPHER_CTX* pimpl;
-    const EVP_CIPHER* cipher;
+    EVP_CIPHER_CTX *pimpl;
+    const EVP_CIPHER *cipher;
 };
 
 static int the_openssl_crypto_initialized = 0;

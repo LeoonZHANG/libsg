@@ -36,11 +36,11 @@ void sg_tcp_server_run(sg_tcp_server_t *);
 void sg_tcp_server_send(sg_tcp_client_t *, void *data, size_t size); /*发送数据 异步接口*/
 int sg_tcp_server_get_conn_size(sg_tcp_server_t *);
 void sg_tcp_server_set_max_conn(sg_tcp_server_t *, int); /* 设置最大连接数， 如果是0表示不受限制， 因为超过此参数导致拒绝新客户连接时，请在日志中输出日志 */
-int sg_tcp_server_get_speed(sg_tcp_server_t *, size_t &send_kbps, size_t &recv_kbps);
+//int sg_tcp_server_get_speed(sg_tcp_server_t *, size_t &send_kbps, size_t &recv_kbps);
 int sg_tcp_server_iter_client(sg_tcp_server_t *, sg_tcp_server_on_iter_client_func_t, void *ctx);
 int sg_tcp_server_get_client_info(sg_tcp_client_t *, char **ip, int *port);
-int sg_tcp_server_get_client_speed(sg_tcp_client_t *, size_t &send_kbps, size_t &recv_kbps);
-void sg_tcp_server_set_client_max_send_speed(sg_tcp_client_t *, size_t kbps);
+//int sg_tcp_server_get_client_speed(sg_tcp_client_t *, size_t &send_kbps, size_t &recv_kbps);
+//void sg_tcp_server_set_client_max_send_speed(sg_tcp_client_t *, size_t kbps);
 void sg_tcp_server_close_client(sg_tcp_client_t *);
 void sg_tcp_server_close(sg_tcp_server_t *);
 

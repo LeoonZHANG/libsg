@@ -33,9 +33,9 @@ int sg_quic_run(sg_quic_t *, int interval_ms);
 int sg_quic_send(sg_quic_t *, const void *data, uint64_t size);
 
 /* 限制客户端发送速度, kbps为0不做任何限制 */
-void sg_quic_set_max_send_speed(sg_quic_t *, size_t kbps);
+//void sg_quic_set_max_send_speed(sg_quic_t *, size_t kbps);
 
-int sg_quic_get_speed(sg_quic_t *, size_t * send_kbps, size_t * recv_kbps);
+//int sg_quic_get_speed(sg_quic_t *, size_t * send_kbps, size_t * recv_kbps);
 
 void sg_quic_close(sg_quic_t *);
 

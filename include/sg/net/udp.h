@@ -35,9 +35,9 @@ void sg_udp_run(sg_udp_t *);
 int sg_udp_send(sg_udp_t *, const void *data, size_t size, bool data_realloc);
 
 /* 限制客户端发送速度, kbps为0不做任何限制 */
-void sg_udp_set_max_send_speed(sg_udp_t *, size_t kbps);
+//void sg_udp_set_max_send_speed(sg_udp_t *, size_t kbps);
 
-int sg_udp_get_speed(sg_udp_t *, size_t &send_kbps, size_t &recv_kbps);
+//int sg_udp_get_speed(sg_udp_t *, size_t &send_kbps, size_t &recv_kbps);
 
 int sg_udp_set_broadcast(sg_udp_t *, bool on);
 

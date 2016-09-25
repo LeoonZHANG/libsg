@@ -1,6 +1,7 @@
 /**
  * bip_buf.h
  * Bip buffer data structure.
+ * 实现sg_bip_buf_get接口,更人性化更好用
  */
 
 #ifndef LIBSG_BIP_BUF_H

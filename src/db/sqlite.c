@@ -1,6 +1,6 @@
 /**
  * sqlite.c
- * Sqlite access library.
+ * Sqlite3 access library with simple APIs.
  */
 
 #include <sg/sg.h>

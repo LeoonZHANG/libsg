@@ -159,7 +159,7 @@ int sg_md_str(const char *str, enum sg_md_type type, struct sg_md_sum *rst)
    Length of path must > 0. */
 int sg_md_file(const char *path, enum sg_md_type type, struct sg_md_sum *rst)
 {
-    sg_md_t * md = sg_md_start(type);
+    sg_md_t *md = sg_md_start(type);
 
     FILE *file = fopen(path, "rb");
     unsigned char data[1024];

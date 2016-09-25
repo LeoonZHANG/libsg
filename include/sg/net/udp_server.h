@@ -31,10 +31,10 @@ void sg_udp_server_run(sg_udp_server_t *);
 int sg_udp_server_send(sg_udp_client_t *, const void *data, size_t size, bool data_realloc);
 int sg_udp_server_get_conn_size(sg_udp_server_t *); /* udp server需要这个接口吗？ */
 void sg_udp_server_set_max_conn(sg_udp_server_t *, int); /* udp server需要这个接口吗？ */
-int sg_udp_server_get_speed(sg_udp_server_t *, size_t &send_kbps, size_t &recv_kbps);
+//int sg_udp_server_get_speed(sg_udp_server_t *, size_t &send_kbps, size_t &recv_kbps);
 int sg_udp_server_get_client_info(sg_udp_client_t *, char **ip, int *port);
-int sg_udp_server_get_client_speed(sg_udp_client_t *, size_t &send_kbps, size_t &recv_kbps);
-void sg_udp_server_set_client_max_send_speed(sg_udp_client_t *, size_t kbps);/* 限制对此客户端的发送速度 */
+//int sg_udp_server_get_client_speed(sg_udp_client_t *, size_t &send_kbps, size_t &recv_kbps);
+//void sg_udp_server_set_client_max_send_speed(sg_udp_client_t *, size_t kbps);/* 限制对此客户端的发送速度 */
 void sg_udp_server_close_client(sg_udp_client_t *);
 void sg_udp_server_close(sg_udp_server_t *);
 

@@ -1,10 +1,10 @@
 /**
  * vsbuf.h
- * Flexible variable length buffer.
+ * Variable-sized buffer.
  */
 
-#ifndef LIBSG_VLBUF_H
-#define LIBSG_VLBUF_H
+#ifndef LIBSG_VSBUF_H
+#define LIBSG_VSBUF_H
 
 #include <sg/sg.h>
 
@@ -29,4 +29,4 @@ void sg_vsbuf_destroy(sg_vsbuf_t *buf);
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_VLBUF_H */
+#endif /* LIBSG_VSBUF_H */

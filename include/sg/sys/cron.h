@@ -1,6 +1,7 @@
 /**
  * cron.h
  * Functions for cron job.
+ * TO be dropped!
  */
 
 #ifndef LIBSG_CRON_H

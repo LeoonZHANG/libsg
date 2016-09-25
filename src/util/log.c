@@ -10,7 +10,7 @@
 #include <sg/sys/clock.h>
 #include <sg/sys/shell.h>
 #include <sg/str/vsstr.h>
-#include <sg/sys/module.h>
+#include <sg/sys/proc.h>
 
 static bool log_colorful = true;
 static FILE *fp_log;
@@ -25,8 +25,8 @@ void sg_logging(const char *file, int line, const char *func, enum sg_log_level 
 {
     sg_vsstr_t *log;
     sg_vsstr_t *log_fmt;
+    sg_vsstr_t *mod_path = sg_vsstr_alloc();
     va_list ap;
-    char mod_path[1024] = {0};
     char log_path[1024] = {0};
     char curr_date[100] = {0};
     char curr_time[100] = {0};
@@ -50,9 +50,9 @@ void sg_logging(const char *file, int line, const char *func, enum sg_log_level 
 
     printf("%s", sg_vsstr_raw(log));
     
-    sg_module_path(mod_path, 1024);
+    sg_proc_full_path(mod_path);
     sg_clock_curr_date_time("%Y-%m-%d", curr_date, 100);
-    snprintf(log_path, 1024, "%s.%s.log", mod_path, curr_date);
+    snprintf(log_path, 1024, "%s.%s.log", sg_vsstr_raw(mod_path), curr_date);
     if (strcmp(log_path, fp_log_name) != 0 && fp_log) {
         fclose(fp_log);
         fp_log = NULL;

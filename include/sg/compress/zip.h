@@ -1,8 +1,9 @@
 /**
  * zip.h
  * 基于zlib、zip和snappy的压缩库
- * zip 基于 https://github.com/kjk/zip (unix-like) 和 https://github.com/madler/zip (windows port)
+ * zip 基于 https://github.com/kjk/zip (unix-like) 和 https://github.com/madler/zip (windows port) 和google snappy压缩库
  * 如果压缩库支持不同的压缩算法、压缩比,请把这样的参数暴露出来
+ * zlib的但使用可以灿开zlib模块(参考完毕就可以删掉它了)
  */
 
 #ifndef LIBSG_ZIP_H

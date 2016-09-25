@@ -1,6 +1,6 @@
 /**
  * kfifo.h
- * linux内核的kfifo数据结构
+ * linux内核的kfifo数据结构, 拷贝过来整理一下即可
  */
 
 #ifndef LIBSG_KFIFO_H

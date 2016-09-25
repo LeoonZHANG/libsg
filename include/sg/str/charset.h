@@ -16,7 +16,8 @@ extern "C" {
 vsstr *charset_detect(const char *src);
  */
 
-int sg_charset_conv(const char *from_charset, const char *to_charset, const char *from_str, sg_vsstr_t *out_str);
+int sg_charset_conv(const char *from_charset, const char *to_charset,
+        const char *from_str, sg_vsstr_t *out_str);
 
 #ifdef __cplusplus
 }

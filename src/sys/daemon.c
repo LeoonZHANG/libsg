@@ -7,9 +7,9 @@
 #include <string.h>
 #include <sg/sg.h>
 #include <sg/sys/daemon.h>
-#include <sg/sys/module.h>
+#include <sg/sys/proc.h>
 #include <sg/str/vsstr.h>
-#include <sg/sys/file.h>
+#include <sg/sys/fs.h>
 
 #if defined(SG_OS_WINDOWS)
 # include <windows.h> /* RegCreateKeyEx... */
@@ -19,7 +19,7 @@
 #endif
 
 
-int sg_daemon_start_with_os(void)
+int sg_daemon_start_with_os(bool on)
 {
 #if defined(SG_OS_WINDOWS)
     HKEY key;
@@ -56,35 +56,34 @@ int sg_daemon_start_with_os(void)
     return 0;
 #else
     const char *filename = "/etc/rc.local";
-    char module[SG_LIMIT_PATH_MAX]; /* executable filename */
-    sg_vsstr_t *file_str;
+    sg_vsstr_t *file_str = sg_vsstr_alloc();
+    sg_vsstr_t *proc_path = sg_vsstr_alloc(); /* executable filename */
     int retval;
 
-    if (sg_module_path(module, SG_LIMIT_PATH_MAX) != 0) {
+    if (!sg_proc_full_path(proc_path)) {
         sg_log_err("Get process path error.");
         return -1;
     }
 
-    file_str = sg_file_to_str(filename);
-    if (!file_str)
+    if (!sg_fs_file_to_str(filename, file_str))
         return -1;
 
     /* already exist */
-    if (strstr(sg_vsstr_raw(file_str), module)) {
+    if (strstr(sg_vsstr_raw(file_str), sg_vsstr_raw(proc_path))) {
         sg_vsstr_free(&file_str);
         return 0;
     }
 
     sg_vsstr_cat(file_str, "\n");
-    sg_vsstr_cat(file_str, module);
+    sg_vsstr_cat(file_str, proc_path);
 
-    retval = sg_file_overwrite(filename, (uint8_t *) sg_vsstr_raw(file_str), sg_vsstr_len(file_str));
+    retval = sg_fs_file_overwrite(filename, (uint8_t *) sg_vsstr_raw(file_str), sg_vsstr_len(file_str));
     sg_vsstr_free(&file_str);
     return retval;
 #endif
 }
 
-int sg_daemon_independent_of_terminal(void)
+int sg_daemon_independent_of_terminal(bool on)
 {
 #if defined(SG_OS_LINUX)
     return daemon(0, 0);

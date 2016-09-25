@@ -30,7 +30,7 @@ static void random_seed(void)
     // init seed using clock if read failed?
     if (read_bytes != sizeof(seed)) {
         // get clock
-        struct timespec ts = sg_unix_time_ns();
+        struct timespec ts = sg_clock_unix_time_ns();
         seed = (size_t)((ts.tv_nsec >> 32) ^ ts.tv_nsec);
         // xor the stack address
         seed ^= (size_t)(&seed);

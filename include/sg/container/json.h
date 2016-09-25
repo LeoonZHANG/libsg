@@ -1,6 +1,7 @@
-/*
+/**
  * json.h
  * JSON pointer style JSON wrapper based on cJson.
+ * 需要实现sg_json_alloc_from_msgpack和sg_json_alloc_from_msgpack2, msgpack官方demo有相互转换的实现
  */
 
 #ifndef LIBSG_JSON_H
@@ -38,6 +39,10 @@ sg_json_doc_t *sg_json_alloc_doc(const char *filename);
 sg_json_doc_t *sg_json_alloc_doc2(const void *buf, size_t size);
 
 sg_json_doc_t *sg_json_alloc_doc3(void);
+
+sg_sjon_doc_t *sg_json_alloc_from_msgpack(void *msgpack_data, uint64_t size);
+
+sg_sjon_doc_t *sg_json_alloc_from_msgpack2(sg_msgpack_t *msgpack);
 
 /* Don’t forget to free sg_json_str_t with sg_json_free_string. */
 int sg_json_doc_to_str(sg_json_doc_t *, sg_json_str_t **);

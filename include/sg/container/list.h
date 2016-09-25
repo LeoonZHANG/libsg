@@ -20,12 +20,14 @@ typedef bool (*sg_list_match_cb_t)(void *item_val_a, void *item_val_b);
 
 typedef void (*sg_list_free_cb_t)(void *data);
 
+/* 请放到c文件中去 */
 struct sg_list_item {
     struct sg_list_item *prev;
     struct sg_list_item *next;
     void                *val;
 };
 
+/* 请放到c文件中去 */
 struct sg_list {
     sg_list_item_t     *first;
     uint64_t           size;
@@ -35,7 +37,6 @@ struct sg_list {
     sg_list_free_cb_t  free_cb;
 };
 
-
 /******************************************
  * List operation.
  * ***************************************/
@@ -44,6 +45,8 @@ sg_list_t *sg_list_alloc(sg_list_free_cb_t free_cb, sg_list_match_cb_t match_cb)
 
 sg_list_t *sg_list_clone(sg_list_t *self);
 
+uint64_t sg_list_size(sg_list_t *self);
+
 void sg_list_free(sg_list_t *self);
 
 
@@ -51,9 +54,19 @@ void sg_list_free(sg_list_t *self);
  * item operation.
  * ***************************************/
 
+sg_list_item_t *sg_list_head(sg_list_t *self);
+
+sg_list_item_t *sg_list_tail(sg_list_t *self);
+
 bool sg_list_item_is_in_list(sg_list_t *self, sg_list_item_t *item);
 
 sg_list_item_t *sg_list_find(sg_list_t *self, void *item_val);
+
+sg_list_item_t *sg_list_item_previous(sg_list_item_t *item);
+
+sg_list_item_t *sg_list_item_next(sg_list_item_t *item);
+
+void *sg_list_item_val(sg_list_item_t *item);
 
 sg_list_item_t *sg_list_add_left(sg_list_t *self, void *item_val, sg_list_item_t *exist_item);
 

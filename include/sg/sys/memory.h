@@ -1,6 +1,7 @@
 ﻿/**
  * memory.h
  * fast malloc/free/memcpy based on tcmalloc/jemalloc/fastmemcpy.
+ * 很乱, 需要梳理, 另外, 最好可以实现-lsg就自动-ltcmalloc或者-ljemalloc
  */
 
 #ifndef LIBSG_MEMORY_H

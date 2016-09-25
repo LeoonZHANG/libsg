@@ -1,6 +1,6 @@
 /**
  * zlib.h
- * will be deleted
+ * 将被删除, 留在这里是因为两个接口可以为zip模块提供参考
  */
 
 #ifndef LIBSG_ZLIB_H

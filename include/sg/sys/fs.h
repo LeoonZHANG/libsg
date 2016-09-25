@@ -1,6 +1,7 @@
 /**
  * fs.h
  * File system common operations package, including file and directory.
+ * Windows下目录遍历的时候, 接口实现和使用有没有问题?
  */
 
 #ifndef LIBSG_FS_H
