@@ -1,4 +1,9 @@
-FastMemcpy: Latest commit a74a33a
+##apr
+url: https://github.com/apache/apr/releases
+version: 1.5.2
+
+##FastMemcpy
+version: commit a74a33a
 
 jemalloc: 4.2.1
 

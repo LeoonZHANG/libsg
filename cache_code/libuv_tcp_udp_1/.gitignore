@@ -1,0 +1,7 @@
+*.o
+test/bin/*
+test/obj/*
+tcp_udp_server
+tcp_client
+udp_client
+nbproject
