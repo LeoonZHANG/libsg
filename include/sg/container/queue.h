@@ -1,7 +1,7 @@
 /**
  * queue.h
- * blocking and non-blocking queue.
- *
+ * non-blocking queue.
+ * 自己实现,不要基于开源代码
  */
 
 #ifndef LIBSG_QUEUE_H
@@ -13,7 +13,13 @@
 extern "C" {
 #endif /* __cplusplus */
 
+typedef struct sg_queue_item sg_queue_item_t;
+
 typedef struct sg_queue sg_queue_t;
+
+typedef bool (*sg_queue_iter_cb_t)(sg_queue_item_t *item, void *ctx);
+
+typedef void (*sg_queue_free_cb_t)(void *item_val);
 
 /* 放进queue.c */
 struct sg_queue_item {
@@ -26,14 +32,15 @@ struct sg_queue {
     sg_queue_item_t     *head;
     sg_queue_item_t     *tail;
     uint64_t            size;
+    sg_queue_free_cb_t  free_cb;
 };
 
 /******************************************
  * queue operation.
  * ***************************************/
 
-/*  Initialise the queue. */
-sg_queue_t *sg_queue_alloc(uint64_t capacity);
+/*  Initialise the queue, 如果参数传0表示无限大小. */
+sg_queue_t *sg_queue_alloc(uint64_t capacity, sg_queue_free_cb_t cb);
 
 uint64_t sg_queue_size(sg_queue_t *self);
 
@@ -51,11 +58,13 @@ bool sg_queue_push(sg_queue_t *self, void *item_val);
     from the queue. Returns NULL if the queue is empty. */
 void *sg_queue_pop(sg_queue_t *self);
 
-bool sg_queue_try_push(sg_queue_t *self, void *item_val);
+void sg_queue_iter(sg_queue_t *self, sg_queue_iter_cb_t cb, void *ctx);
 
-bool sg_queue_try_pop(sg_queue_t *self);
+void *sg_queue_get_item_val(sg_queue_item_t *item);
 
-void *sg_queue_timeout_pop(sg_queue_t *self, int ms);
+void sg_queue_update_item_val(sg_queue_t *item, void *val);
+
+void sg_queue_remove_item(sg_queue_t *self, sg_queue_item_t *item);
 
 void sg_queue_remove_all(sg_queue_t *self);
 
