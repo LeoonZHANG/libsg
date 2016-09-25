@@ -4,7 +4,7 @@
 
 ## Overview
 
-Cross-platform C utility library focusing on efficient development and easy-to-use.
+Cross-platform C utility library focusing on developer-friendly.
 
 ## Idea
 
