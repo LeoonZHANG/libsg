@@ -92,11 +92,11 @@ coming soon
 
 **math** `big_float` `big_int` `c_float` `c_int` `num_sys` `random` `speed`
 
-**net** `dns_server` `etp` `etp_server` `http` `http_server` `net_card` `ntp` `ntp_server` `port` `proxy` `quic` `quic_server` `tcp` `tcp_server` `udp` `udp_server` `websocket`
+**net** `enet` `enet_server` `etp` `etp_server` `http` `http_server` `net_card` `ntp` `ntp_server` `p2p` `p2p_agent` `p2p_server` `port` `proxy` `quic` `quic_server` `tcp` `tcp_server` `udp` `udp_server` `websocket`
 
 **str** `base64` `charset` `regex` `snprintf` `string` `vsstr` (variable-sized string) `vsstr_list`
 
-**sys** `atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `memory` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `sleep` `spin_lock` `thread` `type`
+**sys** `atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `memory` `mmap` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `signal` `sleep` `spin_lock` `thread` `type`
 
 **util** `assert` `compiler` `dump` `err` `log` `trick`
 
