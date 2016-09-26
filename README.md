@@ -80,25 +80,49 @@ coming soon
 
 ## Modules
 
-**compress** `zip`
+**compress**
 
-**container** `bip_buf` `bloom_filter` `json` `kfifo` `list` `msgpack` `queue` `vsbuf` `xml`
+`zip`
 
-**crypto** `md` (message digest) `mac` (message authentication code) `sym`: (symmetric encryption)
+**container**
 
-**db** `sqlite` `ejdb` `bdb`
+`bip_buf` `bloom_filter` `json` `kfifo` `list` `msgpack` `queue` `vsbuf` `xml`
 
-**hash** `crc` `uuid` `murmur`
+**crypto**
 
-**math** `big_float` `big_int` `c_float` `c_int` `num_sys` `random` `speed`
+`md` (message digest) `mac` (message authentication code) `sym`: (symmetric encryption)
 
-**net** `enet` `enet_server` `etp` `etp_server` `http` `http_server` `net_card` `ntp` `ntp_server` `p2p` `p2p_agent` `p2p_server` `port` `proxy` `quic` `quic_server` `tcp` `tcp_server` `udp` `udp_server` `websocket`
+**db**
 
-**str** `base64` `charset` `regex` `snprintf` `string` `vsstr` (variable-sized string) `vsstr_list`
+`sqlite` `ejdb` `bdb`
 
-**sys** `atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `memory` `mmap` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `signal` `sleep` `spin_lock` `thread` `type`
+**hash**
 
-**util** `assert` `compiler` `dump` `err` `log` `trick`
+`crc` `uuid` `murmur`
+
+**hdw**
+
+`cpu` `hd` `memory` `netcard`
+
+**math**
+
+`big_float` `big_int` `c_float` `c_int` `num_sys` `random` `speed`
+
+**net**
+
+`enet` `enet_server` `etp` `etp_server` `http` `http_server` `ntp` `ntp_server` `p2p` `p2p_middle` `p2p_server` `port` `proxy` `quic` `quic_server` `tcp` `tcp_server` `udp` `udp_server` `websocket`
+
+**str**
+
+`base64` `charset` `regex` `snprintf` `string` `vsstr` (variable-sized string) `vsstr_list`
+
+**sys**
+
+`atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `mem` `mmap` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `signal` `sleep` `spin_lock` `thread` `type`
+
+**util**
+
+`assert` `compiler` `dump` `err` `log` `trick`
 
 ## Code specification
 
