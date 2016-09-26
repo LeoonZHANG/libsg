@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sg/sg.h>
-#include <sg/net/net_card.h>
+#include <sg/hdw/netcard.h>
 
 #ifdef SG_OS_WINDOWS
 # include <winsock2.h>
@@ -63,7 +63,7 @@ static size_t get_address_prefix(PIP_ADAPTER_ADDRESSES pCurrAddresses, PIP_ADAPT
     return prefix;
 }
 
-int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_interfaces)
+int sg_netcard_scan(sg_netcard_scan_cb_t cb, void* ctx, int merge_interfaces)
 {
     // Set the flags to pass to GetAdaptersAddresses
     ULONG flags = GAA_FLAG_INCLUDE_PREFIX;
@@ -99,7 +99,7 @@ int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_i
     for (PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses; pCurrAddresses; pCurrAddresses = pCurrAddresses->Next)
         ++max_if;
 
-    struct sg_net_card_info *if_info_set = calloc(max_if, sizeof(struct sg_net_card_info));
+    struct sg_netcard_info *if_info_set = calloc(max_if, sizeof(struct sg_netcard_info));
     size_t actual_if = 0;
     for (PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses; pCurrAddresses; pCurrAddresses = pCurrAddresses->Next) {
         if (pCurrAddresses->IfType != IF_TYPE_ETHERNET_CSMACD && pCurrAddresses->IfType != IF_TYPE_IEEE80211)
@@ -160,7 +160,7 @@ int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_i
     free(pAddresses);
 
     for (size_t i = 0; i < actual_if; ++i)
-        callback(&if_info_set[i], ctx);
+        cb(&if_info_set[i], ctx);
     return 0;
 }
 
@@ -203,7 +203,7 @@ static size_t ioctl_get_if_mtu(const char* name)
     return ifr.ifr_mtu;
 }
 
-size_t merge_interfaces_info(struct sg_net_card_info* if_info_set, size_t actual_if)
+size_t merge_interfaces_info(struct sg_netcard_info* if_info_set, size_t actual_if)
 {
     size_t merged_count = 0;
     for (size_t i = 0; i < actual_if; ++i) {
@@ -242,16 +242,16 @@ size_t merge_interfaces_info(struct sg_net_card_info* if_info_set, size_t actual
     actual_if = merged_count;
 }
 
-int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_interfaces)
+int sg_netcard_scan(sg_netcard_scan_cb_t cb, void *ctx, int merge_interfaces)
 {
-    struct ifaddrs* if_addrs = NULL;
+    struct ifaddrs *if_addrs = NULL;
     if (getifaddrs(&if_addrs))
         return -1;
 
     size_t max_if = 0;
     for (struct ifaddrs* if_addr = if_addrs; if_addr; if_addr = if_addr->ifa_next)
         ++max_if;
-    struct sg_net_card_info *if_info_set = calloc(max_if, sizeof(struct sg_net_card_info));
+    struct sg_netcard_info *if_info_set = calloc(max_if, sizeof(struct sg_netcard_info));
 
     size_t actual_if = 0;
     for (struct ifaddrs* if_addr = if_addrs; if_addr; if_addr = if_addr->ifa_next) {
@@ -299,7 +299,7 @@ int sg_net_card_scan(sg_net_card_on_read_func_t callback, void* ctx, int merge_i
         actual_if = merge_interfaces_info(if_info_set, actual_if);
 
     for (size_t i = 0; i < actual_if; ++i)
-        callback(&if_info_set[i], ctx);
+        cb(&if_info_set[i], ctx);
 
     free(if_info_set);
     return 0;
