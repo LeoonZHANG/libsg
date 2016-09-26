@@ -52,6 +52,7 @@ file(GLOB src_sys src/sys/*.c)
 file(GLOB src_util src/util/*.c)
 file(GLOB src_crypto src/crypto/*.c)
 file(GLOB src_hash src/hash/*.c)
+file(GLOB src_hdw src/hdw/*.c)
 
 set(src_lib
     ${src_b64}
@@ -67,7 +68,7 @@ set(src_lib
     ${src_util}
     ${src_crypto}
     ${src_hash}
-    src/net/net_card.c
+    ${src_hdw}
     )
 
 ## 有些文件在 Linux 上不需要包含进来编译，直接引用安装好的库
