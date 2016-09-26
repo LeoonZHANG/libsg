@@ -90,7 +90,7 @@ coming soon
 
 **crypto**
 
-`md` (message digest) `mac` (message authentication code) `sym`: (symmetric encryption)
+`md` (message digest) `mac` (message authentication code) `sym` (symmetric encryption)
 
 **db**
 
