@@ -1,6 +1,9 @@
 /**
  * bloom_filter.h
  * Counting bloom filter and scaling bloom filter data structure.
+ * bf: bloom filter
+ * sbf: scaling bloom filter
+ * cbf: counting bloom filter
  */
 
 #ifndef LIBSG_BLOOM_FILTER_H

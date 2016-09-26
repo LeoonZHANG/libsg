@@ -1,4 +1,4 @@
-/*
+/**
  * xml.h
  * Xpath style XML library based on fastest xml library in world ~ vtd-xml.
  */

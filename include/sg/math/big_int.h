@@ -1,9 +1,8 @@
 /**
  * big_int.h
- * Big integer and floating-pointer number library based on mpir.
+ * Big integer number library based on mpir.
  */
 
-/* 如果头文件中有设计不合理的地方，请酌情调整 */
 /* res可以等于a或者b，这样避免开辟太多的变量 */
 
 #ifndef LIBSG_BIG_INT_H

@@ -1,6 +1,6 @@
 /**
  * big_float.h
- * Big integer and floating-pointer number library based on mpir.
+ * Big floating-pointer number library based on mpir.
  */
 
 /* 如果头文件中有设计不合理的地方，请酌情调整 */
