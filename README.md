@@ -16,6 +16,8 @@ Cross-platform C utility library focusing on developer-friendly.
 
 * *One key to build, no dependency*
 
+* *One static library to link, no dependency*
+
 * *High performance for key modules*
 
 * *Efficient development*
