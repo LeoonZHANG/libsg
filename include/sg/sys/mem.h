@@ -1,11 +1,11 @@
 ﻿/**
- * memory.h
+ * mem.h
  * fast malloc/free/memcpy based on tcmalloc/jemalloc/fastmemcpy.
  * 很乱, 需要梳理, 另外, 最好可以实现-lsg就自动-ltcmalloc或者-ljemalloc
  */
 
-#ifndef LIBSG_MEMORY_H
-#define LIBSG_MEMORY_H
+#ifndef LIBSG_MEM_H
+#define LIBSG_MEM_H
 
 #include <sg/sg.h>
 
@@ -71,4 +71,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_MEMORY_H */
+#endif /* LIBSG_MEM_H */
