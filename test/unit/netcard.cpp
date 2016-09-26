@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <sg/net/net_card.h>
+#include <sg/hdw/netcard.h>
 
 void callback(struct sg_net_card_info* inf, void* ctx)
 {

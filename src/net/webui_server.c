@@ -1,6 +1,6 @@
 /**
- * http_server.c
- * Mini HTTP server package based on mongoose.
+ * webui_server.c
+ * Mini HTTP server package based on mongoose for device dashboards.
  */
 
 #include <stdlib.h>
@@ -10,28 +10,28 @@
 #include <sg/sys/flag.h>
 #include <sg/sys/thread.h>
 #include <sg/str/string.h>
-#include <sg/net/http_server.h>
+#include <sg/net/webui_server.h>
 #include "../../3rdparty/mongoose_5.6/mongoose.h"
 
 /* HTTP server context */
-struct http_server_real {
+struct webui_server_real {
     sg_flag_t                       *run_flag;
     struct mg_server                *server;
-    sg_http_server_request_func_t   client_request_cb;
+    sg_webui_server_request_cb_t    client_request_cb;
     void                            *ctx;
     sg_thread_t                     thread;
-    enum sg_http_server_dispatch    dispatch;
+    enum sg_webui_server_dispatch   dispatch;
 };
 
-void http_server_async_run(sg_http_server *s);
-void http_server_sync_run(void *s);
+void webui_server_async_run(sg_webui_server *s);
+void webui_server_sync_run(void *s);
 
 /* event handler */
 static int ev_handler(struct mg_connection *conn, enum mg_event ev)
 {
     size_t i;
-    struct http_server_real *s;
-    struct sg_http_server_request request;
+    struct webui_server_real *s;
+    struct sg_webui_server_request request;
 
     switch (ev) {
     case MG_AUTH:
@@ -43,9 +43,9 @@ static int ev_handler(struct mg_connection *conn, enum mg_event ev)
         /* mg_printf_data(conn, "This is a reply from server instance # %s",
                        (char *) conn->server_param); */
         sg_log_inf("HTTP server receives a %s request.", conn->request_method);
-        s = (struct http_server_real *)conn->server_param;
+        s = (struct webui_server_real *)conn->server_param;
         if (s && s->client_request_cb) {
-            memset(&request, 0, sizeof(struct sg_http_server_request));
+            memset(&request, 0, sizeof(struct sg_webui_server_request));
             request.uri = conn->uri;
             request.client_ip = conn->remote_ip;
             request.client_port = conn->remote_port;
@@ -74,7 +74,7 @@ static int ev_handler(struct mg_connection *conn, enum mg_event ev)
     }
 }
 
-void sg_http_server_reply_header(void *client_conn, const char *name, const char *value)
+void sg_webui_server_reply_header(void *client_conn, const char *name, const char *value)
 {
     SG_ASSERT(client_conn);
     SG_ASSERT(name);
@@ -86,7 +86,7 @@ void sg_http_server_reply_header(void *client_conn, const char *name, const char
     mg_send_header((struct mg_connection *)client_conn, name, value);
 }
 
-void sg_http_server_reply_status(void *client_conn, int status_code)
+void sg_webui_server_reply_status(void *client_conn, int status_code)
 {
     SG_ASSERT(client_conn);
     SG_ASSERT(status_code >= 0);
@@ -94,7 +94,7 @@ void sg_http_server_reply_status(void *client_conn, int status_code)
     mg_send_status((struct mg_connection *)client_conn, status_code);
 }
 
-void sg_http_server_reply_data(void *client_conn, void *data, size_t size)
+void sg_webui_server_reply_data(void *client_conn, void *data, size_t size)
 {
     SG_ASSERT(client_conn);
     SG_ASSERT(data);
@@ -103,10 +103,10 @@ void sg_http_server_reply_data(void *client_conn, void *data, size_t size)
     mg_send_data((struct mg_connection *)client_conn, data, size);
 }
 
-sg_http_server *sg_http_server_create(const char *port, sg_http_server_request_func_t cb,
-                                      enum sg_http_server_dispatch dispatch, void *ctx)
+sg_webui_server *sg_webui_server_create(const char *port, sg_webui_server_request_cb_t cb,
+                                      enum sg_webui_server_dispatch dispatch, void *ctx)
 {
-    struct http_server_real *s;
+    struct webui_server_real *s;
 
     SG_ASSERT(port);
     SG_ASSERT(strlen(port) > 0);
@@ -117,7 +117,7 @@ sg_http_server *sg_http_server_create(const char *port, sg_http_server_request_f
     }
 
     /* Create and configure HTTP server. */
-    s = (struct http_server_real *)malloc(sizeof(struct http_server_real));
+    s = (struct webui_server_real *)malloc(sizeof(struct webui_server_real));
     if (!s)
         return NULL;
     sg_log_inf("HTTP server creating.");
@@ -130,9 +130,9 @@ sg_http_server *sg_http_server_create(const char *port, sg_http_server_request_f
     return s;
 }
 
-void http_server_sync_run(void *p)
+void webui_server_sync_run(void *p)
 {
-    struct http_server_real *s = (struct http_server_real *)p;
+    struct webui_server_real *s = (struct webui_server_real *)p;
 
     SG_ASSERT(s);
 
@@ -148,42 +148,42 @@ void http_server_sync_run(void *p)
     s->server = NULL;
 }
 
-void http_server_async_run(sg_http_server *s)
+void webui_server_async_run(sg_webui_server *s)
 {
     SG_ASSERT(s);
 
-    sg_thread_init(&(s->thread), http_server_sync_run, (void*)s);
+    sg_thread_init(&(s->thread), webui_server_sync_run, (void*)s);
 }
 
-int sg_http_server_start(sg_http_server *s)
+int sg_webui_server_start(sg_webui_server *s)
 {
     SG_ASSERT(s);
 
     sg_flag_write(s->run_flag, 1);
 
     if (s->dispatch == SGHTTPSERVERDISPATCH_ASYNC)
-        http_server_async_run(s);
+        webui_server_async_run(s);
     else
-        http_server_sync_run(s);
+        webui_server_sync_run(s);
 
     return 0;
 }
 
-void sg_http_server_stop(sg_http_server *s)
+void sg_webui_server_stop(sg_webui_server *s)
 {
     SG_ASSERT(s);
 
     sg_flag_write(s->run_flag, 0);
 }
 
-void sg_http_server_join(sg_http_server *s)
+void sg_webui_server_join(sg_webui_server *s)
 {
     SG_ASSERT(s);
 
     sg_thread_join(&(s->thread));
 }
 
-void sg_http_server_destroy(sg_http_server **s)
+void sg_webui_server_destroy(sg_webui_server **s)
 {
     SG_ASSERT(s);
     if (!(*s))

@@ -1,11 +1,10 @@
 /**
- * http_server.h
- * HTTP server package based on haywire.
- * https://github.com/haywire/haywire
+ * webui_server.h
+ * Mini HTTP server package based on mongoose for device dashboards.
  */
 
-#ifndef LIBSG_HTTP_SERVER_H
-#define LIBSG_HTTP_SERVER_H
+#ifndef LIBSG_WEBUI_SERVER_H
+#define LIBSG_WEBUI_SERVER_H
 
 #include <sg/sg.h>
 
@@ -14,7 +13,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* HTTP request content from client */
-struct sg_http_server_request {
+struct sg_webui_server_request {
     int                         status_code;     /* HTTP status code for HTTP error handler */
     const char                  *uri;            /* URL-decoded URI */
     const void                  *content;        /* POST (or websocket message) data, or NULL */
@@ -36,51 +35,51 @@ struct sg_http_server_request {
  * the memory data after 'size' bytes are wrote last time, looks like random.
  * If this returns non-zero, http server will send http 200 to client;
  */
-typedef void (*sg_http_server_request_func_t)(void *client_conn, struct sg_http_server_request *request, void *ctx);
+typedef void (*sg_webui_server_request_cb_t)(void *client_conn, struct sg_webui_server_request *request, void *ctx);
 
-/* Asynchronous or synchronous http server. */
-enum sg_http_server_dispatch {
-    SGHTTPSERVERDISPATCH_SYNC  = 0,
-    SGHTTPSERVERDISPATCH_ASYNC = 1
+/* Asynchronous or synchronous webui server. */
+enum sg_webui_server_dispatch {
+    SGWEBUISERVERDISPATCH_SYNC  = 0,
+    SGWEBUISERVERDISPATCH_ASYNC = 1
 };
 
 /* HTTP server handle for user. */
-typedef struct http_server_real sg_http_server;
+typedef struct webui_server_real sg_webui_server;
 
 /*
  * Create a http server, returns a handle.
  * Client connection will timeout if handler costs too much time, take care.
  */
-sg_http_server *sg_http_server_create(const char *port, sg_http_server_request_func_t cb,
-                                      enum sg_http_server_dispatch dispatch, void *ctx);
+sg_webui_server *sg_webui_server_create(const char *port, sg_webui_server_request_cb_t cb,
+                                      enum sg_webui_server_dispatch dispatch, void *ctx);
 
 /*
- * Start the http server by handle.
- * It is asynchronous when http server is 'HTTPSERVERDISPATCH_ASYNC',
- * or synchronous when http server is 'HTTPSERVERDISPATCH_SYNC'.
+ * Start the webui server by handle.
+ * It is asynchronous when webui server is 'WEBUISERVERDISPATCH_ASYNC',
+ * or synchronous when webui server is 'WEBUISERVERDISPATCH_SYNC'.
  */
-int sg_http_server_start(sg_http_server *s);
+int sg_webui_server_start(sg_webui_server *s);
 
 /* Reply HTTP header to client */
-void sg_http_server_reply_header(void *client_conn, const char *name, const char *value);
+void sg_webui_server_reply_header(void *client_conn, const char *name, const char *value);
 
 /* Reply HTTP status code to client */
-void sg_http_server_reply_status(void *client_conn, int status_code);
+void sg_webui_server_reply_status(void *client_conn, int status_code);
 
 /* Reply data to client */
-void sg_http_server_reply_data(void *client_conn, void *data, size_t size);
+void sg_webui_server_reply_data(void *client_conn, void *data, size_t size);
 
-/* Stop the http server by handle. It is asynchronous. */
-void sg_http_server_stop(sg_http_server *s);
+/* Stop the webui server by handle. It is asynchronous. */
+void sg_webui_server_stop(sg_webui_server *s);
 
-/* Wait http server until it exit. */
-void sg_http_server_join(sg_http_server *s);
+/* Wait webui server until it exit. */
+void sg_webui_server_join(sg_webui_server *s);
 
-/* Destroy the http server by handle, you should stop and join it first. */
-void sg_http_server_destroy(sg_http_server **s);
+/* Destroy the webui server by handle, you should stop and join it first. */
+void sg_webui_server_destroy(sg_webui_server **s);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* LIBSG_HTTP_SERVER_H */
+#endif /* LIBSG_WEBUI_SERVER_H */
