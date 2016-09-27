@@ -14,15 +14,29 @@
  * along with TBox; 
  * If not, see <a href="http://www.gnu.org/licenses/"> http://www.gnu.org/licenses/</a>
  * 
- * Copyright (C) 2009 - 2015, ruki All rights reserved.
+ * Copyright (C) 2009 - 2017, ruki All rights reserved.
  *
- * @author		ruki
- * @file		prefix.S
+ * @author      ruki
+ * @file        prefix.S
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "asm/prefix.S"
+#include "config.h"
+#include "arch.h"
+#include "cpu.h"
+#include "endian.h"
+#include "compiler.h"
+#include "cache.h"
+#if defined(TB_ARCH_x86)
+#   include "x86/prefix.S"
+#elif defined(TB_ARCH_x64)
+#   include "x64/prefix.S"
+#elif defined(TB_ARCH_ARM64)
+#   include "arm64/prefix.S"
+#elif defined(TB_ARCH_ARM)
+#   include "arm/prefix.S"
+#endif
 

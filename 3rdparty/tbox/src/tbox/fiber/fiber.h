@@ -14,25 +14,19 @@
  * along with TBox; 
  * If not, see <a href="http://www.gnu.org/licenses/"> http://www.gnu.org/licenses/</a>
  * 
- * Copyright (C) 2009 - 2015, ruki All rights reserved.
+ * Copyright (C) 2009 - 2017, ruki All rights reserved.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        fiber.h
+ * @defgroup    fiber
  *
  */
-#ifndef TB_PREFIX_ASM_PREFIX_H
-#define TB_PREFIX_ASM_PREFIX_H
+#ifndef TB_FIBER_H
+#define TB_FIBER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../config.h"
-#include "../arch.h"
-#include "../cpu.h"
-#include "../endian.h"
-#include "../compiler.h"
-
+#include "prefix.h"
 
 #endif
-
-

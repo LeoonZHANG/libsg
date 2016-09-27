@@ -39,7 +39,7 @@ option("smallest")
     add_rbindings("zlib", "mysql", "sqlite3", "openssl", "polarssl", "pcre2", "pcre")
 
 -- add modules
-for _, module in ipairs({"xml", "zip", "asio", "hash", "regex", "object", "thread", "network", "charset", "database"}) do
+for _, module in ipairs({"xml", "zip", "asio", "hash", "regex", "fiber", "object", "thread", "network", "charset", "database"}) do
     option(module)
         set_default(true)
         set_showmenu(true)
@@ -81,7 +81,7 @@ target("tbox")
     add_options("info", "float", "wchar", "deprecated")
 
     -- add modules
-    add_options("xml", "zip", "asio", "hash", "regex", "object", "thread", "network", "charset", "database")
+    add_options("xml", "zip", "asio", "hash", "regex", "fiber", "object", "thread", "network", "charset", "database")
 
     -- add the common source files
     add_files("*.c") 
@@ -101,7 +101,7 @@ target("tbox")
     add_files("libm/isqrti.c") 
     add_files("libm/isqrti64.c") 
     add_files("libm/idivi8.c") 
-    add_files("platform/*.c|aicp.c|aiop.c|aioo.c|socket.c|dns.c|thread*.c|event.c|semaphore.c|mutex.c|timer.c|ltimer.c")
+    add_files("platform/*.c|aicp.c|aiop.c|aioo.c|socket.c|dns.c|thread*.c|event.c|semaphore.c|mutex.c|timer.c|ltimer.c|context.c")
 
     -- add the source files for the float type
     if is_option("float") then add_files("libm/*.c") end
@@ -153,6 +153,17 @@ target("tbox")
         add_files("stream/transfer_pool.c")
         add_files("platform/aicp.c")
         if is_option("openssl", "polarssl") then add_files("asio/ssl.c") end
+    end
+
+    -- add the source files for the fiber module
+    if is_option("fiber") then
+        add_files("platform/context.c") 
+        if is_plat("windows") then
+            add_files("platform/arch/$(arch)/context.asm") 
+        else
+            add_files("platform/arch/context.S") 
+        end
+        add_files("fiber/*.c") 
     end
 
     -- add the source files for the thread module

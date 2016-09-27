@@ -14,20 +14,41 @@
  * along with TBox; 
  * If not, see <a href="http://www.gnu.org/licenses/"> http://www.gnu.org/licenses/</a>
  * 
- * Copyright (C) 2009 - 2015, ruki All rights reserved.
+ * Copyright (C) 2009 - 2017, ruki All rights reserved.
  *
  * @author      ruki
- * @file        atomic.h
+ * @file        prefix.S
  *
  */
-#ifndef TB_PLATFORM_ARCH_ARM_ATOMIC_H
-#define TB_PLATFORM_ARCH_ARM_ATOMIC_H
-
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * includes
+ * macros
  */
-#include "prefix.h"
 
-
+/*! function
+ * 
+ * @code
+    function(func_xxxx)
+        ...
+    endfunc
+   @endcode
+ */
+#ifdef TB_ARCH_ELF
+#   define function(name) \
+    .text ;\
+    .align TB_CPU_BITBYTE ; \
+    .global name ;\
+    .type   name, %function; \
+    .hidden name; \
+name:
+#else
+#   define function(name) \
+    .text ;\
+    .align TB_CPU_BITBYTE ; \
+    .global _##name ;\
+_##name:
 #endif
+
+// end function
+#define endfunc
+

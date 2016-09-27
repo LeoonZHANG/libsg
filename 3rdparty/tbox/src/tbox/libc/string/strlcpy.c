@@ -14,7 +14,7 @@
  * along with TBox; 
  * If not, see <a href="http://www.gnu.org/licenses/"> http://www.gnu.org/licenses/</a>
  * 
- * Copyright (C) 2009 - 2015, ruki All rights reserved.
+ * Copyright (C) 2009 - 2017, ruki All rights reserved.
  *
  * @author      ruki
  * @file        strlcpy.c
@@ -37,6 +37,20 @@
 #   endif
 #else
 #   include <string.h>
+#endif
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros 
+ */
+
+/* suppress warning as error for clang compiler temporarily:
+ *
+ * implicit declaration of function 'strlcpy' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+ *
+ * TODO: need improve xmake to check this interface more correctly.
+ */
+#if defined(TB_CONFIG_LIBC_HAVE_STRLCPY) && defined(TB_COMPILER_IS_CLANG)
+#   undef TB_CONFIG_LIBC_HAVE_STRLCPY
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////

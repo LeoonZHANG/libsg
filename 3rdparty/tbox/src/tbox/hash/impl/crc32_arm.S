@@ -14,7 +14,7 @@
  * along with TBox; 
  * If not, see <a href="http://www.gnu.org/licenses/"> http://www.gnu.org/licenses/</a>
  * 
- * Copyright (C) 2009 - 2015, ruki All rights reserved.
+ * Copyright (C) 2009 - 2017, ruki All rights reserved.
  *
  * @author      ruki
  * @file        crc_arm.S
@@ -30,15 +30,15 @@
  */
 #ifndef TB_ARCH_ARM64
 
-    /* tb_uint32_t tb_crc32_make_asm(tb_uint32_t crc, tb_byte_t const* data, tb_size_t size, tb_uint32_t const* table);
-     * 
-     * @param crc   r0
-     * @param data  r1
-     * @param size  r2
-     * @param table r3
-     *
-     * @return      crc, r0
-     */
+/* tb_uint32_t tb_crc32_make_asm(tb_uint32_t crc, tb_byte_t const* data, tb_size_t size, tb_uint32_t const* table);
+ * 
+ * @param crc   r0
+ * @param data  r1
+ * @param size  r2
+ * @param table r3
+ *
+ * @return      crc, r0
+ */
 function tb_crc32_make_asm, export=1
 
     // enter

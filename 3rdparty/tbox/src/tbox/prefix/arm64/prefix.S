@@ -14,7 +14,7 @@
  * along with TBox; 
  * If not, see <a href="http://www.gnu.org/licenses/"> http://www.gnu.org/licenses/</a>
  * 
- * Copyright (C) 2009 - 2015, ruki All rights reserved.
+ * Copyright (C) 2009 - 2017, ruki All rights reserved.
  *
  * @author      ruki
  * @file        prefix.S
@@ -22,35 +22,23 @@
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * includes
- */
-#include "prefix.h"
-
-/* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
-
-#ifdef TB_ARCH_ARM_THUMB
-#   define A @
-#   define T
-#else
-#   define A
-#   define T @
-#endif
-
 #ifdef TB_ARCH_ELF
 #   define ELF
 #   define EXTERN_ASM
 #else
-#   define ELF @
-#   define EXTERN_ASM _
+#   define ELF          #
+#   define EXTERN_ASM   _
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * arch
  */
 
-#if defined(TB_ARCH_ARM_v7A)
+#if defined(TB_ARCH_ARM_v8)
+        .arch armv8-a
+#elif defined(TB_ARCH_ARM_v7A)
         .arch armv7-a
 #elif defined(TB_ARCH_ARM_v7)
         .arch armv7
@@ -75,22 +63,15 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * syntax
  */
-#ifndef TB_ARCH_ARM64
+#if defined(TB_ARCH_ARM) && !defined(TB_ARCH_ARM64)
         .syntax unified
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * thumb
- */
-
-// will crash
-//T       .thumb
-
-/* //////////////////////////////////////////////////////////////////////////////////////
  * eabi
  */
-#ifndef TB_ARCH_ARM64
-ELF     .eabi_attribute 25, 1 
+#if defined(TB_ARCH_ELF) && defined(TB_ARCH_ARM) && !defined(TB_ARCH_ARM64)
+        .eabi_attribute 25, 1 
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -102,47 +83,38 @@ ELF     .eabi_attribute 25, 1
  * @code
     function func_xxxx, export=1
         ...
-        bx lr
     endfunc
    @endcode
  */
 .macro function name, export=0
     .macro endfunc
 ELF     .size \name, . - \name
-        .endfunc
         .purgem endfunc
     .endm
 
         .text
-#ifdef TB_ARCH_ARM64
-        .align 8
-#else 
-        .align 4
-#endif
+        .align TB_CPU_BITBYTE
     .if \export
         .global EXTERN_ASM\name
-        .hidden EXTERN_ASM\name
+ELF     .type   EXTERN_ASM\name, %function
+ELF     .hidden EXTERN_ASM\name
 EXTERN_ASM\name:
-    .endif
-ELF     .type \name, %function
-        .func \name
+    .else
+ELF     .type   \name, %function
+ELF     .hidden \name
 \name:
+    .endif
 .endm
 
 /*! label
  * 
  * @code
     label name
-       xxx
-       xxx
-       bl name
+        ...
    @endcode
  */
 .macro label name
-#ifdef TB_ARCH_ARM64
-        .align 8
-#else 
-        .align 4
-#endif
+        .align TB_CPU_BITBYTE
 \name:
 .endm
+
