@@ -39,7 +39,7 @@ void sg_err_list_init(void)
     sg_err_map(SG_ERR_NULL_PTR, "null pointer");
 }
 
-static void sg_err_add_custom(int err_no, const char *err_msg)
+void sg_err_add_custom(int err_no, const char *err_msg)
 {
     if (err_no <= SG_ERR_MAX) {
         fprintf(stderr, "custom error number shouldn\'t be smaller than %d(SG_ERR_MAX)\n", SG_ERR_MAX);

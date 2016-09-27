@@ -37,8 +37,6 @@
 # include <signal.h> /* kill */
 #endif
 
-#include <sg/util/log.h>
-#include <sg/util/SG_ASSERT.h>
 #include <sg/sys/proc.h>
 #include <sg/sys/shell.h>
 #include <sg/str/string.h>
@@ -394,7 +392,7 @@ bool sg_proc_full_path(sg_vsstr_t *out)
         return false;
     }
 
-#elif SG_OS_LINUX
+#elif defined(SG_OS_LINUX)
 
     ssize_t size;
 
@@ -405,7 +403,7 @@ bool sg_proc_full_path(sg_vsstr_t *out)
 
     buf[size] = 0;
 
-#elif SG_OS_MACOS
+#elif defined(SG_OS_MACOS)
 
     int ret;
     uint32_t size = SG_LIMIT_PATH_MAX;

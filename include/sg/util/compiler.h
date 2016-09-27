@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Compiling date time. */
-#define SG_COMPILER_DATETIME_STRING (__DATE__ ## __TIME__)
+#define SG_COMPILER_DATETIME_STRING (__DATE__ __TIME__)
 
 #ifdef __cplusplus
 }

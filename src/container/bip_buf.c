@@ -82,7 +82,7 @@ unsigned char *sg_bip_buf_get_old(const sg_bip_buf_t *buf, const unsigned int si
     return end;
 }
 
-int sg_bip_buf_get_old(sg_bip_buf_t *buf, size_t try_get_size, unsigned char **get_buf, size_t *real_get_size)
+int sg_bip_buf_get(sg_bip_buf_t *buf, size_t try_get_size, unsigned char *out_buf, size_t *real_get_size)
 {
     return 0;
 }

@@ -15,11 +15,6 @@
 #include "util/err.h"
 #include "util/compiler.h"
 
-#include <stddef.h> /* size_t */
-#include <stdlib.h> /* size_t */
-#include <stdint.h> /* uint8_t */
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */

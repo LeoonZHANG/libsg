@@ -97,17 +97,6 @@ bool sg_fs_full_path_parse(const char *full_path,
 }
 
 
-bool sg_proc_dir(sg_vsstr_t *out)
-{
-
-}
-
-int sg_module_name(char *buf, size_t buf_len)
-{
-
-}
-
-
 
 /****************************************************
  * regular file

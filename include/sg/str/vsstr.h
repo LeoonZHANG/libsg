@@ -8,7 +8,8 @@
 #define LIBSG_VSSTR_H
 
 #include <stdarg.h>
-#include <sg/sg.h>
+/* FIXME: why #include "sg.h" doesn't work */
+#include "../sys/type.h"
 
 #ifdef __cplusplus
 extern "C" {

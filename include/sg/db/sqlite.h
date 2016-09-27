@@ -7,6 +7,7 @@
 #define LIBSG_SQLLITE_H
 
 #include <sg/sg.h>
+#include "../str/vsstr_list.h"
 
 #ifdef __cplusplus
 extern "C" {

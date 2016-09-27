@@ -40,9 +40,9 @@ sg_json_doc_t *sg_json_alloc_doc2(const void *buf, size_t size);
 
 sg_json_doc_t *sg_json_alloc_doc3(void);
 
-sg_sjon_doc_t *sg_json_alloc_from_msgpack(void *msgpack_data, uint64_t size);
+//sg_json_doc_t *sg_json_alloc_from_msgpack(void *msgpack_data, uint64_t size);
 
-sg_sjon_doc_t *sg_json_alloc_from_msgpack2(sg_msgpack_t *msgpack);
+//sg_json_doc_t *sg_json_alloc_from_msgpack2(sg_msgpack_t *msgpack);
 
 /* Don’t forget to free sg_json_str_t with sg_json_free_string. */
 int sg_json_doc_to_str(sg_json_doc_t *, sg_json_str_t **);

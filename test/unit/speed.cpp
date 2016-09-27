@@ -68,10 +68,10 @@ protected:
 
 static void sleep_ms(size_t ms)
 {
-    size_t tick = sg_boot_time_ms();
-    size_t tock = sg_boot_time_ms();
+    size_t tick = sg_clock_boot_time_ms();
+    size_t tock = sg_clock_boot_time_ms();
     while (tock < tick + ms)
-        tock = sg_boot_time_ms();
+        tock = sg_clock_boot_time_ms();
     tick = tock;
 }
 

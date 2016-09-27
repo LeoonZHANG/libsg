@@ -40,7 +40,7 @@ int sg_bip_buf_get(sg_bip_buf_t *buf, size_t try_get_size, unsigned char *out_bu
  *
  * @param[in] len The length of the data to be polled
  * @return pointer to data, NULL if we can't poll this much data */
-unsigned char *sg_bip_buf_get_old(const sg_bip_buf_t *me, const unsigned int size);
+unsigned char *sg_bip_buf_get_old(const sg_bip_buf_t *buf, const unsigned int size);
 
 /**
  * @param[in] data The data to be offered to the buffer

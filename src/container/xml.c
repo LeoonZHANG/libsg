@@ -818,7 +818,7 @@ int sg_xml_get_member_size(sg_xml_doc_t *doc, const char *xpath) {
 
 }
 
-enum xml_val_type sg_xml_get_type(sg_xml_doc_t *doc, const char *xpath)
+enum sg_xml_val_type sg_xml_get_type(sg_xml_doc_t *doc, const char *xpath)
 {
 	sg_xml_doc *xml = cast_xml_doc(doc);
 	char *str = NULL;

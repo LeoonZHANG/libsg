@@ -197,7 +197,7 @@ int sg_big_float_get_str(sg_big_float_t *src, enum sg_num_sys sys, sg_vsstr_t * 
         /* rid negative symbol */
         if (mpf_sgn(src->mpf) == -1)
             --mantissa_length;
-        sg_vsstr_t* float_exp = sg_vsstrfmt("e%ld", exp - mantissa_length);
+        sg_vsstr_t* float_exp = sg_vsstr_fmt("e%ld", exp - mantissa_length);
         sg_vsstr_cat(str, sg_vsstr_raw(float_exp));
         sg_vsstr_free(&float_exp);
     }

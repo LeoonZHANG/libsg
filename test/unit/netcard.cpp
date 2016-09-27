@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <sg/hdw/netcard.h>
 
-void callback(struct sg_net_card_info* inf, void* ctx)
+void callback(struct sg_netcard_info *inf, void *ctx)
 {
     printf("if: %s\n", inf->name);
     printf("\tmac: %s\n", inf->mac);
@@ -14,4 +14,4 @@ void callback(struct sg_net_card_info* inf, void* ctx)
     printf("\tbroadcast v6: %s\n", inf->broadcast_ipv6);
 }
 
-TEST(test_net_card, list) { ASSERT_EQ(0, sg_net_card_scan(callback, NULL, 1)); }
+TEST(test_netcard, list) { ASSERT_EQ(0, sg_netcard_scan(callback, NULL, 1)); }

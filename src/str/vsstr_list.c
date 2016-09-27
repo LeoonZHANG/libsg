@@ -22,7 +22,7 @@ sg_vsstr_list_t *sg_vsstr_list_alloc(void)
     if (!vl)
         return NULL;
 
-    vl->list = sg_list_alloc(NULL, NULL);
+    vl->list = sg_list_alloc(NULL);
     if (!vl->list) {
         free(vl);
         return NULL;

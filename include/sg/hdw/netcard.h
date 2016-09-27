@@ -32,7 +32,7 @@ struct sg_net_dns {
     } dns_server[10];        /* max 10 dns server */
 };
 
-typedef void (*sg_netcard_scan_cb_t)(struct sg_net_card_info *inf, void *ctx);
+typedef void (*sg_netcard_scan_cb_t)(struct sg_netcard_info *inf, void *ctx);
 
 int sg_netcard_scan(sg_netcard_scan_cb_t cb, void *ctx, int merge_interfaces);
 

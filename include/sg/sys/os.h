@@ -39,7 +39,7 @@ extern "C" {
 #endif
 
 /* Get distribution of OS. */
-bool sg_os_distribution(sg_vsstr_t *str_out);
+void sg_os_distribution(sg_vsstr_t *str_out);
 
 /* sg_start_with_os(const char *binary_filename);
 
