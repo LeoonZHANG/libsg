@@ -41,9 +41,6 @@ extern "C" {
 /* Get distribution of OS. */
 void sg_os_distribution(sg_vsstr_t *str_out);
 
-/* sg_start_with_os(const char *binary_filename);
-
-/sg_not_start_with_os(const char *binary_filename); */
 
 #ifdef __cplusplus
 }

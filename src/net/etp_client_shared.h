@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
 #include <sg/sg.h>
 #include <sg/math/speed.h>
 #include "../../3rdparty/kcp/ikcp.h"
@@ -88,7 +89,7 @@ typedef struct send_req {
 static void __on_uv_recv_udp(uv_udp_t *handle, ssize_t nread,
                              const uv_buf_t *rcvbuf, const struct sockaddr *addr, unsigned int flags)
 {
-    sg_etp_t *client = (sg_etp_t *)(handle->data);
+    etp_client_shared_t *client = (etp_client_shared_t *)(handle->data);
 
     /*sg_log_dbg("recv udp %d\n", nread);*/
 
@@ -96,6 +97,27 @@ static void __on_uv_recv_udp(uv_udp_t *handle, ssize_t nread,
         etp_client_shared_recv_udp(client, rcvbuf->base, nread);
 
     free(rcvbuf->base);
+}
+
+/* using idle period to receive data or something else, avoid to lock shared resources */
+static void __on_uv_idle(uv_idle_t *idler)
+{
+    etp_client_shared_t *self = (etp_client_shared_t *)idler->data;
+    int len = 0;
+
+    len = ikcp_peeksize(self->kcp);/* check the size of next message in the recv queue */
+    if (len > 0) {
+        if (len > self->recv_buf_len) {
+            self->recv_buf = realloc(self->recv_buf, len);
+            self->recv_buf_len = len;
+        }
+
+        SG_ASSERT_MALLOC(self->recv_buf);
+
+        len = ikcp_recv(self->kcp, self->recv_buf, len);
+        self->on_recv(self, self->recv_buf, len);
+    } else /* recv queue is empty, means no data need to be received */
+        uv_idle_stop(&(self->idler)); /* stop watching idle and wait to enter next loop */
 }
 
 static void __on_uv_timer(uv_timer_t *timer)
@@ -130,31 +152,10 @@ static void __on_uv_timer(uv_timer_t *timer)
         etp_client_shared_close(self);
 }
 
-/* using idle period to receive data or something else, avoid to lock shared resources */
-static void __on_uv_idle(uv_idle_t *idler)
-{
-    etp_client_shared_t *self = (etp_client_shared_t *)idler->data;
-    int len = 0;
-
-    len = ikcp_peeksize(self->kcp);/* check the size of next message in the recv queue */
-    if (len > 0) {
-        if (len > self->recv_buf_len) {
-            self->recv_buf = realloc(self->recv_buf, len);
-            self->recv_buf_len = len;
-        }
-
-        SG_ASSERT_MALLOC(self->recv_buf, "alloc recv buf failed");
-
-        len = ikcp_recv(self->kcp, self->recv_buf, len);
-        self->on_recv(self, self->recv_buf, len);
-    } else /* recv queue is empty, means no data need to be received */
-        uv_idle_stop(&(self->idler)); /* stop watching idle and wait to enter next loop */
-}
-
 static void __on_uv_send_done(uv_udp_send_t *req, int status)
 {
     send_req_t *send_req = (send_req_t *)req;
-    etp_client_shared_t *self = (etp_client_shared_t *)send_req->self;
+    etp_client_shared_t *self = (etp_client_shared_t *)send_req->session; /* session? */
 
     sg_speed_counter_reg(self->send_speed_counter, send_req->buf.len);
 
@@ -167,7 +168,7 @@ static void __on_uv_send_done(uv_udp_send_t *req, int status)
 /* for kcp callback to send any udp data, including payload or kcp commands */
 static int __on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *user)
 {
-    sg_etp_t *self = (sg_etp_t *)user;
+    etp_client_shared_t *self = (etp_client_shared_t *)user;
     int ret = -1;
     send_req_t *req = NULL;
 
@@ -206,10 +207,10 @@ static int __on_kcp_output(const char *buf, int len, struct IKCPCB *kcp, void *u
 
 inline etp_client_shared_t *etp_client_shared_alloc(void)
 {
-    etp_client_shared_real *client = (etp_client_shared_t *)malloc(sizeof(etp_client_shared_t));
+    etp_client_shared_t *client = (etp_client_shared_t *)malloc(sizeof(etp_client_shared_t));
     SG_ASSERT_MALLOC(client);
-    memset(self, 0, sizeof(etp_client_shared_t));
-    return self;
+    memset(client, 0, sizeof(etp_client_shared_t));
+    return client;
 }
 
 inline int etp_client_shared_set_callbacks(etp_client_shared_t *self,

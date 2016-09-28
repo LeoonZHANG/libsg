@@ -13,12 +13,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct etp_comm_client_real sg_etp_t;
+typedef struct etp_client_shared_real sg_etp_t;
 
 typedef void (*sg_etp_on_open_func_t)(sg_etp_t *);
 /* WARNING: next callback will be called after previous is done,
    don't cost too much time for this callback */
-typedef void (*sg_etp_on_recv_func_t)(sg_etp_t *, char *data, size_t size); /* 如果回调中操作阻塞时间长,是否影响其他操作以及下一次本回调执行 */
+typedef void (*sg_etp_on_recv_func_t)(sg_etp_t *, char *data, size_t size);
 typedef void (*sg_etp_on_sent_func_t)(sg_etp_t *, int status/*0:OK*/, void *data, size_t len);
 typedef void (*sg_etp_on_close_func_t)(sg_etp_t *, int code, const char *reason);
 typedef void (*sg_etp_on_error_func_t)(sg_etp_t *, const char *msg);

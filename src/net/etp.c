@@ -7,11 +7,11 @@
 #include "uv.h"
 #include "ikcp.h"
 #include "etp_client_shared.h"
-#include <sg/sg.h>
-#include <sg/net/etp.h>
-#include <sg/net/etp_private.h>
+//#include <sg/sg.h>
+//#include <sg/net/etp.h>
+#include "../../include/sg/net/etp.h"
 
-/* ENSURE: interval是用在libuv的loop时间间隔上的, 为什么又用在kcp的接口上了, 可以不同吗 */
+/* FIXME: interval是用在libuv的loop时间间隔上的, 为什么又用在kcp的接口上了, 可以不同吗 */
 
 /* FIXME: any possible to make the same conversion id in two host? */
 static inline IUINT32 __make_kcp_conv_id(void)
@@ -25,11 +25,13 @@ static inline IUINT32 __make_kcp_conv_id(void)
 }
 
 
-sg_etp_t *sg_etp_open(const char *server_addr, int server_port,
-    sg_etp_on_open_func_t on_open,
-    sg_etp_on_recv_func_t on_recv,
-    sg_etp_on_sent_func_t on_sent,
-    sg_etp_on_close_func_t on_close)
+sg_etp_t *
+sg_etp_open(const char *server_addr,
+            int server_port,
+            sg_etp_on_open_func_t on_open,
+            sg_etp_on_recv_func_t on_recv,
+            sg_etp_on_sent_func_t on_sent,
+            sg_etp_on_close_func_t on_close)
 {
     struct etp_client_shared_real *client = NULL;
     struct sockaddr_in addr;
