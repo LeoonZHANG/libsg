@@ -34,7 +34,7 @@ set(tests
     bloom_filter
     sym
     netcard
-    ## 其它的测试程序完成后可以加到这里，比如： http_client http_server img_sdl kcp_client mysql mongodb redis rwlock nats_client
+    ## 其它的测试程序完成后可以加到这里，比如： http_client http_server etp_client rwlock
     )
 
 include_directories(${sg_inc_dir} ${GTEST_INCLUDE_DIRS})
