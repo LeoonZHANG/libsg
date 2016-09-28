@@ -120,7 +120,7 @@ coming soon
 
 **sys**
 
-`atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `mem` `mmap` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `signal` `sleep` `spin_lock` `thread` `type`
+`atom` `clock` `cron` `daemon` `dynlib` `fs` `limit` `mem` `mmap` `mq` `mutex` `os` `pipe` `proc` `rwlock` `sem` `shell` `shm` `signal` `sleep` `spinlock` `thread` `type`
 
 **util**
 
