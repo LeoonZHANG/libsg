@@ -25,7 +25,7 @@ int sg_cpu_usable_count(void)
 #elif defined(SG_OS_MACOS)
     int mib[4];
     int cpu_num;
-    std::size_t len = sizeof(cpu_num); 
+    size_t len = sizeof(cpu_num);
     
     /* set the mib for hw.ncpu */
     mib[0] = CTL_HW;
