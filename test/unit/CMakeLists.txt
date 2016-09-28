@@ -34,6 +34,8 @@ set(tests
     bloom_filter
     sym
     netcard
+    etp
+    etp_server
     ## 其它的测试程序完成后可以加到这里，比如： http_client http_server etp_client rwlock
     )
 
