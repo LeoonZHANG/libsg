@@ -20,7 +20,7 @@ typedef struct sg_bdb_coll sg_bdb_coll_t;
 
 
 /* val will be free after callback is done */
-typedef void (*sg_ejdb_coll_list_cb_t)(const void *key, const void *val, void *ctx);
+typedef void (*sg_bdb_coll_list_cb_t)(const void *key, const void *val, uint64_t val_size, void *ctx);
 
 
 
@@ -63,7 +63,7 @@ bool sg_bdb_coll_get(sg_bdb_coll_t *coll, void *key, sg_vsbuf_t *out_val);
 
 bool sg_bdb_coll_remove(sg_bdb_coll_t *coll, void *key);
 
-bool sg_bdb_coll_list(sg_bdb_coll_t *coll, int limit, int skip, sg_ejdb_coll_list_cb_t db, void *ctx);
+bool sg_bdb_coll_list(sg_bdb_coll_t *coll, int limit, int skip, sg_bdb_coll_list_cb_t db, void *ctx);
 
 bool sg_bdb_coll_update(sg_bdb_coll_t *coll, void *key, void *val, uint64_t val_size);
 
