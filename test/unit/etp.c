@@ -28,7 +28,7 @@ static char s_path[256] = {0};
 static uint32_t now;
 static size_t data_size = 0;
 
-static void s_kcp_on_open(sg_etp_t *client)
+static void __on_open(sg_etp_t *client)
 {
     ftp_t output;
 
@@ -44,7 +44,7 @@ static void s_kcp_on_open(sg_etp_t *client)
     sg_etp_send(client, &output, sizeof(ftp_t));
 }
 
-static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
+static void __on_data(sg_etp_t *client, char *data, size_t size)
 {
     ftp_t * input = (ftp_t *)data;
     ftp_t output;
@@ -77,10 +77,10 @@ static void s_kcp_on_data(sg_etp_t *client, char *data, size_t size)
     }
 }
 
-static void s_etp_on_sent(sg_etp_t * client, int status/*0:OK*/, void * buf, size_t len)
+static void __on_sent(sg_etp_t * client, int status/*0:OK*/, void * buf, size_t len)
 {}
 
-static void s_kcp_on_close(sg_etp_t *client, int code, const char *reason)
+static void __on_close(sg_etp_t *client, int code, const char *reason)
 {
     printf("conn closed\n");
 }
@@ -110,7 +110,7 @@ int main(int argc, char * argv[])
 
     strncpy(s_path, path, sizeof(s_path));
 
-    sg_etp_t * client = sg_etp_open(ip, port, s_kcp_on_open, s_kcp_on_data, s_etp_on_sent, s_kcp_on_close);
+    sg_etp_t * client = sg_etp_open(ip, port, __on_open, __on_data, __on_sent, __on_close);
 
     sg_etp_run(client, 10);
 

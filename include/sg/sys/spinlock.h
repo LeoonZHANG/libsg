@@ -1,6 +1,10 @@
 /**
  * spinlock.h
- *
+ * Cross-platform spin lock.
+ * https://github.com/lattera/glibc/mach/spin_lock.h
+ * http://www.cnblogs.com/cposture/p/SpinLock.html#_lab2_3_3
+ * KeAcquireSpinLock
+ * https://github.com/malbrain/rwlock
  */
 #ifndef LIBSG_SPINLOCK_H
 #define LIBSG_SPINLOCK_H

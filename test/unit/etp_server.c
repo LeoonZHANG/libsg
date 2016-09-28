@@ -4,8 +4,7 @@
 #include <string.h>
 #include "etp_server.h"
 
-enum
-{
+enum {
     PT_LS,
     PT_GET,
     PT_PUT,
@@ -14,18 +13,17 @@ enum
     PT_HELP,
 };
 
-typedef struct
-{
+typedef struct {
     int payload;
     size_t offset;
     size_t len;
     char data[1024];
-}ftp_t;
+} ftp_t;
 
-static void s_kcp_on_open(sg_etp_client_t * client)
+static void __server_on_open(sg_etp_client_t * client)
 {
     char * addr = NULL;
-    /*printf("s_kcp_on_open\n");*/
+    /*printf("__on_open\n");*/
 
     addr = sg_etp_server_get_client_addr(client);
 
@@ -34,7 +32,7 @@ static void s_kcp_on_open(sg_etp_client_t * client)
     free(addr);
 }
 
-static void s_kcp_on_data(sg_etp_client_t *client, char *data, size_t size)
+static void __server_on_data(sg_etp_client_t *client, char *data, size_t size)
 {
     ftp_t * input = (ftp_t *)data;
     ftp_t output;
@@ -74,13 +72,13 @@ static void s_kcp_on_data(sg_etp_client_t *client, char *data, size_t size)
     }
 }
 
-void s_kcp_on_sent(sg_etp_client_t *client, int status/*0:OK*/, void *data, size_t len)
+static void __server_on_sent(sg_etp_client_t *client, int status/*0:OK*/, void *data, size_t len)
 {
 
 }
 
 
-static void s_kcp_on_close(sg_etp_client_t *client, int code, const char *reason)
+static void __server_on_close(sg_etp_client_t *client, int code, const char *reason)
 {
     char * addr = NULL;
 
@@ -108,7 +106,7 @@ int main(int argc, char * argv[])
 
     printf("listen @ %d\n", port);
 
-    sg_etp_server_t * server = sg_etp_server_open("0.0.0.0", port, 100, s_kcp_on_open, s_kcp_on_data, s_kcp_on_sent, NULL, s_kcp_on_close);
+    sg_etp_server_t * server = sg_etp_server_open("0.0.0.0", port, 100, __server_on_open, __server_on_data, __server_on_sent, NULL, __server_on_close);
 
     sg_etp_server_run(server, 10);
 

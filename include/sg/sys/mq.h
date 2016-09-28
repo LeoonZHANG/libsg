@@ -2,6 +2,8 @@
  * mq.h
  * Message queue for lockless share resource and IPC only.
  * 利用操作系统的消息队列,避免使用锁等其它数据同步方法
+ * Windows: https://technet.microsoft.com/zh-cn/library/ms699817
+ * Posix: http://www.cnblogs.com/lpshou/archive/2013/06/20/3145651.html
  * 接口可能需要调整
  */
 
@@ -9,6 +11,7 @@
 #define LIBSG_MQ_H
 
 #include <sg/sg.h>
+
 
 #ifdef __cplusplus
 extern "C" {

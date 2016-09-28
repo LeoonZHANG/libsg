@@ -1,6 +1,6 @@
 /**
  * ntp_server.h
- * Network time protocol client.
+ * Network time protocol server.
  */
 
 #ifndef LIBSG_NTP_SERVER_H
