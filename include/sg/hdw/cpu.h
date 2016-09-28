@@ -1,7 +1,6 @@
 /**
  * cpu.h
  * Get CPU information.
- * http://www.2cto.com/kf/201210/164480.html
  */
 
 #ifndef LIBSG_CPU_H
@@ -11,11 +10,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-struct sg_cpu_info {
-
-};
-
-int sg_cpu_core_num();
+int sg_cpu_usable_count(void);
 
 #ifdef __cplusplus
 }
