@@ -5,7 +5,7 @@
 # 任何命令出错，自动退出脚本
 set -e
 
-# 用 "PROXY=代理 ./build-ffmpeg-macos.sh" 的形式指定代理，如果未指定则不使用代理
+# 用 "PROXY=代理 ./build-ffmpeg-win.sh" 的形式指定代理，如果未指定则不使用代理
 http_proxy=$PROXY
 ftp_proxy=$PROXY
 
