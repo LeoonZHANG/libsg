@@ -25,6 +25,14 @@ debian|ubuntu16|ubuntu14)
   ;;
 centos7|centos6)
   yum install -y bzip2 xz make gcc
+  ;;
+*)
+cat << EOF
+Usage: ./build-ffmpeg-linux.sh dist
+possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
+EOF
+  exit 1
+  ;;
 esac
 
 # 创建压缩包存放目录

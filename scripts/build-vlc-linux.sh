@@ -11,7 +11,7 @@ ftp_proxy=$PROXY
 
 if [ $# -lt 1 ];then
 cat << EOF
-Usage: ./build-ffmpeg-linux.sh dist
+Usage: ./build-vlc-linux.sh dist
 possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
 EOF
   exit 1
@@ -25,6 +25,14 @@ debian|ubuntu16|ubuntu14)
   ;;
 centos7|centos6)
   yum install -y gcc-c++ make xz pkgconfig python-devel
+  ;;
+*)
+cat << EOF
+Usage: ./build-vlc-linux.sh dist
+possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
+EOF
+  exit 1
+  ;;
 esac
 
 # 创建压缩包存放目录
