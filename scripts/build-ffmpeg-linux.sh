@@ -39,7 +39,7 @@ esac
 mkdir -p tarball
 
 # 下载ffmpeg源码包
-ffmpeg_version='3.1.3'
+ffmpeg_version='3.1.4'
 ffmpeg_url="http://ffmpeg.org/releases/ffmpeg-${ffmpeg_version}.tar.bz2"
 ffmpeg_filename=`basename ${ffmpeg_url}`
 if [ ! -e "tarball/${ffmpeg_filename}" ];then
