@@ -1,5 +1,5 @@
 #! /bin/bash
-# 运行环境：debian 8
+# 运行环境：debian8 ubuntu16 ubuntu14 centos7 centos6 centos5
 # 最终生成的文件在脚本同一层的ffmpeg_result目录
 
 # 任何命令出错，自动退出脚本
@@ -12,7 +12,7 @@ ftp_proxy=$PROXY
 if [ $# -lt 1 ];then
 cat << EOF
 Usage: ./build-ffmpeg-linux.sh dist
-possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
+possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6,centos5
 EOF
   exit 1
 else
@@ -23,13 +23,13 @@ case ${dist} in
 debian|ubuntu16|ubuntu14)
   apt-get install -y build-essential curl
   ;;
-centos7|centos6)
+centos7|centos6|centos5)
   yum install -y bzip2 xz make gcc
   ;;
 *)
 cat << EOF
 Usage: ./build-ffmpeg-linux.sh dist
-possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
+possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6,centos5
 EOF
   exit 1
   ;;
@@ -40,7 +40,7 @@ mkdir -p tarball
 
 # 下载ffmpeg源码包
 ffmpeg_version='3.1.3'
-ffmpeg_url="http://ffmpeg.org/releases/ffmpeg-${ffmpeg_version}.tar.xz"
+ffmpeg_url="http://ffmpeg.org/releases/ffmpeg-${ffmpeg_version}.tar.bz2"
 ffmpeg_filename=`basename ${ffmpeg_url}`
 if [ ! -e "tarball/${ffmpeg_filename}" ];then
   curl -# -fsSL ${ffmpeg_url} > tarball/${ffmpeg_filename}
