@@ -170,7 +170,7 @@ popd
 # 编译过程中需要运行luac，所以需要编译非交叉版本
 lua_src=${lua_filename%.*.*}
 pushd ${lua_src}
-make linux MYCFLAGS="-I$(cd ../fake;pwd)/include" MYLDFLAGS="-L$(cd ../fake;pwd)/lib" MYLIBS=-lncurses
+make linux MYCFLAGS="-I$(cd ../fake;pwd)/include" MYLDFLAGS="-L$(cd ../fake;pwd)/lib -static" MYLIBS=-lncurses
 cp src/luac ../fake/bin
 popd
 rm -rf ${lua_src}
