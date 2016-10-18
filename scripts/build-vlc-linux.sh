@@ -1,5 +1,5 @@
 #! /bin/bash
-# 运行环境：debian 8
+# 运行环境：debian8 ubuntu16 ubuntu14 centos7 centos6
 # 最终生成的文件在脚本同一层的vlc_result目录
 
 # 任何命令出错，自动退出脚本
@@ -9,7 +9,31 @@ set -e
 http_proxy=$PROXY
 ftp_proxy=$PROXY
 
-apt-get install -y build-essential curl mingw-w64 pkg-config yasm xz-utils
+if [ $# -lt 1 ];then
+cat << EOF
+Usage: ./build-vlc-linux.sh dist
+possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
+EOF
+  exit 1
+else
+  dist=$1
+fi
+
+case ${dist} in
+debian|ubuntu16|ubuntu14)
+  apt-get install -y build-essential curl xz-utils pkg-config
+  ;;
+centos7|centos6)
+  yum install -y gcc-c++ make xz pkgconfig python-devel
+  ;;
+*)
+cat << EOF
+Usage: ./build-vlc-linux.sh dist
+possible dist can be one of debian,ubuntu16,ubuntu14,centos7,centos6
+EOF
+  exit 1
+  ;;
+esac
 
 # 创建压缩包存放目录
 mkdir -p tarball
@@ -20,6 +44,14 @@ vlc_url="http://get.videolan.org/vlc/${vlc_version}/vlc-${vlc_version}.tar.xz"
 vlc_filename=`basename ${vlc_url}`
 if [ ! -e "tarball/${vlc_filename}" ];then
   curl -# -fsSL ${vlc_url} > tarball/${vlc_filename}
+fi
+
+# 下载yasm源码包
+yasm_version=1.3.0
+yasm_url="http://www.tortall.net/projects/yasm/releases/yasm-${yasm_version}.tar.gz"
+yasm_filename=`basename ${yasm_url}`
+if [ ! -e "tarball/${yasm_filename}" ];then
+  curl -# -fsSL ${yasm_url} > tarball/${yasm_filename}
 fi
 
 # 下载libmad源码包
@@ -62,6 +94,14 @@ if [ ! -e "tarball/${libxml2_filename}" ];then
   curl -# -fsSL ${libxml2_url} > tarball/${libxml2_filename}
 fi
 
+# 下载gawk源码包
+gawk_version='4.1.4'
+gawk_url="http://mirrors.ustc.edu.cn/gnu/gawk/gawk-${gawk_version}.tar.xz"
+gawk_filename=`basename ${gawk_url}`
+if [ ! -e "tarball/${gawk_filename}" ];then
+  curl -# -fsSL ${gawk_url} > tarball/${gawk_filename}
+fi
+
 # 下载ncurses源码包
 ncurses_version='6.0'
 ncurses_url="http://ftp.gnu.org/gnu/ncurses/ncurses-${ncurses_version}.tar.gz"
@@ -90,6 +130,7 @@ fi
 rm -rf src
 mkdir -p src/fake
 pushd src
+export PATH=$(cd fake;pwd)/bin:$PATH
 
 # 使用heredoc，方便扩展成多行
 cat << EOF
@@ -98,11 +139,13 @@ EOF
 
 # 解压源码包
 tar -xvf ../tarball/${vlc_filename}
+tar -xvf ../tarball/${yasm_filename}
 tar -xvf ../tarball/${libmad_filename}
 tar -xvf ../tarball/${libav_filename}
 tar -xvf ../tarball/${liba52_filename}
 tar -xvf ../tarball/${xz_filename}
 tar -xvf ../tarball/${libxml2_filename}
+tar -xvf ../tarball/${gawk_filename}
 tar -xvf ../tarball/${ncurses_filename}
 tar -xvf ../tarball/${readline_filename}
 tar -xvf ../tarball/${lua_filename}
@@ -115,51 +158,67 @@ EOF
 # 按回车键，继续执行
 read
 
+# 因为有些发行版自带的yasm版本不够新，所以在脚本里编译最新版
+yasm_src=${yasm_filename%.*.*}
+pushd ${yasm_src}
+./configure --prefix=$(cd ../fake;pwd)
+make
+make install
+popd
+
 libmad_src=${libmad_filename%.*.*}
 pushd ${libmad_src}
 sed -i '/-fforce/d' configure
-./configure --prefix=$(cd ../fake;pwd) --host=x86_64-w64-mingw32
+./configure --prefix=$(cd ../fake;pwd)
 make
 make install
 popd
 
 libav_src=${libav_filename%.*.*}
 pushd ${libav_src}
-./configure --prefix=$(cd ../fake;pwd) --enable-shared --arch=x86_64 --target-os=mingw32 --cross-prefix=x86_64-w64-mingw32- --pkg-config=pkg-config
+./configure --prefix=$(cd ../fake;pwd) --enable-shared
 make
 make install
 popd
 
 liba52_src=${liba52_filename%.*.*}
 pushd ${liba52_src}
-CFLAGS='-fPIC' ./configure --prefix=$(cd ../fake;pwd) --host=x86_64-w64-mingw32
+CFLAGS='-fPIC' ./configure --prefix=$(cd ../fake;pwd)
 make
 make install
 popd
 
 xz_src=${xz_filename%.*.*}
 pushd ${xz_src}
-./configure --prefix=$(cd ../fake;pwd) --host=x86_64-w64-mingw32
+./configure --prefix=$(cd ../fake;pwd)
 make
 make install
 popd
 
 libxml2_src=${libxml2_filename%.*.*}
 pushd ${libxml2_src}
-./configure --prefix=$(cd ../fake;pwd) --with-lzma=$(cd ../fake;pwd) --host=x86_64-w64-mingw32
+./configure --prefix=$(cd ../fake;pwd) --with-lzma=$(cd ../fake;pwd)
 make
 make install
 popd
 
-# 用于编译非交叉版本luac
-ncurses_src=${ncurses_filename%.*.*}
-pushd ${ncurses_src}
+# 部分发行版需要用gawk代替mawk才能正常编译ncurses，为规避版本不一致问题自己编译一份
+gawk_src=${gawk_filename%.*.*}
+pushd ${gawk_src}
 ./configure --prefix=$(cd ../fake;pwd)
 make
 make install
 popd
 
-# 用于编译非交叉版本luac
+# 修改编译脚本，去掉mawk的可选项
+ncurses_src=${ncurses_filename%.*.*}
+pushd ${ncurses_src}
+sed -i s/mawk// configure
+./configure --prefix=$(cd ../fake;pwd)
+make
+make install
+popd
+
 readline_src=${readline_filename%.*.*}
 pushd ${readline_src}
 LDFLAGS="-L$(cd ../fake;pwd)/lib" ./configure --prefix=$(cd ../fake;pwd)
@@ -167,46 +226,19 @@ make
 make install
 popd
 
-# 编译过程中需要运行luac，所以需要编译非交叉版本
 lua_src=${lua_filename%.*.*}
 pushd ${lua_src}
-make linux MYCFLAGS="-I$(cd ../fake;pwd)/include" MYLDFLAGS="-L$(cd ../fake;pwd)/lib -static" MYLIBS=-lncurses
-cp src/luac ../fake/bin
-popd
-rm -rf ${lua_src}
-
-# 交叉编译lua，用于连接到vlc
-tar -xvf ../tarball/${lua_filename}
-pushd ${lua_src}
-perl -pi -e 's/(?<=^CC)(.*)(?=gcc)/\1x86_64-w64-mingw32-/' src/Makefile
-perl -pi -e 's/(?<=^AR)(.*)(?=ar)/\1x86_64-w64-mingw32-/' src/Makefile
-perl -pi -e 's/(?<=^RANLIB)(.*)(?=ranlib)/\1x86_64-w64-mingw32-/' src/Makefile
-perl -pi -e 's/(?=TO_BIN)(.*)lua luac/\1lua.exe luac.exe/' Makefile
-make mingw
+make linux MYCFLAGS="-I$(cd ../fake;pwd)/include -fPIC" MYLDFLAGS="-L$(cd ../fake;pwd)/lib -static" MYLIBS=-lncurses
 make install INSTALL_TOP=$(cd ../fake;pwd)
 popd
 
+# xcb和alsa都是跟系统深度绑定的，不宜下载源码单独编译，因此没有包含在编译脚本中。如果需要可以安装相应开发包，并去掉disable选项。
 vlc_src=${vlc_filename%.*.*}
 pushd ${vlc_src}
-PKG_CONFIG_PATH=$(cd ../fake/lib/pkgconfig;pwd) CFLAGS="-I$(cd ../fake;pwd)/include" LDFLAGS="-L$(cd ../fake;pwd)/lib" ./configure --prefix=$(cd ../..;pwd)/vlc_result --with-mad=$(cd ../fake;pwd) --with-a52=$(cd ../fake;pwd) LIBXML2_CFLAGS="-I $(cd ../fake/include/libxml2;pwd)" --host=x86_64-w64-mingw32 LUA_CFLAGS='-I$(cd ../fake;pwd)/include' LUA_LIBS='-L$(cd ../fake;pwd)/lib -llua' LUAC=$(cd ../fake;pwd)/bin/luac --disable-libgcrypt --enable-static=yes
+sed -i s/strlcpy/strncpy/ src/input/subtitles.c
+PKG_CONFIG_PATH=$(cd ../fake/lib/pkgconfig;pwd) CFLAGS="-I$(cd ../fake;pwd)/include -fPIC" LDFLAGS="-L$(cd ../fake;pwd)/lib" ./configure --prefix=$(cd ../..;pwd)/vlc_result --with-mad=$(cd ../fake;pwd) --with-a52=$(cd ../fake;pwd) LIBXML2_CFLAGS="-I $(cd ../fake/include/libxml2;pwd)" LUA_CFLAGS='-I$(cd ../fake;pwd)/include' LUA_LIBS='-L$(cd ../fake;pwd)/lib -llua' LUAC=$(cd ../fake;pwd)/bin/luac --disable-libgcrypt --disable-xcb --disable-alsa --enable-static
 make
 make install
-popd
-
-# 编译pexports，用于从dll文件导出def文件
-curl -fsSL https://sourceforge.net/projects/mingw/files/MinGW/Extension/pexports/pexports-0.47/pexports-0.47-mingw32-src.tar.xz/download|tar -xJvf -
-pushd pexports-0.47
-./configure --prefix=$(cd ../fake;pwd)
-make install
-popd
-
-# 从dll文件和def文件生成lib文件，用于VC编译
-export PATH=$(cd fake;pwd)/bin:$PATH
-pushd ../vlc_result/bin
-pexports libvlc.dll > libvlc.def
-x86_64-w64-mingw32-dlltool -D libvlc.dll -d libvlc.def -l libvlc.lib
-pexports libvlccore.dll > libvlccore.def
-x86_64-w64-mingw32-dlltool -D libvlccore.dll -d libvlccore.def -l libvlccore.lib
 popd
 
 popd
