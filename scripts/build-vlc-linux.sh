@@ -228,7 +228,7 @@ popd
 
 lua_src=${lua_filename%.*.*}
 pushd ${lua_src}
-make linux MYCFLAGS="-I$(cd ../fake;pwd)/include -fPIC" MYLDFLAGS="-L$(cd ../fake;pwd)/lib -static" MYLIBS=-lncurses
+make linux MYCFLAGS="-I$(cd ../fake;pwd)/include -fPIC" MYLDFLAGS="-L$(cd ../fake;pwd)/lib" MYLIBS=-lncurses
 make install INSTALL_TOP=$(cd ../fake;pwd)
 popd
 
