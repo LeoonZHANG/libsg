@@ -8,15 +8,29 @@ set -e
 http_proxy=$PROXY
 ftp_proxy=$PROXY
 
+if [ $# -ge 1 ];then
+  vlc_version=$1
+fi
+
 # 创建压缩包存放目录
 mkdir -p tarball
 
 # 下载vlc源码包
-vlc_version='2.2.4'
-vlc_url="http://get.videolan.org/vlc/2.2.4/vlc-${vlc_version}.tar.xz"
-vlc_filename=`basename ${vlc_url}`
-if [ ! -e "tarball/${vlc_filename}" ];then
-  curl -# -fsSL ${vlc_url} > tarball/${vlc_filename}
+if [ "x${vlc_version}" != 'x' ];then
+  if [ ! -d tarball/vlc ];then
+    git clone git://github.com/videolan/vlc tarball/vlc
+  else
+    if [ ${vlc_version} == 'latest' ];then
+      pushd tarball/vlc && git checkout -f master && git pull && popd
+    fi
+  fi
+else
+  vlc_version='2.2.4'
+  vlc_url="http://get.videolan.org/vlc/2.2.4/vlc-${vlc_version}.tar.xz"
+  vlc_filename=`basename ${vlc_url}`
+  if [ ! -e "tarball/${vlc_filename}" ];then
+    curl -# -fsSL ${vlc_url} > tarball/${vlc_filename}
+  fi
 fi
 
 # 下载xz源码包
@@ -49,7 +63,11 @@ EOF
 # 解压源码包
 tar -xvf ../tarball/${xz_filename}
 tar -xvf ../tarball/${libxml2_filename}
-tar -xvf ../tarball/${vlc_filename}
+if [ "x${vlc_filename}" == 'x' ];then
+  cp -r ../tarball/vlc .
+else
+  tar -xvf ../tarball/${vlc_filename}
+fi
 
 # 使用heredoc，方便扩展成多行
 cat << EOF
@@ -75,8 +93,11 @@ make
 make install
 popd
 
-tar -xvf ../tarball/${vlc_filename}
-vlc_src=${vlc_filename%.*.*}
+if [ "x${vlc_filename}" == 'x' ];then
+  vlc_src=vlc
+else
+  vlc_src=${vlc_filename%.*.*}
+fi
 mkdir ${vlc_src}/build
 pushd ${vlc_src}/build
 # 暂时设置，语句出错不退出
