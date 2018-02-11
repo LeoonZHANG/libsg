@@ -4,6 +4,8 @@
 
 ## Overview
 
+## No Longer Maintained!
+
 Cross-platform C utility library focusing on developer-friendly.
 
 ## Idea
